@@ -6,6 +6,8 @@
     android:layout_height="fill_parent"
     android:background="@mipmap/home">
 
+    <include layout="@layout/floating_buttons" />
+
     <ImageView
         android:id="@+id/imageViewTitle"
         android:src="@mipmap/title"

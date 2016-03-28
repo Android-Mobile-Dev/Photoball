@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     tools:context="team6.photoball.Gallery">
 
-    <!-- TODO: Update blank fragment layout -->
+    <include layout="@layout/floating_buttons_gallery" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -3,6 +3,7 @@ package team6.photoball;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,8 +64,36 @@ public class Camera extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_camera, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_camera, container, false);
+
+        final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
+        final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
+        final FloatingActionButton playButton = (FloatingActionButton) view.findViewById(R.id.playButton);
+
+        assert addButton != null;
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity)getActivity()).moveGallery();
+            }
+        });
+
+        assert playButton != null;
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity)getActivity()).moveMyPicMaps();
+            }
+        });
+
+        assert cameraButton != null;
+        cameraButton.setScaleX((float) 1.3);
+        cameraButton.setScaleY((float) 1.3);
+        cameraButton.setY(-200);
+        cameraButton.setClickable(false);
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

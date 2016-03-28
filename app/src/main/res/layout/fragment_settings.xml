@@ -2,13 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="team6.photoball.MyPicMaps">
+    tools:context="team6.photoball.Settings">
 
-    <include layout="@layout/floating_buttons_my_pic_maps" />
-
+    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="hello_my_pic_maps_fragment" />
+        android:text="@string/hello_blank_fragment" />
 
 </FrameLayout>

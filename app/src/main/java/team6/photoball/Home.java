@@ -30,10 +30,6 @@ public class Home extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    static MainActivity mainActivity;
-
-    //FloatingActionButton cameraButton = (MainActivity) getActivity().findViewById(R.id.cameraButton);
-
     private OnFragmentInteractionListener mListener;
 
     public Home() {
@@ -69,8 +65,38 @@ public class Home extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
+        final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
+        final FloatingActionButton playButton = (FloatingActionButton) view.findViewById(R.id.playButton);
+
+        assert addButton != null;
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity)getActivity()).moveGallery();
+            }
+        });
+
+        assert cameraButton != null;
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity)getActivity()).moveCamera();
+            }
+        });
+
+        assert playButton != null;
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity)getActivity()).moveMyPicMaps();
+            }
+        });
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
