@@ -18,12 +18,4 @@ allprojects {
     }
 }
 
-apply plugin: 'checkstyle'
-checkstyle {
-    configFile rootProject.file('checkstyle.xml')
-    showViolations true
-}
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
