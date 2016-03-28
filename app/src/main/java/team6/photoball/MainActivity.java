@@ -6,7 +6,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -186,17 +188,12 @@ public class MainActivity extends AppCompatActivity implements
         } else if (id == R.id.nav_updates) {
 
         } else if (id == R.id.nav_about) {
-
+            showDialog();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    private void myPicMaps(View view) {
-        Intent intent = new Intent(MainActivity.this, MyPicMaps.class);
-        startActivity(intent);
     }
 
     public void moveToHome() {
@@ -310,5 +307,21 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onFragmentInteractionGallery(Uri uri) {
 
+    }
+
+    void showDialog() {
+        DialogFragment newFragment = About.newInstance(
+                R.string.about);
+        newFragment.show(getSupportFragmentManager(), "dialog");
+    }
+
+    public void doPositiveClick() {
+        // Do stuff here.
+        Log.i("FragmentAlertDialog", "Positive click!");
+    }
+
+    public void doNegativeClick() {
+        // Do stuff here.
+        Log.i("FragmentAlertDialog", "Negative click!");
     }
 }
