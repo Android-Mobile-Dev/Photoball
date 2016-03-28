@@ -39,6 +39,7 @@ addons:
       - $(git ls-files -o | grep build/outputs | tr "\n" ":")
 
 before_install:
+  - chmod +x gradlew
   - pip install --user codecov
 
 before_script:
@@ -51,7 +52,7 @@ script:
   - adb devices
   - adb shell input keyevent 82 &
   - ./gradlew connectedAndroidTest -PdisablePreDex --continue --stacktrace
-  - rm /home/travis/.gradle/2.8/taskArtifacts/cache.properties.lock
+  - rm /home/travis/.gradle/caches/2.8/plugin-resolution/cache.properties.lock
 
 after_success:
   - ./gradlew jacocoFullReport
