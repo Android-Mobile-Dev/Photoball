@@ -1,4 +1,4 @@
 # Photoball
 
 ## Status
-![Build Status](https://travis-ci.org/Android-Mobile-Dev/photoball.svg?branch=dev)
+![Build Status](https://travis-ci.org/Android-Mobile-Dev/Photoball.svg?branch=master)
