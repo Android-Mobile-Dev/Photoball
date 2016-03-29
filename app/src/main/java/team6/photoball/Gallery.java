@@ -93,7 +93,7 @@ public class Gallery extends Fragment {
         assert addButton != null;
         addButton.setScaleX((float) 1.3);
         addButton.setScaleY((float) 1.3);
-        addButton.setY(-200);
+        addButton.setY(-100);
         addButton.setClickable(false);
 
         return view;
