@@ -28,6 +28,7 @@ public class About extends DialogFragment {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         ((MainActivity) getActivity()).doPositiveClick();
                     }
-                }).create();
+                }).setMessage(R.string.about_description)
+                .create();
     }
 }
