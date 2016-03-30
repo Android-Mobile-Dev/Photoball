@@ -33,4 +33,7 @@
     <string name="setting_sound">Sound</string>
     <string name="setting_default">Reset to Default</string>
 
+    <string name="picture_title">testing</string>
+    <string name="picture_description">description test</string>
+
 </resources>

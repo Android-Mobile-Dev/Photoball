@@ -1,5 +1,6 @@
 package team6.photoball;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,6 +19,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import pl.aprilapps.easyphotopicker.EasyImage;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
@@ -126,7 +129,8 @@ public class MainActivity extends AppCompatActivity implements
     public void moveGallery() {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.the_screens, new Gallery());
+        Gallery thisGallery = Gallery.create();
+        ft.replace(R.id.the_screens, thisGallery);
         ft.addToBackStack("fragment_gallery");
         ft.commit();
     }

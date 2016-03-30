@@ -1,40 +1,36 @@
 package team6.photoball;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Point;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.GridView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Locale;
 
+import pl.aprilapps.easyphotopicker.DefaultCallback;
+import pl.aprilapps.easyphotopicker.EasyImage;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link Gallery.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Gallery#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class Gallery extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
@@ -46,16 +42,12 @@ public class Gallery extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment Gallery.
      */
     // TODO: Rename and change types and number of parameters
-    public static Gallery newInstance(String param1, String param2) {
+    public static Gallery create() {
         Gallery fragment = new Gallery();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,10 +55,7 @@ public class Gallery extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        EasyImage.openGallery(this, 0);
     }
 
     @Override
@@ -91,7 +80,7 @@ public class Gallery extends Fragment {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)getActivity()).moveMyPicMaps();
+                ((MainActivity) getActivity()).moveMyPicMaps();
             }
         });
 
@@ -141,4 +130,47 @@ public class Gallery extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteractionGallery(Uri uri);
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        EasyImage.handleActivityResult(requestCode, resultCode, data, this.getActivity(), new DefaultCallback() {
+            @Override
+            public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
+                //Some error handling
+            }
+
+            @Override
+            public void onImagePicked(File imageFile, EasyImage.ImageSource imagePath, int type) {
+                //Handle the image
+                OutputStream fOut = null;
+
+                try {
+                    fOut = new FileOutputStream(imageFile);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    fOut.flush();
+                    fOut.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.TITLE, R.string.picture_title);
+                values.put(MediaStore.Images.Media.DESCRIPTION, R.string.picture_description);
+                values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+                values.put(MediaStore.Images.ImageColumns.BUCKET_ID, imageFile.toString().toLowerCase(Locale.US).hashCode());
+                values.put(MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME, imageFile.getName().toLowerCase(Locale.US));
+                values.put("PhotoBall", imageFile.getAbsolutePath());
+
+                ContentResolver cr = getContext().getContentResolver();
+                cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            }
+        });
+    }
+
 }
