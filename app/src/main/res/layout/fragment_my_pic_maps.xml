@@ -6,9 +6,15 @@
 
     <include layout="@layout/floating_buttons_my_pic_maps" />
 
-    <TextView
+    <GridView
+        android:id="@+id/my_pic_maps_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="hello_my_pic_maps_fragment" />
+        android:columnWidth="90dp"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="10dp"
+        android:horizontalSpacing="10dp"
+        android:stretchMode="columnWidth"
+        android:gravity="center"/>
 
 </FrameLayout>

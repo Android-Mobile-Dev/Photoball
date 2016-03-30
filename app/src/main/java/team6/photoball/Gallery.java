@@ -83,7 +83,7 @@ public class Gallery extends Fragment {
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)getActivity()).moveCamera();
+                ((MainActivity) getActivity()).moveCamera();
             }
         });
 
@@ -99,10 +99,6 @@ public class Gallery extends Fragment {
         addButton.setScaleX((float) 1.3);
         addButton.setScaleY((float) 1.3);
         addButton.setY(-100);
-        addButton.setClickable(false);
-
-        GridView gridView = (GridView) view.findViewById(R.id.gallery_grid);
-        gridView.setAdapter(new GalleryPageAdapter(view.getContext()));
 
         return view;
     }
