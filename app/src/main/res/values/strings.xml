@@ -26,4 +26,11 @@
                                     be a selection of base images to
                                     choose from.</string>
 
+    <string name="setting_colors">Colors</string>
+    <string name="setting_background">Background Filter</string>
+    <string name="setting_ball">Ball</string>
+    <string name="setting_preset">Ball Presets</string>
+    <string name="setting_sound">Sound</string>
+    <string name="setting_default">Reset to Default</string>
+
 </resources>

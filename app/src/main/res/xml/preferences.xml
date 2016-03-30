@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <yuku.ambilwarna.widget.AmbilWarnaPreference
+        android:key="background_preference_key"
+        android:defaultValue="0xff000000"
+        app:supportsAlpha="true"
+        android:title="@string/setting_background"/>
+    <yuku.ambilwarna.widget.AmbilWarnaPreference
+        android:key="ball_preference_key"
+        android:defaultValue="0xff0000ff"
+        app:supportsAlpha="true"
+        android:title="@string/setting_ball"/>
+
+</PreferenceScreen>
