@@ -91,7 +91,6 @@ public class Camera extends Fragment {
         cameraButton.setScaleX((float) 1.3);
         cameraButton.setScaleY((float) 1.3);
         cameraButton.setY(-100);
-        cameraButton.setClickable(false);
 
         return view;
     }

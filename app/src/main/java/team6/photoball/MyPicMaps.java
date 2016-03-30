@@ -94,7 +94,6 @@ public class MyPicMaps extends Fragment {
         playButton.setScaleX((float) 1.3);
         playButton.setScaleY((float) 1.3);
         playButton.setY(-100);
-        playButton.setClickable(false);
 
         return view;
     }

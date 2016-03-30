@@ -4,8 +4,6 @@
     android:layout_height="match_parent"
     tools:context="team6.photoball.MyPicMaps">
 
-    <include layout="@layout/floating_buttons_my_pic_maps" />
-
     <GridView
         android:id="@+id/my_pic_maps_grid"
         android:layout_width="match_parent"
@@ -16,5 +14,7 @@
         android:horizontalSpacing="10dp"
         android:stretchMode="columnWidth"
         android:gravity="center"/>
+
+    <include layout="@layout/floating_buttons_my_pic_maps" />
 
 </FrameLayout>
