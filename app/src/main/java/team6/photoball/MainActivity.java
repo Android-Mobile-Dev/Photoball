@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements
     public void moveSettings() {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.the_screens, new Settings());
+        ft.replace(R.id.the_screens, new SettingsFragment());
         ft.addToBackStack("fragment_settings");
         ft.commit();
     }
