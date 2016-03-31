@@ -8,7 +8,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 
 /**
@@ -16,7 +19,6 @@ import android.widget.GridView;
  * Activities that contain this fragment must implement the
  * {@link MyPicMaps.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link MyPicMaps#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class MyPicMaps extends Fragment {
@@ -65,6 +67,14 @@ public class MyPicMaps extends Fragment {
 
         GridView gridView = (GridView) view.findViewById(R.id.my_pic_maps_grid);
         gridView.setAdapter(new MyPicMapsPageAdapter(view.getContext()));
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+                Toast.makeText(getActivity(), "" + position,
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
 
         final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
         final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);

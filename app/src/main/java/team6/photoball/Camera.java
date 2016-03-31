@@ -203,6 +203,14 @@ public class Camera extends Fragment {
         img.setImageBitmap(mBitmap);
     }
 
+    public void onCanceled(EasyImage.ImageSource source, int type) {
+        //Cancel handling, you might wanna remove taken photo if it was canceled
+        if (source == EasyImage.ImageSource.CAMERA) {
+            File photoFile = EasyImage.lastlyTakenButCanceledPhoto(this.getContext());
+            if (photoFile != null) photoFile.delete();
+        }
+    }
+
     private File modifyImage(File imageFile) {
 
         //Image modification here
