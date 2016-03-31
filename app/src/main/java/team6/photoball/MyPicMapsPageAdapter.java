@@ -7,10 +7,10 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-public class GalleryPageAdapter extends BaseAdapter {
+public class MyPicMapsPageAdapter extends BaseAdapter {
     private Context mContext;
 
-    public GalleryPageAdapter(Context c) {
+    public MyPicMapsPageAdapter(Context c) {
         mContext = c;
     }
 
