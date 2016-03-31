@@ -61,6 +61,7 @@ public class Gallery extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EasyImage.openGallery(this, 0);
     }
 
     @Override
