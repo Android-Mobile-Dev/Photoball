@@ -27,10 +27,15 @@
                                     choose from.</string>
 
     <string name="setting_colors">Colors</string>
+    <string name="setting_color_value">Transparent (Default)</string>
     <string name="setting_background">Background Filter</string>
     <string name="setting_ball">Ball</string>
     <string name="setting_preset">Ball Presets</string>
+    <string name="setting_preset_3d">3D Sphere</string>
+    <string name="setting_preset_2d">2D Circle</string>
     <string name="setting_sound">Sound</string>
+    <string name="setting_sound_on">On</string>
+    <string name="setting_sound_off">Off</string>
     <string name="setting_default">Reset to Default</string>
 
     <string name="picture_title">testing</string>

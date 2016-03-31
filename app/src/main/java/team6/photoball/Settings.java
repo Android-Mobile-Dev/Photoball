@@ -1,8 +1,13 @@
 package team6.photoball;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
+import android.preference.ListPreference;
+import android.preference.Preference;
+import android.support.v4.preference.PreferenceFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +22,7 @@ import android.view.ViewGroup;
  * Use the {@link Settings#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Settings extends Fragment {
+public class Settings extends PreferenceFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -28,6 +33,8 @@ public class Settings extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private ListPreference mPresetListPreference;
+    private CheckBoxPreference mSoundPreference;
 
     public Settings() {
         // Required empty public constructor
@@ -54,14 +61,40 @@ public class Settings extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new SettingsFragment())
-                .commit();
+        addPreferencesFromResource(R.xml.preferences);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mPresetListPreference = (ListPreference)  getPreferenceManager().findPreference("preset_preference_key");
+        final SharedPreferences prefs = getPreferenceManager().getDefaultSharedPreferences (this.getActivity());
+        mPresetListPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                mPresetListPreference.setSummary((CharSequence) newValue);
+                SharedPreferences.Editor ed = prefs.edit();
+                ed.putString("preset_preference_key", newValue.toString());
+                ed.apply();
+                return true;
+            }
+        });
+
+        mSoundPreference = (CheckBoxPreference)  getPreferenceManager().findPreference("sound_preference_key");
+        mSoundPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+
+                if((boolean) newValue)
+                    mSoundPreference.setSummary((CharSequence) getResources().getString(R.string.setting_sound_on));
+                else
+                    mSoundPreference.setSummary((CharSequence) getResources().getString(R.string.setting_sound_off));
+                SharedPreferences.Editor ed = prefs.edit();
+                ed.putBoolean("sound_preference_key", (boolean)newValue);
+                ed.apply();
+                return true;
+            }
+        });
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_settings, container, false);
     }
@@ -73,9 +106,8 @@ public class Settings extends Fragment {
         }
     }
 
-    @Override
     public void onAttach(Context context) {
-        super.onAttach(context);
+        super.onAttach((MainActivity)context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
