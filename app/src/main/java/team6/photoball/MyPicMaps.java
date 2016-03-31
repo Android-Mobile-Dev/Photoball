@@ -8,7 +8,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 
 /**
@@ -16,7 +19,6 @@ import android.widget.GridView;
  * Activities that contain this fragment must implement the
  * {@link MyPicMaps.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link MyPicMaps#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class MyPicMaps extends Fragment {
@@ -39,16 +41,12 @@ public class MyPicMaps extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment MyPicMaps.
      */
     // TODO: Rename and change types and number of parameters
-    public static MyPicMaps newInstance(String param1, String param2) {
+    public static MyPicMaps create() {
         MyPicMaps fragment = new MyPicMaps();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,7 +66,15 @@ public class MyPicMaps extends Fragment {
         View view = inflater.inflate(R.layout.fragment_my_pic_maps, container, false);
 
         GridView gridView = (GridView) view.findViewById(R.id.my_pic_maps_grid);
-        gridView.setAdapter(new GalleryPageAdapter(view.getContext()));
+        gridView.setAdapter(new MyPicMapsPageAdapter(view.getContext()));
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+                Toast.makeText(getActivity(), "" + position,
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
 
         final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
         final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);

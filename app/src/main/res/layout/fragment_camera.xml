@@ -4,11 +4,12 @@
     android:layout_height="match_parent"
     tools:context="team6.photoball.Camera">
 
-    <include layout="@layout/floating_buttons_camera" />
-
-    <TextView
+    <ImageView
+        android:id="@+id/imageViewCamera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="hello_camera_fragment" />
+        android:scaleType="fitStart"/>
+
+    <include layout="@layout/floating_buttons_camera" />
 
 </FrameLayout>

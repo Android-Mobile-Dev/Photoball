@@ -13,7 +13,7 @@
         android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"
         android:stretchMode="columnWidth"
-        android:gravity="center"/>
+        android:gravity="center" />
 
     <include layout="@layout/floating_buttons_my_pic_maps" />
 

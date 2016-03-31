@@ -1,25 +1,23 @@
 package team6.photoball;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Locale;
 
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
@@ -33,6 +31,7 @@ import pl.aprilapps.easyphotopicker.EasyImage;
 public class Gallery extends Fragment {
 
     private OnFragmentInteractionListener mListener;
+    private Bitmap mBitmap;
 
     public Gallery() {
         // Required empty public constructor
@@ -62,7 +61,9 @@ public class Gallery extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_gallery, container, false);
+        final Gallery fragment = this;
+
+        final View view = inflater.inflate(R.layout.fragment_gallery, container, false);
 
         final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
         final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
@@ -88,6 +89,12 @@ public class Gallery extends Fragment {
         addButton.setScaleX((float) 1.3);
         addButton.setScaleY((float) 1.3);
         addButton.setY(-100);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EasyImage.openGallery(fragment, 0);
+            }
+        });
 
         return view;
     }
@@ -143,34 +150,61 @@ public class Gallery extends Fragment {
 
             @Override
             public void onImagePicked(File imageFile, EasyImage.ImageSource imagePath, int type) {
+
                 //Handle the image
-                OutputStream fOut = null;
 
-                try {
-                    fOut = new FileOutputStream(imageFile);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
+                File modifiedImage = modifyImage(imageFile);
 
-                try {
-                    fOut.flush();
-                    fOut.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                Bitmap bitmap = (BitmapFactory.decodeFile(modifiedImage.getAbsolutePath()));
+
+                mBitmap = bitmap;
+
+                String appDirectoryName = "Photoball";
+
+                File imageRoot = new File(Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES) + "/" + appDirectoryName);
+
+                if (!imageRoot.exists()) {
+                    imageRoot.mkdirs();
                 }
 
                 ContentValues values = new ContentValues();
-                values.put(MediaStore.Images.Media.TITLE, R.string.picture_title);
-                values.put(MediaStore.Images.Media.DESCRIPTION, R.string.picture_description);
-                values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
-                values.put(MediaStore.Images.ImageColumns.BUCKET_ID, imageFile.toString().toLowerCase(Locale.US).hashCode());
-                values.put(MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME, imageFile.getName().toLowerCase(Locale.US));
-                values.put("PhotoBall", imageFile.getAbsolutePath());
 
-                ContentResolver cr = getContext().getContentResolver();
-                cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+                values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+
+                String firstPartFileName = MediaStore.Images.Media.DATE_TAKEN;
+
+                File file = new File(new File(imageRoot.toString()), firstPartFileName + "_img.jpg");
+                if (file.exists()) {
+                    file.delete();
+                }
+
+                try {
+                    FileOutputStream out = new FileOutputStream(file);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                    out.flush();
+                    out.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                values.put(MediaStore.MediaColumns.DATA, file.toString());
+
+                getContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
             }
         });
+
+        ImageView img = (ImageView) this.getView().findViewById(R.id.imageViewGallery);
+        img.setImageBitmap(mBitmap);
+    }
+
+    private File modifyImage(File imageFile) {
+
+        //Image modification here
+
+
+        return imageFile;
     }
 
 }
