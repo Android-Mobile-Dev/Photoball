@@ -4,7 +4,13 @@
     android:layout_height="match_parent"
     tools:context="team6.photoball.Gallery">
 
-    <include layout="@layout/floating_buttons_gallery" />
+    <ImageView
+        android:id="@+id/imageViewGallery"
+        android:src="@mipmap/gallery_default"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitStart"/>
 
+    <include layout="@layout/floating_buttons_gallery" />
 
 </FrameLayout>
