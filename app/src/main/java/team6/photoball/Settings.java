@@ -70,8 +70,10 @@ public class Settings extends PreferenceFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mPresetListPreference = (ListPreference) getPreferenceManager().findPreference("preset_preference_key");
         final SharedPreferences prefs = getPreferenceManager().getDefaultSharedPreferences(this.getActivity());
+        mPresetListPreference = (ListPreference) getPreferenceManager().findPreference("preset_preference_key");
+        mPresetListPreference.setSummary(prefs.getString("preset_preference_key", getResources().getString(R.string.setting_preset_3d)));
+        //mPresetListPreference.setValueIndex(1);
         mPresetListPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -84,14 +86,19 @@ public class Settings extends PreferenceFragment {
         });
 
         mSoundPreference = (CheckBoxPreference) getPreferenceManager().findPreference("sound_preference_key");
+        Boolean b = prefs.getBoolean("sound_preference_key", true);
+        if(b)
+            mSoundPreference.setSummary(getResources().getString(R.string.setting_sound_on));
+        else
+            mSoundPreference.setSummary(getResources().getString(R.string.setting_sound_off));
+        //mSoundPreference.setChecked(true);
         mSoundPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-
                 if ((boolean) newValue)
-                    mSoundPreference.setSummary((CharSequence) getResources().getString(R.string.setting_sound_on));
+                    mSoundPreference.setSummary(getResources().getString(R.string.setting_sound_on));
                 else
-                    mSoundPreference.setSummary((CharSequence) getResources().getString(R.string.setting_sound_off));
+                    mSoundPreference.setSummary(getResources().getString(R.string.setting_sound_off));
                 SharedPreferences.Editor ed = prefs.edit();
                 ed.putBoolean("sound_preference_key", (boolean) newValue);
                 ed.apply();
@@ -145,7 +152,7 @@ public class Settings extends PreferenceFragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
+     * <p>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
