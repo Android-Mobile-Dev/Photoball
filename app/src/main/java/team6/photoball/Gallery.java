@@ -261,7 +261,7 @@ public class Gallery extends Fragment {
 
             colorAnim.setEvaluator(new ArgbEvaluator());
 
-            colorAnim.setRepeatCount(ValueAnimator.INFINITE);
+            colorAnim.setRepeatCount(1);
 
             colorAnim.setRepeatMode(ValueAnimator.REVERSE);
 
