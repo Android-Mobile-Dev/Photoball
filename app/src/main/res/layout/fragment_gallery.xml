@@ -11,6 +11,21 @@
         android:layout_height="match_parent"
         android:scaleType="fitStart"/>
 
+    <ImageView
+        android:id="@+id/bounceBallImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/ball_shape" />
+
+    <LinearLayout
+        android:id="@+id/linearLayoutGallery"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true">
+    </LinearLayout>
+
     <include layout="@layout/floating_buttons_gallery" />
 
 </FrameLayout>
