@@ -37,6 +37,12 @@
     <string name="setting_sound_on">On</string>
     <string name="setting_sound_off">Off</string>
     <string name="setting_default">Reset to Default</string>
+    <string name="setting_default_description">After confirmation,
+        your loaded pictures will be erased,
+        and the app\'s configuration will be
+        set to the default values</string>
+    <string name="setting_reset">RESET</string>
+    <string name="setting_cancel">CANCEL</string>
 
     <string name="picture_title">testing</string>
     <string name="picture_description">description test</string>

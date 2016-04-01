@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.preference.PreferenceFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -35,6 +37,7 @@ public class Settings extends PreferenceFragment {
     private OnFragmentInteractionListener mListener;
     private ListPreference mPresetListPreference;
     private CheckBoxPreference mSoundPreference;
+    private Preference mDefaultPreference;
 
     public Settings() {
         // Required empty public constructor
@@ -67,8 +70,8 @@ public class Settings extends PreferenceFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mPresetListPreference = (ListPreference)  getPreferenceManager().findPreference("preset_preference_key");
-        final SharedPreferences prefs = getPreferenceManager().getDefaultSharedPreferences (this.getActivity());
+        mPresetListPreference = (ListPreference) getPreferenceManager().findPreference("preset_preference_key");
+        final SharedPreferences prefs = getPreferenceManager().getDefaultSharedPreferences(this.getActivity());
         mPresetListPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -80,18 +83,27 @@ public class Settings extends PreferenceFragment {
             }
         });
 
-        mSoundPreference = (CheckBoxPreference)  getPreferenceManager().findPreference("sound_preference_key");
+        mSoundPreference = (CheckBoxPreference) getPreferenceManager().findPreference("sound_preference_key");
         mSoundPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
 
-                if((boolean) newValue)
+                if ((boolean) newValue)
                     mSoundPreference.setSummary((CharSequence) getResources().getString(R.string.setting_sound_on));
                 else
                     mSoundPreference.setSummary((CharSequence) getResources().getString(R.string.setting_sound_off));
                 SharedPreferences.Editor ed = prefs.edit();
-                ed.putBoolean("sound_preference_key", (boolean)newValue);
+                ed.putBoolean("sound_preference_key", (boolean) newValue);
                 ed.apply();
+                return true;
+            }
+        });
+
+        mDefaultPreference = (Preference) getPreferenceManager().findPreference("default_preference_key");
+        mDefaultPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                showDialog();
                 return true;
             }
         });
@@ -107,7 +119,7 @@ public class Settings extends PreferenceFragment {
     }
 
     public void onAttach(Context context) {
-        super.onAttach((MainActivity)context);
+        super.onAttach((MainActivity) context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -122,12 +134,18 @@ public class Settings extends PreferenceFragment {
         mListener = null;
     }
 
+    void showDialog() {
+        DialogFragment newFragment = Default.newInstance(
+                R.string.setting_default);
+        newFragment.show(this.getActivity().getSupportFragmentManager(), "dialog");
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
+     * <p/>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.

@@ -149,16 +149,11 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void moveSettings() {
-//        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-//        FragmentTransaction ft = fm.beginTransaction();
-//        ft.replace(R.id.the_screens, new Settings());
-//        ft.addToBackStack("fragment_settings");
-//        ft.commit();
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.the_screens, new Settings())
-                .addToBackStack("fragment_settings")
-                .commit();
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.the_screens, new Settings());
+        ft.addToBackStack("fragment_settings");
+        ft.commit();
     }
 
     void showDialog() {
