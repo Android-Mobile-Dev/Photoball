@@ -2,6 +2,8 @@ package team6.photoball;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -11,9 +13,14 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.preference.PreferenceFragment;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.HashMap;
+
+import yuku.ambilwarna.widget.AmbilWarnaPreference;
 
 
 /**
@@ -38,6 +45,14 @@ public class Settings extends PreferenceFragment {
     private ListPreference mPresetListPreference;
     private CheckBoxPreference mSoundPreference;
     private Preference mDefaultPreference;
+    private AmbilWarnaPreference mBallColorPreference;
+    private AmbilWarnaPreference mBackgroundColorPreference;
+
+    public static int ball_color;
+    public static int background_color;
+
+    private SoundPool mSounds;
+    private HashMap<Integer, Integer> mSoundIDMap;
 
     public Settings() {
         // Required empty public constructor
@@ -71,6 +86,10 @@ public class Settings extends PreferenceFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final SharedPreferences prefs = getPreferenceManager().getDefaultSharedPreferences(this.getActivity());
+
+        background_color = prefs.getInt("background_preference_key", 0);
+        ball_color = prefs.getInt("ball_preference_key", 0);
+
         mPresetListPreference = (ListPreference) getPreferenceManager().findPreference("preset_preference_key");
         mPresetListPreference.setSummary(prefs.getString("preset_preference_key", getResources().getString(R.string.setting_preset_3d)));
         //mPresetListPreference.setValueIndex(1);
@@ -87,18 +106,21 @@ public class Settings extends PreferenceFragment {
 
         mSoundPreference = (CheckBoxPreference) getPreferenceManager().findPreference("sound_preference_key");
         Boolean b = prefs.getBoolean("sound_preference_key", true);
-        if(b)
+        if (b) {
             mSoundPreference.setSummary(getResources().getString(R.string.setting_sound_on));
+        }
         else
             mSoundPreference.setSummary(getResources().getString(R.string.setting_sound_off));
         //mSoundPreference.setChecked(true);
         mSoundPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if ((boolean) newValue)
+                if ((boolean) newValue) {
                     mSoundPreference.setSummary(getResources().getString(R.string.setting_sound_on));
-                else
+                }
+                else {
                     mSoundPreference.setSummary(getResources().getString(R.string.setting_sound_off));
+                }
                 SharedPreferences.Editor ed = prefs.edit();
                 ed.putBoolean("sound_preference_key", (boolean) newValue);
                 ed.apply();
