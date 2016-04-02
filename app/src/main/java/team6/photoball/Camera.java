@@ -19,6 +19,10 @@ import android.widget.ImageView;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import jp.co.cyberagent.android.gpuimage.GPUImage;
+import jp.co.cyberagent.android.gpuimage.GPUImageColorInvertFilter;
+import jp.co.cyberagent.android.gpuimage.GPUImageFilterGroup;
+import jp.co.cyberagent.android.gpuimage.GPUImageSobelEdgeDetection;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 
@@ -58,6 +62,7 @@ public class Camera extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EasyImage.openCamera(this, 0);
+
     }
 
     @Override
@@ -214,8 +219,25 @@ public class Camera extends Fragment {
     private File modifyImage(File imageFile) {
 
         //Image modification here
+        GPUImage gpuImage = new GPUImage(this.getActivity());
+        Bitmap bm = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+        gpuImage.setImage(bm);
+        GPUImageFilterGroup groupFilter = new GPUImageFilterGroup();
+        groupFilter.addFilter(new GPUImageSobelEdgeDetection());
+        groupFilter.addFilter(new GPUImageColorInvertFilter());
+        gpuImage.setFilter(groupFilter);
+        Bitmap bmWithFilter = gpuImage.getBitmapWithFilterApplied();
+        int q = 100; // quality of compression
 
+        try {
+            FileOutputStream fos = new FileOutputStream(imageFile, false);
+            bmWithFilter.compress(Bitmap.CompressFormat.PNG, q, fos);
+            fos.flush();
+            fos.close();
 
+        } catch(Exception e){
+            e.printStackTrace();
+        }
         return imageFile;
     }
 
