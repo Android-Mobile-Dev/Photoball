@@ -53,6 +53,8 @@ public class Default extends DialogFragment {
         SharedPreferences.Editor ed = prefs.edit();
         ed.putBoolean("sound_preference_key", true);
         ed.putString("preset_preference_key", getResources().getString(R.string.setting_preset_3d));
+        ed.putInt("background_preference_key", 0xffffffff);
+        ed.putInt("ball_preference_key",0xff006600);
         ed.apply();
         getFragmentManager().beginTransaction().replace(R.id.the_screens, new Settings()).commit();
     }

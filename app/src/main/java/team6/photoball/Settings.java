@@ -48,9 +48,6 @@ public class Settings extends PreferenceFragment {
     private AmbilWarnaPreference mBallColorPreference;
     private AmbilWarnaPreference mBackgroundColorPreference;
 
-    public static int ball_color;
-    public static int background_color;
-
     private SoundPool mSounds;
     private HashMap<Integer, Integer> mSoundIDMap;
 
@@ -86,9 +83,6 @@ public class Settings extends PreferenceFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final SharedPreferences prefs = getPreferenceManager().getDefaultSharedPreferences(this.getActivity());
-
-        background_color = prefs.getInt("background_preference_key", 0);
-        ball_color = prefs.getInt("ball_preference_key", 0);
 
         mPresetListPreference = (ListPreference) getPreferenceManager().findPreference("preset_preference_key");
         mPresetListPreference.setSummary(prefs.getString("preset_preference_key", getResources().getString(R.string.setting_preset_3d)));

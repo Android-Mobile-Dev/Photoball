@@ -13,7 +13,7 @@
             app:supportsAlpha="true" />
 
         <yuku.ambilwarna.widget.AmbilWarnaPreference
-            android:defaultValue="0xff0000ff"
+            android:defaultValue="0xff006600"
             android:key="ball_preference_key"
             android:title="@string/setting_ball"
             app:supportsAlpha="true" />
