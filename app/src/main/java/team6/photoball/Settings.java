@@ -84,6 +84,18 @@ public class Settings extends PreferenceFragment {
                              Bundle savedInstanceState) {
         final SharedPreferences prefs = getPreferenceManager().getDefaultSharedPreferences(this.getActivity());
 
+        Preference mBackgroundPreference = getPreferenceManager().findPreference("background_preference_key");
+        if(prefs.getInt("background_preference_key",0)==0xffffffff)
+            mBackgroundPreference.setSummary(getResources().getString(R.string.setting_color_value));
+        mBackgroundPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            public boolean onPreferenceClick(Preference pref)
+            {
+                pref.setSummary("");
+                return true;
+            }
+        });
+
         mPresetListPreference = (ListPreference) getPreferenceManager().findPreference("preset_preference_key");
         mPresetListPreference.setSummary(prefs.getString("preset_preference_key", getResources().getString(R.string.setting_preset_3d)));
         //mPresetListPreference.setValueIndex(1);

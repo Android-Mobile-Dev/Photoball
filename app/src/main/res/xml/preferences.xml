@@ -9,13 +9,14 @@
             android:defaultValue="0xffffffff"
             android:key="background_preference_key"
             android:title="@string/setting_background"
-            android:summary="@string/setting_color_value"
+            android:icon="@mipmap/ic_colorize_black_24dp"
             app:supportsAlpha="true" />
 
         <yuku.ambilwarna.widget.AmbilWarnaPreference
             android:defaultValue="0xff006600"
             android:key="ball_preference_key"
             android:title="@string/setting_ball"
+            android:icon="@mipmap/ic_color_lens_black_24dp"
             app:supportsAlpha="true" />
     </PreferenceCategory>
     <PreferenceCategory android:key="pref_key_storage_settings_colors">
@@ -23,11 +24,14 @@
             android:key="preset_preference_key"
             android:defaultValue="@string/setting_preset_3d"
             android:entries="@array/list_presets"
+            android:icon="@mipmap/ic_tonality_black_24dp"
             android:entryValues="@array/list_presets" />
         <CheckBoxPreference android:title="@string/setting_sound"
             android:defaultValue="true"
+            android:icon="@mipmap/ic_volume_up_black_24dp"
             android:key="sound_preference_key" />
         <Preference android:title="@string/setting_default"
+            android:icon="@mipmap/ic_delete_black_24dp"
             android:key="default_preference_key"></Preference>
     </PreferenceCategory>
 
