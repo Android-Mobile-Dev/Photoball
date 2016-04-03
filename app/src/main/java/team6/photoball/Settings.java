@@ -45,8 +45,6 @@ public class Settings extends PreferenceFragment {
     private ListPreference mPresetListPreference;
     private CheckBoxPreference mSoundPreference;
     private Preference mDefaultPreference;
-    private AmbilWarnaPreference mBallColorPreference;
-    private AmbilWarnaPreference mBackgroundColorPreference;
 
     private SoundPool mSounds;
     private HashMap<Integer, Integer> mSoundIDMap;
@@ -98,7 +96,6 @@ public class Settings extends PreferenceFragment {
 
         mPresetListPreference = (ListPreference) getPreferenceManager().findPreference("preset_preference_key");
         mPresetListPreference.setSummary(prefs.getString("preset_preference_key", getResources().getString(R.string.setting_preset_3d)));
-        //mPresetListPreference.setValueIndex(1);
         mPresetListPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -117,7 +114,6 @@ public class Settings extends PreferenceFragment {
         }
         else
             mSoundPreference.setSummary(getResources().getString(R.string.setting_sound_off));
-        //mSoundPreference.setChecked(true);
         mSoundPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {

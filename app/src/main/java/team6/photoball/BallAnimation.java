@@ -22,6 +22,7 @@ import android.app.Activity;
 
 import android.content.Context;
 
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 
 import android.graphics.Paint;
@@ -36,6 +37,8 @@ import android.graphics.drawable.shapes.OvalShape;
 
 import android.os.Bundle;
 
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 
 import android.view.View;
@@ -240,17 +243,21 @@ public class BallAnimation extends Activity {
 
             shapeHolder.setY(y - 25f);
 
-            int red = (int)(Math.random() * 255);
+            final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
 
-            int green = (int)(Math.random() * 255);
+            int background_color = prefs.getInt("background_preference_key",0);
 
-            int blue = (int)(Math.random() * 255);
+            int red = 0x00ff0000 & background_color;//(int)(Math.random() * 255);
 
-            int color = 0xff000000 | red << 16 | green << 8 | blue;
+            int green = 0x0000ff00 & background_color;//(int)(Math.random() * 255);
+
+            int blue = 0x000000ff & background_color;//(int)(Math.random() * 255);
+
+            int color = 0xff000000 | red | green | blue;
 
             Paint paint = drawable.getPaint(); //new Paint(Paint.ANTI_ALIAS_FLAG);
 
-            int darkColor = 0xff000000 | red/4 << 16 | green/4 << 8 | blue/4;
+            int darkColor = 0xff000000 | red/4 | green/4 | blue/4;
 
             RadialGradient gradient = new RadialGradient(37.5f, 12.5f,
 
