@@ -11,6 +11,14 @@
         android:scaleType="fitStart"
         android:layout_gravity="center"/>
 
+    <LinearLayout
+        android:id="@+id/linearLayoutCamera"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.2">
+    </LinearLayout>
+
     <include layout="@layout/floating_buttons_camera" />
 
 </FrameLayout>

@@ -106,7 +106,7 @@ public class Camera extends Fragment {
             }
         });
 
-        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.linearLayoutGallery);
+        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.linearLayoutCamera);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
 
