@@ -4,9 +4,12 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+
+import java.io.File;
 
 /**
  * Created by rosar on 3/31/2016.
@@ -51,8 +54,16 @@ public class Default extends DialogFragment {
         ed.putBoolean("sound_preference_key", true);
         ed.putString("preset_preference_key", getResources().getString(R.string.setting_preset_3d));
         ed.putInt("background_preference_key", 0xffffffff);
-        ed.putInt("ball_preference_key",0xff006600);
+        ed.putInt("ball_preference_key", 0xff006600);
         ed.apply();
+        String appDirectoryName = "Photoball";
+
+        File imageRoot = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES) + "/" + appDirectoryName);
+        if (imageRoot.exists()) {
+            imageRoot.delete();
+        }
+        
         getFragmentManager().popBackStack();
     }
 
