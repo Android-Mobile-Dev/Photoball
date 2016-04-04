@@ -81,10 +81,8 @@ public class Settings extends PreferenceFragment {
         final int background_color = prefs.getInt("background_preference_key",0);
         if(background_color==0xffffffff)
             mBackgroundPreference.setSummary(getResources().getString(R.string.setting_color_value));
-        mBackgroundPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-        {
-            public boolean onPreferenceClick(Preference pref)
-            {
+        mBackgroundPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference pref) {
                 pref.setSummary("");
                 return true;
             }

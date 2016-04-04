@@ -53,7 +53,7 @@ public class Default extends DialogFragment {
         ed.putInt("background_preference_key", 0xffffffff);
         ed.putInt("ball_preference_key",0xff006600);
         ed.apply();
-        getFragmentManager().beginTransaction().replace(R.id.the_screens, new Settings()).commit();
+        getFragmentManager().popBackStack();
     }
 
     public void doNegativeClick() {
