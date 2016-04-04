@@ -1,15 +1,21 @@
 package team6.photoball;
 
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by rosar on 3/31/2016.
@@ -56,18 +62,47 @@ public class Default extends DialogFragment {
         ed.putInt("background_preference_key", 0xffffffff);
         ed.putInt("ball_preference_key", 0xff006600);
         ed.apply();
-        String appDirectoryName = "Photoball";
 
+        ((MainActivity)getActivity()).soundOn();
+
+        String appDirectoryName = "Photoball";
         File imageRoot = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES) + "/" + appDirectoryName);
-        if (imageRoot.exists()) {
-            imageRoot.delete();
+        ContentResolver contentResolver = this.getActivity().getContentResolver();
+
+        if (imageRoot.isDirectory())
+        {
+            String[] children = imageRoot.list();
+            for (int i = 0; i < children.length; i++)
+            {
+                deleteFileFromMediaStore(contentResolver, new File(imageRoot, children[i]));
+            }
         }
-        
+
         getFragmentManager().popBackStack();
     }
 
     public void doNegativeClick() {
         //return back to setting screen
     }
+
+    public static void deleteFileFromMediaStore(final ContentResolver contentResolver, final File file) {
+        String canonicalPath;
+        try {
+            canonicalPath = file.getCanonicalPath();
+        } catch (IOException e) {
+            canonicalPath = file.getAbsolutePath();
+        }
+        final Uri uri = MediaStore.Files.getContentUri("external");
+        final int result = contentResolver.delete(uri,
+                MediaStore.Files.FileColumns.DATA + "=?", new String[] {canonicalPath});
+        if (result == 0) {
+            final String absolutePath = file.getAbsolutePath();
+            if (!absolutePath.equals(canonicalPath)) {
+                contentResolver.delete(uri,
+                        MediaStore.Files.FileColumns.DATA + "=?", new String[]{absolutePath});
+            }
+        }
+    }
+
 }

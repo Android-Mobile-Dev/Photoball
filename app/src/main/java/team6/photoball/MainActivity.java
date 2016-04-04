@@ -1,9 +1,14 @@
 package team6.photoball;
 
 import android.Manifest;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
@@ -18,6 +23,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         Home.OnFragmentInteractionListener,
@@ -30,8 +37,12 @@ public class MainActivity extends AppCompatActivity implements
     public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 2;
     public static final int MY_PERMISSIONS_REQUEST_CAMERA = 3;
 
-    private boolean mIsBound = false;
-    private MusicService mServ;
+    //    private boolean mIsBound = false;
+//    private MusicService mServ;
+// for all the sounds  we play
+    private SoundPool mSounds;
+    private HashMap<Integer, Integer> mSoundIDMap;
+    private boolean mSoundOn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        createSoundPool();
 //        doBindService();
 //        Intent music = new Intent();
 //        music.setClass(this, MusicService.class);
@@ -122,6 +134,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void moveMyPicMaps() {
+        if (mSoundOn)
+            mSounds.play(mSoundIDMap.get(R.raw.click), 1, 1, 1, 0, 1);
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         MyPicMaps thisMyPicMaps = MyPicMaps.create();
@@ -131,6 +145,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void moveCamera() {
+        if (mSoundOn)
+            mSounds.play(mSoundIDMap.get(R.raw.click), 1, 1, 1, 0, 1);
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         Camera thisCamera = Camera.create();
@@ -140,6 +156,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void moveGallery() {
+        if (mSoundOn)
+            mSounds.play(mSoundIDMap.get(R.raw.click), 1, 1, 1, 0, 1);
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         Gallery thisGallery = Gallery.create();
@@ -149,6 +167,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void moveSettings() {
+        if (mSoundOn)
+            mSounds.play(mSoundIDMap.get(R.raw.click), 1, 1, 1, 0, 1);
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.the_screens, new Settings());
@@ -172,6 +192,43 @@ public class MainActivity extends AppCompatActivity implements
         Log.i("FragmentAlertDialog", "Negative click!");
     }
 
+    private void createSoundPool() {
+        int[] soundIds = {R.raw.click};
+        mSoundIDMap = new HashMap<Integer, Integer>();
+        mSounds = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
+        for (int id : soundIds)
+            mSoundIDMap.put(id, mSounds.load(this, id, 1));
+    }
+
+    public void soundOn() {
+        mSoundOn = true;
+    }
+
+    public void soundOff() {
+        mSoundOn = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        createSoundPool();
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        Boolean b = prefs.getBoolean("sound_preference_key", true);
+        if (b)
+            soundOn();
+        else
+            soundOff();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (mSounds != null) {
+            mSounds.release();
+            mSounds = null;
+        }
+    }
 //    private ServiceConnection Scon = new ServiceConnection() {
 //
 //        public void onServiceConnected(ComponentName name, IBinder
@@ -199,27 +256,22 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onFragmentInteractionHome(Uri uri) {
-
     }
 
     @Override
     public void onFragmentInteractionMyPicMaps(Uri uri) {
-
     }
 
     @Override
     public void onFragmentInteractionCamera(Uri uri) {
-
     }
 
     @Override
     public void onFragmentInteractionGallery(Uri uri) {
-
     }
 
     @Override
     public void onFragmentInteractionSettings(Uri uri) {
-
     }
 //
 //    @Override
