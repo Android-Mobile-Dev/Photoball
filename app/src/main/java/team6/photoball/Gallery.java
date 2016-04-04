@@ -9,6 +9,7 @@ import android.animation.ValueAnimator;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -21,6 +22,7 @@ import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -256,13 +258,15 @@ public class Gallery extends Fragment {
 
     public class MyAnimationView extends View {
 
-        private static final int RED = 0xffFF8080;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
 
-        private static final int BLUE = 0xff8080FF;
+        private final int RED = prefs.getInt("red_background_color",0);//0xffFF8080;
+
+        private final int BLUE = prefs.getInt("blue_background_color",0);// 0xff8080FF;
 
         private static final int CYAN = 0xff80ffff;
 
-        private static final int GREEN = 0xff80ff80;
+        private final int GREEN = prefs.getInt("green_background_color",0); //0xff80ff80;
 
         public final ArrayList balls = new ArrayList();
 
