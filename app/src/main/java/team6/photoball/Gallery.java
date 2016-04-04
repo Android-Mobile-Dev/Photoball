@@ -1,24 +1,11 @@
 package team6.photoball;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.RadialGradient;
-import android.graphics.Shader;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,19 +13,14 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Random;
 
 import jp.co.cyberagent.android.gpuimage.GPUImage;
 import jp.co.cyberagent.android.gpuimage.GPUImageColorInvertFilter;
@@ -46,8 +28,6 @@ import jp.co.cyberagent.android.gpuimage.GPUImageFilterGroup;
 import jp.co.cyberagent.android.gpuimage.GPUImageSobelEdgeDetection;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
-
-import static team6.photoball.BallAnimation.*;
 
 /**
  * A simple {@link Fragment} subclass.

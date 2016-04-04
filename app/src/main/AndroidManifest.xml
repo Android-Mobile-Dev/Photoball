@@ -24,17 +24,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BallAnimation">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:host="photoball.team6"
-                    android:pathPrefix="/ballanimation"
-                    android:scheme="http" />
-            </intent-filter>
-        </activity>
         <!--<service android:name="MusicService" android:enabled="true"/>-->
     </application>
 

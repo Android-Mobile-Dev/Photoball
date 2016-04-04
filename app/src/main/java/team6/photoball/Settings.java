@@ -2,25 +2,20 @@ package team6.photoball;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.preference.PreferenceFragment;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.HashMap;
-
-import yuku.ambilwarna.widget.AmbilWarnaPreference;
 
 
 /**
@@ -132,7 +127,7 @@ public class Settings extends PreferenceFragment {
             }
         });
 
-        mDefaultPreference = (Preference) getPreferenceManager().findPreference("default_preference_key");
+        mDefaultPreference = getPreferenceManager().findPreference("default_preference_key");
         mDefaultPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {

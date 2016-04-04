@@ -41,8 +41,8 @@
         your loaded pictures will be erased,
         and the app\'s configuration will be
         set to the default values</string>
-    <string name="setting_reset">RESET</string>
-    <string name="setting_cancel">CANCEL</string>
+    <string name="setting_reset">Reset</string>
+    <string name="setting_cancel">Cancel</string>
 
     <string name="picture_title">testing</string>
     <string name="picture_description">description test</string>

@@ -5,12 +5,14 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RadialGradient;
 import android.graphics.Shader;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -186,11 +188,15 @@ public class SimulationClass extends View {
 
         shapeHolder.setY(y - 25f);
 
-        int red = (int)(Math.random() * 255);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
 
-        int green = (int)(Math.random() * 255);
+        int ball_color = prefs.getInt("ball_preference_key", 0);
 
-        int blue = (int)(Math.random() * 255);
+        int red = 0x000000ff & (ball_color >> 16);//(int)(Math.random() * 255);
+
+        int green = 0x000000ff & (ball_color >> 8);//(int)(Math.random() * 255);
+
+        int blue = 0x000000ff & ball_color;//(int)(Math.random() * 255);
 
         int color = 0xff000000 | red << 16 | green << 8 | blue;
 
