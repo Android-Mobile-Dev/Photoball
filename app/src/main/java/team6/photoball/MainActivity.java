@@ -3,10 +3,14 @@ package team6.photoball;
 import android.Manifest;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -39,6 +43,9 @@ public class MainActivity extends AppCompatActivity implements
     public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 2;
     public static final int MY_PERMISSIONS_REQUEST_CAMERA = 3;
 
+    private boolean mIsBound = false;
+    private MusicService mServ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +68,12 @@ public class MainActivity extends AppCompatActivity implements
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+//        doBindService();
+//        Intent music = new Intent();
+//        music.setClass(this, MusicService.class);
+//        startService(music);
+
     }
 
     @Override
@@ -172,6 +185,31 @@ public class MainActivity extends AppCompatActivity implements
         Log.i("FragmentAlertDialog", "Negative click!");
     }
 
+//    private ServiceConnection Scon = new ServiceConnection() {
+//
+//        public void onServiceConnected(ComponentName name, IBinder
+//                binder) {
+//            mServ = ((MusicService.ServiceBinder) binder).getService();
+//        }
+//
+//        public void onServiceDisconnected(ComponentName name) {
+//            mServ = null;
+//        }
+//    };
+//
+//    void doBindService() {
+//        bindService(new Intent(this, MusicService.class),
+//                Scon, Context.BIND_AUTO_CREATE);
+//        mIsBound = true;
+//    }
+//
+//    void doUnbindService() {
+//        if (mIsBound) {
+//            unbindService(Scon);
+//            mIsBound = false;
+//        }
+//    }
+
     @Override
     public void onFragmentInteractionHome(Uri uri) {
 
@@ -196,6 +234,37 @@ public class MainActivity extends AppCompatActivity implements
     public void onFragmentInteractionSettings(Uri uri) {
 
     }
+//
+//    @Override
+//    protected void onPause(){
+//        super.onPause();
+//        if(mServ!=null)
+//            mServ.pauseMusic();
+//    }
+//
+//    @Override
+//    protected void onResume(){
+//        super.onResume();
+//        if(mServ!=null)
+//            mServ.resumeMusic();
+//    }
+//
+//    @Override
+//    protected void onStop(){
+//        if(mServ!=null)
+//            mServ.stopMusic();
+//        super.onStop();
+//    }
+//
+//    @Override
+//    protected void onDestroy() {
+//        if(mServ!=null) {
+//            mServ.stopMusic();
+//            mServ.onDestroy();
+//        }
+//        doUnbindService();
+//        super.onDestroy();
+//    }
 
     private void getPermissions() {
         if (ContextCompat.checkSelfPermission(this,

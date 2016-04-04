@@ -83,13 +83,34 @@ public class Settings extends PreferenceFragment {
         final SharedPreferences prefs = getPreferenceManager().getDefaultSharedPreferences(this.getActivity());
 
         Preference mBackgroundPreference = getPreferenceManager().findPreference("background_preference_key");
-        if(prefs.getInt("background_preference_key",0)==0xffffffff)
+        final int background_color = prefs.getInt("background_preference_key",0);
+        if(background_color==0xffffffff)
             mBackgroundPreference.setSummary(getResources().getString(R.string.setting_color_value));
         mBackgroundPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
         {
             public boolean onPreferenceClick(Preference pref)
             {
                 pref.setSummary("");
+                SharedPreferences.Editor ed = prefs.edit();
+                ed.putInt("red_background_key", background_color & 0xffff0000);
+                ed.putInt("green_background_key", background_color & 0xff00ff00);
+                ed.putInt("blue_background_key", background_color & 0xff0000ff);
+                ed.apply();
+                return true;
+            }
+        });
+
+        Preference mBallPreference = getPreferenceManager().findPreference("ball_preference_key");
+        final int ball_color = prefs.getInt("ball_preference_key",0);
+        mBallPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            public boolean onPreferenceClick(Preference pref)
+            {
+                SharedPreferences.Editor ed = prefs.edit();
+                ed.putInt("red_ball_key", ball_color & 0xffff0000);
+                ed.putInt("green_ball_key", ball_color & 0xff00ff00);
+                ed.putInt("blue_ball_key", ball_color & 0xff0000ff);
+                ed.apply();
                 return true;
             }
         });
@@ -119,6 +140,7 @@ public class Settings extends PreferenceFragment {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 if ((boolean) newValue) {
                     mSoundPreference.setSummary(getResources().getString(R.string.setting_sound_on));
+
                 }
                 else {
                     mSoundPreference.setSummary(getResources().getString(R.string.setting_sound_off));
