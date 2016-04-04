@@ -91,26 +91,6 @@ public class Settings extends PreferenceFragment {
             public boolean onPreferenceClick(Preference pref)
             {
                 pref.setSummary("");
-                SharedPreferences.Editor ed = prefs.edit();
-                ed.putInt("red_background_key", background_color & 0xffff0000);
-                ed.putInt("green_background_key", background_color & 0xff00ff00);
-                ed.putInt("blue_background_key", background_color & 0xff0000ff);
-                ed.apply();
-                return true;
-            }
-        });
-
-        Preference mBallPreference = getPreferenceManager().findPreference("ball_preference_key");
-        final int ball_color = prefs.getInt("ball_preference_key",0);
-        mBallPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-        {
-            public boolean onPreferenceClick(Preference pref)
-            {
-                SharedPreferences.Editor ed = prefs.edit();
-                ed.putInt("red_ball_key", ball_color & 0xffff0000);
-                ed.putInt("green_ball_key", ball_color & 0xff00ff00);
-                ed.putInt("blue_ball_key", ball_color & 0xff0000ff);
-                ed.apply();
                 return true;
             }
         });
