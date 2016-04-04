@@ -29,7 +29,6 @@ import jp.co.cyberagent.android.gpuimage.GPUImageSobelEdgeDetection;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 
-
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -65,7 +64,6 @@ public class Camera extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EasyImage.openCamera(this, 0);
-
     }
 
     @Override
