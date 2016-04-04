@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.RadialGradient;
 import android.graphics.Shader;
 import android.graphics.drawable.ShapeDrawable;
@@ -23,6 +24,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +36,7 @@ import android.widget.LinearLayout;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Random;
 
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
@@ -257,7 +260,7 @@ public class Gallery extends Fragment {
 
             ValueAnimator colorAnim = ObjectAnimator.ofInt(this, "backgroundColor", RED, BLUE);
 
-            colorAnim.setDuration(3000);
+            colorAnim.setDuration(1);
 
             colorAnim.setEvaluator(new ArgbEvaluator());
 
@@ -277,13 +280,20 @@ public class Gallery extends Fragment {
 
             float startY = newBall.getY();
 
-            float endY = getHeight() - 50f;
+            DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();
+            int width = metrics.widthPixels;
+            int height = metrics.heightPixels;
 
-            float h = (float)getHeight();
+            float endY = height - 50f;
 
-            float eventY = 0;
+            float h = (float)height;
 
-            int duration = 10000000;
+            Random r = new Random();
+            int e = r.nextInt(height);
+
+            float eventY = e;
+
+            int duration = (int)(500 * ((h - eventY)/h));
 
             ValueAnimator bounceAnim = ObjectAnimator.ofFloat(newBall, "y", startY, endY);
 
@@ -293,13 +303,13 @@ public class Gallery extends Fragment {
 
             ValueAnimator squashAnim1 = ObjectAnimator.ofFloat(newBall, "x", newBall.getX(),
 
-                    newBall.getX() - 25f);
+                    newBall.getX() + 50f);
 
             squashAnim1.setDuration(duration/4);
 
-            squashAnim1.setRepeatCount(ValueAnimator.INFINITE);
+            squashAnim1.setRepeatCount(squashAnim1.INFINITE);
 
-            squashAnim1.setRepeatMode(ValueAnimator.REVERSE);
+            squashAnim1.setRepeatMode(squashAnim1.REVERSE);
 
             squashAnim1.setInterpolator(new DecelerateInterpolator());
 
@@ -309,9 +319,9 @@ public class Gallery extends Fragment {
 
             squashAnim2.setDuration(duration/4);
 
-            squashAnim2.setRepeatCount(ValueAnimator.INFINITE);
+            squashAnim2.setRepeatCount(squashAnim2.INFINITE);
 
-            squashAnim2.setRepeatMode(ValueAnimator.REVERSE);
+            squashAnim2.setRepeatMode(squashAnim2.REVERSE);
 
             squashAnim2.setInterpolator(new DecelerateInterpolator());
 
@@ -321,11 +331,11 @@ public class Gallery extends Fragment {
 
             stretchAnim1.setDuration(duration/4);
 
-            stretchAnim1.setRepeatCount(ValueAnimator.INFINITE);
+            stretchAnim1.setRepeatCount(stretchAnim1.INFINITE);
 
             stretchAnim1.setInterpolator(new DecelerateInterpolator());
 
-            stretchAnim1.setRepeatMode(ValueAnimator.REVERSE);
+            stretchAnim1.setRepeatMode(stretchAnim1.REVERSE);
 
             ValueAnimator stretchAnim2 = ObjectAnimator.ofFloat(newBall, "height",
 
@@ -333,11 +343,11 @@ public class Gallery extends Fragment {
 
             stretchAnim2.setDuration(duration/4);
 
-            stretchAnim2.setRepeatCount(ValueAnimator.INFINITE);
+            stretchAnim2.setRepeatCount(stretchAnim2.INFINITE);
 
             stretchAnim2.setInterpolator(new DecelerateInterpolator());
 
-            stretchAnim2.setRepeatMode(ValueAnimator.REVERSE);
+            stretchAnim2.setRepeatMode(stretchAnim2.REVERSE);
 
             ValueAnimator bounceBackAnim = ObjectAnimator.ofFloat(newBall, "y", endY,
 
