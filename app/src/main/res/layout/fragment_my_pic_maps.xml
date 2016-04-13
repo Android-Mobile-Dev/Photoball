@@ -2,18 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="team6.photoball.MyPicMaps">
 
-    <GridView
-        android:id="@+id/my_pic_maps_grid"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:columnWidth="90dp"
-        android:numColumns="auto_fit"
-        android:verticalSpacing="10dp"
-        android:horizontalSpacing="10dp"
-        android:stretchMode="columnWidth"
-        android:gravity="center" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <include layout="@layout/floating_buttons_my_pic_maps" />
 

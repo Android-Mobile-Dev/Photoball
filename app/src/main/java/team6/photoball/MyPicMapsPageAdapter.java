@@ -1,18 +1,45 @@
 package team6.photoball;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Environment;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
 
-import java.io.File;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-public class MyPicMapsPageAdapter extends BaseAdapter {
+import java.util.ArrayList;
+
+public class MyPicMapsPageAdapter extends RecyclerView.Adapter<ItemHolder> {
+    private Context context;
+    static ArrayList<ImageModel> data;
+    public MyPicMapsPageAdapter(Context context, ArrayList<ImageModel> data) {
+        this.context = context;
+        this.data = data;
+    }
+    @Override
+    public ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
+        ItemHolder itemHolder = new ItemHolder(layoutView);
+        return itemHolder;
+    }
+    @Override
+    public void onBindViewHolder(ItemHolder holder, int position) {
+        Glide.with(context).load(data.get(position).getUrl())
+                .thumbnail(0.5f)
+                .crossFade()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into((holder).imageView);
+    }
+    @Override
+    public int getItemCount() {
+        return data.size();
+    }
+}
+
+    /*
+
     private Context mContext;
 
     private String mAppDirectoryName = "Photoball";
@@ -64,3 +91,5 @@ public class MyPicMapsPageAdapter extends BaseAdapter {
         return imageView;
     }
 }
+*/
+

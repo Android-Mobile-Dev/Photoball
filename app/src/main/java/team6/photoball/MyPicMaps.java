@@ -3,14 +3,23 @@ package team6.photoball;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -21,14 +30,15 @@ import android.widget.Toast;
  * create an instance of this fragment.
  */
 public class MyPicMaps extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private String mAppDirectoryName = "Photoball";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private File mImageRoot = new File(Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_PICTURES) + "/" + mAppDirectoryName);
+
+    private File[] mDirFiles = mImageRoot.listFiles();
+
+    static ArrayList<ImageModel> data = new ArrayList<>();
+    public static ArrayList<String> IMGS = new ArrayList<>();
 
     private OnFragmentInteractionListener mListener;
 
@@ -53,9 +63,13 @@ public class MyPicMaps extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+
+        for (int i = 0; i < mDirFiles.length; i++) {
+            IMGS.add(mDirFiles[i].getAbsolutePath());
+            ImageModel imageModel = new ImageModel();
+            imageModel.setName("Image " + i);
+            imageModel.setUrl(IMGS.get(i));
+            data.add(imageModel);
         }
     }
 
@@ -64,16 +78,12 @@ public class MyPicMaps extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_my_pic_maps, container, false);
 
-        GridView gridView = (GridView) view.findViewById(R.id.my_pic_maps_grid);
-        gridView.setAdapter(new MyPicMapsPageAdapter(view.getContext()));
-
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-                Toast.makeText(getActivity(), "" + position,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+        //GridView gridView = (GridView) view.findViewById(R.id.my_pic_maps_grid);
+        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.list);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this.getContext(), 3));
+        mRecyclerView.setHasFixedSize(true); // Helps improve performance
+        MyPicMapsPageAdapter mAdapter = new MyPicMapsPageAdapter(this.getContext(), data);
+        mRecyclerView.setAdapter(mAdapter);
 
         final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
         final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
@@ -101,6 +111,13 @@ public class MyPicMaps extends Fragment {
         playButton.setY(-100);
 
         return view;
+    }
+
+    static <T> T[] append(T[] arr, T element) {
+        final int N = arr.length;
+        arr = Arrays.copyOf(arr, N + 1);
+        arr[N] = element;
+        return arr;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
