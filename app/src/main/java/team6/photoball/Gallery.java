@@ -21,6 +21,8 @@ import android.widget.LinearLayout;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import jp.co.cyberagent.android.gpuimage.GPUImage;
 import jp.co.cyberagent.android.gpuimage.GPUImageColorInvertFilter;
@@ -168,9 +170,7 @@ public class Gallery extends Fragment {
 
                 //Handle the image
 
-                File modifiedImage = modifyImage(imageFile);
-
-                Bitmap bitmap = (BitmapFactory.decodeFile(modifiedImage.getAbsolutePath()));
+                Bitmap bitmap = modifyImage(imageFile);
 
                 mBitmap = bitmap;
 
@@ -185,15 +185,13 @@ public class Gallery extends Fragment {
 
                 ContentValues values = new ContentValues();
 
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                String firstPartFileName = sdf.format(new Date());
+
                 values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
                 values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
 
-                String firstPartFileName = MediaStore.Images.Media.DATE_TAKEN;
-
                 File file = new File(new File(imageRoot.toString()), firstPartFileName + "_img.jpg");
-                if (file.exists()) {
-                    file.delete();
-                }
 
                 try {
                     FileOutputStream out = new FileOutputStream(file);
@@ -214,7 +212,7 @@ public class Gallery extends Fragment {
         img.setImageBitmap(mBitmap);
     }
 
-    private File modifyImage(File imageFile) {
+    private Bitmap modifyImage(File imageFile) {
 
         //Image modification here
         GPUImage gpuImage = new GPUImage(this.getActivity());
@@ -225,18 +223,7 @@ public class Gallery extends Fragment {
         groupFilter.addFilter(new GPUImageColorInvertFilter());
         gpuImage.setFilter(groupFilter);
         Bitmap bmWithFilter = gpuImage.getBitmapWithFilterApplied();
-        int q = 100; // quality of compression
 
-        try {
-            FileOutputStream fos = new FileOutputStream(imageFile, false);
-            bmWithFilter.compress(Bitmap.CompressFormat.PNG, q, fos);
-            fos.flush();
-            fos.close();
-
-        } catch(Exception e){
-            e.printStackTrace();
-        }
-
-        return imageFile;
+        return bmWithFilter;
     }
 }
