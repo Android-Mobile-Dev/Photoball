@@ -2,6 +2,7 @@ package team6.photoball;
 
 import android.Manifest;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements
     private SoundPool mSounds;
     private HashMap<Integer, Integer> mSoundIDMap;
     private boolean mSoundOn;
+    static final int ORIENTATION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +75,18 @@ public class MainActivity extends AppCompatActivity implements
 //        music.setClass(this, MusicService.class);
 //        startService(music);
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can restore the view hierarchy
+        super.onRestoreInstanceState(savedInstanceState);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     @Override
