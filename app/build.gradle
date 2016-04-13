@@ -1,27 +1,13 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.vanniktech:gradle-android-junit-jacoco-plugin:0.3.0'
-    }
-}
-
-apply plugin: 'com.android.application'
-apply plugin: 'checkstyle'
-apply plugin: 'com.vanniktech.android.junit.jacoco'
-
 repositories {
+    mavenCentral()
     maven {
         url "https://jitpack.io"
     }
     jcenter()
 }
 
-dependencies {
-    compile 'com.github.jkwiecien:EasyImage:1.2.1'
-    compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
-}
+apply plugin: 'com.android.application'
+apply plugin: 'checkstyle'
 
 android {
     compileSdkVersion 23
@@ -55,6 +41,9 @@ dependencies {
     compile 'com.android.support:support-v4:23.2.1'
     compile project(':android-support-v4-preferencefragment')
     compile 'com.github.yukuku:ambilwarna:2.0.1'
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.+'
+    compile 'com.github.jkwiecien:EasyImage:1.2.1'
+    compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
 }
 
 checkstyle {

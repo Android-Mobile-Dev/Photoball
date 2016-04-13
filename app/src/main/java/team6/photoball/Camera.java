@@ -1,38 +1,20 @@
 package team6.photoball;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import jp.co.cyberagent.android.gpuimage.GPUImage;
-import jp.co.cyberagent.android.gpuimage.GPUImageColorInvertFilter;
-import jp.co.cyberagent.android.gpuimage.GPUImageFilterGroup;
-import jp.co.cyberagent.android.gpuimage.GPUImageSobelEdgeDetection;
-import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 
 /**
@@ -43,8 +25,6 @@ import pl.aprilapps.easyphotopicker.EasyImage;
  * create an instance of this fragment.
  */
 public class Camera extends Fragment {
-
-    private Bitmap mBitmap;
 
     private OnFragmentInteractionListener mListener;
 
@@ -166,87 +146,7 @@ public class Camera extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        EasyImage.handleActivityResult(requestCode, resultCode, data, this.getActivity(), new DefaultCallback() {
-            @Override
-            public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
-                //Some error handling
-            }
-
-            @Override
-            public void onImagePicked(File imageFile, EasyImage.ImageSource imagePath, int type) {
-
-                //Handle the image
-
-                Bitmap bitmap = modifyImage(imageFile);
-
-                try {
-                    bitmap = rotateImageIfRequired(bitmap);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                mBitmap = bitmap;
-
-                String appDirectoryName = "Photoball";
-
-                File imageRoot = new File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES) + "/" + appDirectoryName);
-
-                if (!imageRoot.exists()) {
-                    imageRoot.mkdirs();
-                }
-
-                ContentValues values = new ContentValues();
-
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-                String firstPartFileName = sdf.format(new Date());
-
-                values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
-                values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-
-                File file = new File(new File(imageRoot.toString()), firstPartFileName + "_img.jpg");
-
-                try {
-                    FileOutputStream out = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                    out.flush();
-                    out.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                values.put(MediaStore.MediaColumns.DATA, file.toString());
-
-                getContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-            }
-        });
-
-        ImageView img = (ImageView) this.getView().findViewById(R.id.imageViewCamera);
-        img.setImageBitmap(mBitmap);
-    }
-
-    private Bitmap rotateImageIfRequired(Bitmap img) throws IOException {
-
-        int orientation = this.getContext().getResources().getConfiguration().orientation;
-
-        switch (orientation) {
-            case 0:
-                if (img.getWidth() < img.getHeight())
-                    return rotateImage(img, 90);
-            case 1:
-                if (img.getWidth() > img.getHeight())
-                    return rotateImage(img, 90);
-            default:
-                return img;
-        }
-    }
-
-    private static Bitmap rotateImage(Bitmap img, int degree) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degree);
-        Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
-        img.recycle();
-        return rotatedImg;
+        new ProcessTask(this.getContext(), (Fragment)this, requestCode, resultCode, data, R.id.imageViewCamera).execute();
     }
 
     public void onCanceled(EasyImage.ImageSource source, int type) {
@@ -255,20 +155,5 @@ public class Camera extends Fragment {
             File photoFile = EasyImage.lastlyTakenButCanceledPhoto(this.getContext());
             if (photoFile != null) photoFile.delete();
         }
-    }
-
-    private Bitmap modifyImage(File imageFile) {
-
-        //Image modification here
-        GPUImage gpuImage = new GPUImage(this.getActivity());
-        Bitmap bm = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-        gpuImage.setImage(bm);
-        GPUImageFilterGroup groupFilter = new GPUImageFilterGroup();
-        groupFilter.addFilter(new GPUImageSobelEdgeDetection());
-        groupFilter.addFilter(new GPUImageColorInvertFilter());
-        gpuImage.setFilter(groupFilter);
-        Bitmap bmWithFilter = gpuImage.getBitmapWithFilterApplied();
-
-        return bmWithFilter;
     }
 }
