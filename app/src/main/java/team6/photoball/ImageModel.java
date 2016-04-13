@@ -5,19 +5,19 @@ package team6.photoball;
  */
 
 public class ImageModel {
-    String name, url;
-    public ImageModel() {
+    private String text;
+    private String image;
+
+    public ImageModel(String text, String image) {
+        this.text = text;
+        this.image = image;
     }
 
-    void setName(String name) {
-        this.name = name;
+    public String getText() {
+        return this.text;
     }
 
-    void setUrl(String IMGS) {
-        url = IMGS;
-    }
-
-    String getUrl() {
-        return url;
+    public String getImage() {
+        return this.image;
     }
 }

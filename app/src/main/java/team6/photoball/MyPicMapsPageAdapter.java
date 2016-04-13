@@ -1,22 +1,27 @@
 package team6.photoball;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
-public class MyPicMapsPageAdapter extends RecyclerView.Adapter<ItemHolder> {
+public class MyPicMapsPageAdapter extends RecyclerView.Adapter<MyPicMapsPageAdapter.ItemHolder> {
     private Context context;
-    static ArrayList<ImageModel> data;
-    public MyPicMapsPageAdapter(Context context, ArrayList<ImageModel> data) {
+    private List<ImageModel> items;
+    public MyPicMapsPageAdapter(Context context, List<ImageModel> items) {
         this.context = context;
-        this.data = data;
+        this.items = items;
     }
     @Override
     public ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -25,16 +30,29 @@ public class MyPicMapsPageAdapter extends RecyclerView.Adapter<ItemHolder> {
         return itemHolder;
     }
     @Override
-    public void onBindViewHolder(ItemHolder holder, int position) {
-        Glide.with(context).load(data.get(position).getUrl())
-                .thumbnail(0.5f)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into((holder).imageView);
+    public void onBindViewHolder(MyPicMapsPageAdapter.ItemHolder holder, int position) {
+        ImageModel item = items.get(position);
+        holder.text.setText(item.getText());
+        File iFile = new File(item.getImage());
+        Bitmap bitmap = BitmapFactory.decodeFile(iFile.getAbsolutePath());
+        holder.image.setImageBitmap(bitmap);
+        //Picasso.with(holder.image.getContext()).load(item.getImage()).into(holder.image);
+        holder.itemView.setTag(item);
     }
     @Override
     public int getItemCount() {
-        return data.size();
+        return items.size();
+    }
+
+    protected static class ItemHolder extends RecyclerView.ViewHolder {
+        public ImageView image;
+        public TextView text;
+
+        public ItemHolder(View itemView) {
+            super(itemView);
+            image = (ImageView) itemView.findViewById(R.id.image);
+            text = (TextView) itemView.findViewById(R.id.text);
+        }
     }
 }
 

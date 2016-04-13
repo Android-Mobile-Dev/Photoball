@@ -30,15 +30,20 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class MyPicMaps extends Fragment {
-    private String mAppDirectoryName = "Photoball";
+    static private String mAppDirectoryName = "Photoball";
 
-    private File mImageRoot = new File(Environment.getExternalStoragePublicDirectory(
+    static private File mImageRoot = new File(Environment.getExternalStoragePublicDirectory(
             Environment.DIRECTORY_PICTURES) + "/" + mAppDirectoryName);
 
-    private File[] mDirFiles = mImageRoot.listFiles();
+    static private File[] mDirFiles = mImageRoot.listFiles();
 
-    static ArrayList<ImageModel> data = new ArrayList<>();
-    public static ArrayList<String> IMGS = new ArrayList<>();
+    private static List<ImageModel> items = new ArrayList<>();
+
+    static {
+        for (int i = 0; i < mDirFiles.length; i++) {
+            items.add(new ImageModel("Item " + i, mDirFiles[i].getAbsolutePath()));
+        }
+    }
 
     private OnFragmentInteractionListener mListener;
 
@@ -64,13 +69,7 @@ public class MyPicMaps extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        for (int i = 0; i < mDirFiles.length; i++) {
-            IMGS.add(mDirFiles[i].getAbsolutePath());
-            ImageModel imageModel = new ImageModel();
-            imageModel.setName("Image " + i);
-            imageModel.setUrl(IMGS.get(i));
-            data.add(imageModel);
-        }
+
     }
 
     @Override
@@ -80,9 +79,9 @@ public class MyPicMaps extends Fragment {
 
         //GridView gridView = (GridView) view.findViewById(R.id.my_pic_maps_grid);
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.list);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this.getContext(), 3));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this.getContext(), 2));
         mRecyclerView.setHasFixedSize(true); // Helps improve performance
-        MyPicMapsPageAdapter mAdapter = new MyPicMapsPageAdapter(this.getContext(), data);
+        MyPicMapsPageAdapter mAdapter = new MyPicMapsPageAdapter(this.getContext(), items);
         mRecyclerView.setAdapter(mAdapter);
 
         final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
