@@ -35,8 +35,8 @@ public class MyPicMapsPageAdapter extends RecyclerView.Adapter<MyPicMapsPageAdap
         holder.text.setText(item.getText());
         File iFile = new File(item.getImage());
         Bitmap bitmap = BitmapFactory.decodeFile(iFile.getAbsolutePath());
-        holder.image.setImageBitmap(bitmap);
-        //Picasso.with(holder.image.getContext()).load(item.getImage()).into(holder.image);
+        holder.image.setImageBitmap(null);
+        Picasso.with(holder.image.getContext()).load(iFile).into(holder.image);
         holder.itemView.setTag(item);
     }
     @Override

@@ -80,7 +80,6 @@ public class MyPicMaps extends Fragment {
         //GridView gridView = (GridView) view.findViewById(R.id.my_pic_maps_grid);
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.list);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this.getContext(), 2));
-        mRecyclerView.setHasFixedSize(true); // Helps improve performance
         MyPicMapsPageAdapter mAdapter = new MyPicMapsPageAdapter(this.getContext(), items);
         mRecyclerView.setAdapter(mAdapter);
 
