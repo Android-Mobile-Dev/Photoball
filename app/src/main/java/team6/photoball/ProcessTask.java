@@ -132,6 +132,9 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                 values.put(MediaStore.MediaColumns.DATA, file.toString());
 
                 context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+                int t = MyPicMaps.items.size() + 1;
+                MyPicMaps.items.add(new ImageModel("Item " + t, file.getAbsolutePath()));
             }
         });
 

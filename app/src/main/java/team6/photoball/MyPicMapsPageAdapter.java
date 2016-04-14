@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MyPicMapsPageAdapter extends RecyclerView.Adapter<MyPicMapsPageAdapter.ItemHolder> {
@@ -22,12 +21,12 @@ public class MyPicMapsPageAdapter extends RecyclerView.Adapter<MyPicMapsPageAdap
     public MyPicMapsPageAdapter(Context context, List<ImageModel> items) {
         this.context = context;
         this.items = items;
+        //notifyDataSetChanged();
     }
     @Override
     public ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
-        ItemHolder itemHolder = new ItemHolder(layoutView);
-        return itemHolder;
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
+        return new ItemHolder(v);
     }
     @Override
     public void onBindViewHolder(MyPicMapsPageAdapter.ItemHolder holder, int position) {
@@ -36,8 +35,10 @@ public class MyPicMapsPageAdapter extends RecyclerView.Adapter<MyPicMapsPageAdap
         File iFile = new File(item.getImage());
         Bitmap bitmap = BitmapFactory.decodeFile(iFile.getAbsolutePath());
         holder.image.setImageBitmap(null);
-        Picasso.with(holder.image.getContext()).load(iFile).into(holder.image);
-        holder.itemView.setTag(item);
+        Picasso.with(context)
+                .load(iFile)
+                .into(holder.image);
+        holder.itemView.setTag(position);
     }
     @Override
     public int getItemCount() {

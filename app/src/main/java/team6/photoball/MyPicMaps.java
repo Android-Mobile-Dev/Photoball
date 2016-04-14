@@ -1,26 +1,24 @@
 package team6.photoball;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import team6.photoball.widgets.GridRecyclerView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,23 +30,31 @@ import java.util.List;
 public class MyPicMaps extends Fragment {
     static private String mAppDirectoryName = "Photoball";
 
-    static private File mImageRoot = new File(Environment.getExternalStoragePublicDirectory(
-            Environment.DIRECTORY_PICTURES) + "/" + mAppDirectoryName);
+    static private File mImageRoot = null;
 
-    static private File[] mDirFiles = mImageRoot.listFiles();
+    static private File[] mDirFiles = null;
 
-    private static List<ImageModel> items = new ArrayList<>();
-
-    static {
-        for (int i = 0; i < mDirFiles.length; i++) {
-            items.add(new ImageModel("Item " + i, mDirFiles[i].getAbsolutePath()));
-        }
-    }
+    public static List<ImageModel> items = new ArrayList<>();
 
     private OnFragmentInteractionListener mListener;
 
+    static {
+        try {
+            File mImageRoot = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES) + "/" + mAppDirectoryName + "/");
+            mDirFiles = mImageRoot.listFiles();
+
+            for (int i = 0; i < mDirFiles.length; i++) {
+                int t = i + 1;
+                items.add(new ImageModel("Item " + t, mDirFiles[i].getAbsolutePath()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public MyPicMaps() {
-        // Required empty public constructor
+
     }
 
     /**
@@ -68,8 +74,6 @@ public class MyPicMaps extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
 
     @Override
@@ -77,11 +81,16 @@ public class MyPicMaps extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_my_pic_maps, container, false);
 
-        //GridView gridView = (GridView) view.findViewById(R.id.my_pic_maps_grid);
-        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.list);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this.getContext(), 2));
+        GridRecyclerView mRecyclerView = (GridRecyclerView) view.findViewById(R.id.list);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        //mRecyclerView.scrollToPosition(((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition());
+        mRecyclerView.setHasFixedSize(true); // Helps improve performance
         MyPicMapsPageAdapter mAdapter = new MyPicMapsPageAdapter(this.getContext(), items);
         mRecyclerView.setAdapter(mAdapter);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+
+        mRecyclerView.setBackgroundColor(prefs.getInt("background_preference_key",0));
 
         final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
         final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
