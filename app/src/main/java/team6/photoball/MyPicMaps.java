@@ -1,24 +1,16 @@
 package team6.photoball;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import team6.photoball.widgets.GridRecyclerView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,30 +20,8 @@ import team6.photoball.widgets.GridRecyclerView;
  * create an instance of this fragment.
  */
 public class MyPicMaps extends Fragment {
-    static private String mAppDirectoryName = "Photoball";
-
-    static private File mImageRoot = null;
-
-    static private File[] mDirFiles = null;
-
-    public static List<ImageModel> items = new ArrayList<>();
 
     private OnFragmentInteractionListener mListener;
-
-    static {
-        try {
-            File mImageRoot = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_PICTURES) + "/" + mAppDirectoryName + "/");
-            mDirFiles = mImageRoot.listFiles();
-
-            for (int i = 0; i < mDirFiles.length; i++) {
-                int t = i + 1;
-                items.add(new ImageModel("Item " + t, mDirFiles[i].getAbsolutePath()));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public MyPicMaps() {
 
@@ -79,18 +49,16 @@ public class MyPicMaps extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (((MainActivity)getActivity()).getSupportActionBar() != null) {
+            ((MainActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
+
         View view = inflater.inflate(R.layout.fragment_my_pic_maps, container, false);
 
-        GridRecyclerView mRecyclerView = (GridRecyclerView) view.findViewById(R.id.list);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-        //mRecyclerView.scrollToPosition(((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition());
-        mRecyclerView.setHasFixedSize(true); // Helps improve performance
-        MyPicMapsPageAdapter mAdapter = new MyPicMapsPageAdapter(this.getContext(), items);
-        mRecyclerView.setAdapter(mAdapter);
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
-
-        mRecyclerView.setBackgroundColor(prefs.getInt("background_preference_key",0));
+        Fragment gridFragment = GridFragment.newInstance("","");
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.addToBackStack("fragment_my_pic_maps_detail");
+        transaction.add(R.id.my_pic_maps_screens, gridFragment).commit();
 
         final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
         final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
@@ -100,7 +68,7 @@ public class MyPicMaps extends Fragment {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)getActivity()).moveGallery();
+                ((MainActivity)getActivity()).moveToGallery();
             }
         });
 
@@ -108,7 +76,7 @@ public class MyPicMaps extends Fragment {
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)getActivity()).moveCamera();
+                ((MainActivity)getActivity()).moveToCamera();
             }
         });
 
@@ -118,13 +86,6 @@ public class MyPicMaps extends Fragment {
         playButton.setY(-100);
 
         return view;
-    }
-
-    static <T> T[] append(T[] arr, T element) {
-        final int N = arr.length;
-        arr = Arrays.copyOf(arr, N + 1);
-        arr[N] = element;
-        return arr;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

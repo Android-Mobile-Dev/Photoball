@@ -5,11 +5,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="team6.photoball.MyPicMaps">
 
-    <team6.photoball.widgets.GridRecyclerView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.5" />
+    <FrameLayout
+        android:id="@+id/my_pic_maps_screens"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+    </FrameLayout>
 
     <include layout="@layout/floating_buttons_my_pic_maps" />
 

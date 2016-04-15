@@ -1,36 +1,48 @@
 package team6.photoball;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Home.OnFragmentInteractionListener} interface
+ * {@link MyPicMapsDetail.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Home#newInstance} factory method to
- * create an instance of this fragment.
  */
-public class Home extends Fragment {
+public class MyPicMapsDetail extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private static final String EXTRA_IMAGE = "team6.photoball.extraImage";
+    private static final String EXTRA_TITLE = "team6.photoball.extraTitle";
+
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private View mFromView;
+    private ImageModel mViewModel;
 
     private OnFragmentInteractionListener mListener;
 
-    public Home() {
+    public MyPicMapsDetail() {
+        // Required empty public constructor
     }
 
     /**
@@ -39,68 +51,67 @@ public class Home extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Home.
+     * @return A new instance of fragment MyPicMapsDetail.
      */
     // TODO: Rename and change types and number of parameters
-    public static Home newInstance(String param1, String param2) {
-        Home fragment = new Home();
+    public static MyPicMapsDetail create(View fromView, ImageModel viewModel) {
+        MyPicMapsDetail fragment = new MyPicMapsDetail();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
+        fragment.setExtras(fromView, viewModel);
         return fragment;
+    }
+
+    public void setExtras (View fromView, ImageModel viewModel) {
+        mFromView = fromView;
+        mViewModel = viewModel;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_my_pic_maps_detail, container, false);
 
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        File iFile = new File(mViewModel.getImage());
 
-        final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
-        final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
-        final FloatingActionButton playButton = (FloatingActionButton) view.findViewById(R.id.playButton);
+        view.setBackgroundColor(getResources().getColor(R.color.black_transparent));
 
-        assert addButton != null;
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity)getActivity()).moveToGallery();
-            }
-        });
+        final ImageView image = (ImageView) view.findViewById(R.id.imageViewMyPicMapsDetail);
+        image.setImageBitmap(null);
+        Picasso.with(this.getContext())
+                .load(iFile)
+                .into(image);
 
-        assert cameraButton != null;
-        cameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity)getActivity()).moveToCamera();
-            }
-        });
+        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.linearLayoutMyPicMapsDetail);
 
-        assert playButton != null;
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity)getActivity()).moveMyToPicMaps();
-            }
-        });
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+
+        container_.setBackgroundColor(prefs.getInt("background_preference_key",0));
+
+        container_.addView(new SimulationClass(this.getContext()));
 
         return view;
+    }
+
+    public boolean dispatchTouchEvent(MotionEvent motionEvent) {
+        try {
+            return this.getActivity().dispatchTouchEvent(motionEvent);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
-            mListener.onFragmentInteractionHome(uri);
+            mListener.onFragmentInteractionMyPicMapsDetail(uri);
         }
     }
 
@@ -133,6 +144,7 @@ public class Home extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteractionHome(Uri uri);
+        void onFragmentInteractionMyPicMapsDetail(Uri uri);
     }
+
 }

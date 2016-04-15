@@ -1,24 +1,32 @@
 package team6.photoball;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Home.OnFragmentInteractionListener} interface
+ * {@link GridFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Home#newInstance} factory method to
+ * Use the {@link GridFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Home extends Fragment {
+public class GridFragment extends Fragment implements MyPicMapsPageAdapter.OnItemClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -28,9 +36,35 @@ public class Home extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    RecyclerView mRecyclerView;
+
+    public static List<ImageModel> items = new ArrayList<>();
+
+    static private String mAppDirectoryName = "Photoball";
+
+    static private File mImageRoot = null;
+
+    static private File[] mDirFiles = null;
+
+    static {
+        try {
+            File mImageRoot = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES) + "/" + mAppDirectoryName + "/");
+            mDirFiles = mImageRoot.listFiles();
+
+            for (int i = 0; i < mDirFiles.length; i++) {
+                int t = i + 1;
+                items.add(new ImageModel("Item " + t, mDirFiles[i].getAbsolutePath()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private OnFragmentInteractionListener mListener;
 
-    public Home() {
+    public GridFragment() {
+        // Required empty public constructor
     }
 
     /**
@@ -39,11 +73,11 @@ public class Home extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Home.
+     * @return A new instance of fragment GridFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static Home newInstance(String param1, String param2) {
-        Home fragment = new Home();
+    public static GridFragment newInstance(String param1, String param2) {
+        GridFragment fragment = new GridFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -60,39 +94,30 @@ public class Home extends Fragment {
         }
     }
 
+    private void initRecyclerView(View view) {
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.list);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        mRecyclerView.setHasFixedSize(true); // Helps improve performance
+    }
+
+    private void setRecyclerAdapter(RecyclerView recyclerView) {
+        MyPicMapsPageAdapter adapter = new MyPicMapsPageAdapter(this.getContext(), items);
+        adapter.setOnItemClickListener(this);
+        recyclerView.setAdapter(adapter);
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.grid_recycler_view, container, false);
 
-        final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
-        final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
-        final FloatingActionButton playButton = (FloatingActionButton) view.findViewById(R.id.playButton);
+        initRecyclerView(view);
 
-        assert addButton != null;
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity)getActivity()).moveToGallery();
-            }
-        });
+        setRecyclerAdapter(mRecyclerView);
 
-        assert cameraButton != null;
-        cameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity)getActivity()).moveToCamera();
-            }
-        });
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
 
-        assert playButton != null;
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity)getActivity()).moveMyToPicMaps();
-            }
-        });
+        mRecyclerView.setBackgroundColor(prefs.getInt("background_preference_key",0));
 
         return view;
     }
@@ -100,7 +125,7 @@ public class Home extends Fragment {
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
-            mListener.onFragmentInteractionHome(uri);
+            mListener.onFragmentInteractionGrid(uri);
         }
     }
 
@@ -133,6 +158,11 @@ public class Home extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteractionHome(Uri uri);
+        void onFragmentInteractionGrid(Uri uri);
+    }
+
+    @Override
+    public void onItemClick(View view, ImageModel viewModel) {
+        ((MainActivity)getActivity()).moveToMyPicMapsDetail(view, viewModel);
     }
 }

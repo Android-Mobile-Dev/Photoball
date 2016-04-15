@@ -26,6 +26,10 @@
                                     be a selection of base images to
                                     choose from.</string>
 
+    <string name="updates_title">Version 1.0.0</string>
+
+    <string name="updates_description">No New Updates Available\n\nYou already have the latest version of PhotoBall</string>
+
     <string name="setting_colors">Colors</string>
     <string name="setting_color_value">Transparent (Default)</string>
     <string name="setting_background">Background Filter</string>

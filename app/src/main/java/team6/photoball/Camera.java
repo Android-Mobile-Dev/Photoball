@@ -67,7 +67,7 @@ public class Camera extends Fragment {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)getActivity()).moveGallery();
+                ((MainActivity)getActivity()).moveToGallery();
             }
         });
 
@@ -75,7 +75,7 @@ public class Camera extends Fragment {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)getActivity()).moveMyPicMaps();
+                ((MainActivity)getActivity()).moveMyToPicMaps();
             }
         });
 

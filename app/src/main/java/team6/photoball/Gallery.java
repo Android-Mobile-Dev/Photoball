@@ -1,38 +1,21 @@
 package team6.photoball;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import jp.co.cyberagent.android.gpuimage.GPUImage;
-import jp.co.cyberagent.android.gpuimage.GPUImageColorInvertFilter;
-import jp.co.cyberagent.android.gpuimage.GPUImageFilterGroup;
-import jp.co.cyberagent.android.gpuimage.GPUImageSobelEdgeDetection;
-import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 
 /**
@@ -86,7 +69,7 @@ public class Gallery extends Fragment {
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity) getActivity()).moveCamera();
+                ((MainActivity) getActivity()).moveToCamera();
             }
         });
 
@@ -94,7 +77,7 @@ public class Gallery extends Fragment {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity) getActivity()).moveMyPicMaps();
+                ((MainActivity) getActivity()).moveMyToPicMaps();
             }
         });
 

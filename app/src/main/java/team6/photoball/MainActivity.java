@@ -8,10 +8,10 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -24,7 +24,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import java.util.HashMap;
 
@@ -34,7 +33,9 @@ public class MainActivity extends AppCompatActivity implements
         MyPicMaps.OnFragmentInteractionListener,
         Camera.OnFragmentInteractionListener,
         Gallery.OnFragmentInteractionListener,
-        Settings.OnFragmentInteractionListener {
+        Settings.OnFragmentInteractionListener,
+        GridFragment.OnFragmentInteractionListener,
+        MyPicMapsDetail.OnFragmentInteractionListener {
 
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 2;
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            moveSettings();
+            moveToSettings();
             return true;
         }
 
@@ -131,11 +132,11 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         if (id == R.id.nav_my_pic_maps) {
-            moveMyPicMaps();
+            moveMyToPicMaps();
         } else if (id == R.id.nav_updates) {
-
+            thisShowDialog(R.string.updates_title);
         } else if (id == R.id.nav_about) {
-            showDialog();
+            thisShowDialog(R.string.about_title);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -149,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements
         ft.commit();
     }
 
-    public void moveMyPicMaps() {
+    public void moveMyToPicMaps() {
         if (mSoundOn)
             mSounds.play(mSoundIDMap.get(R.raw.click), 1, 1, 1, 0, 1);
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
@@ -160,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements
         ft.commit();
     }
 
-    public void moveCamera() {
+    public void moveToCamera() {
         if (mSoundOn)
             mSounds.play(mSoundIDMap.get(R.raw.click), 1, 1, 1, 0, 1);
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
@@ -171,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements
         ft.commit();
     }
 
-    public void moveGallery() {
+    public void moveToGallery() {
         if (mSoundOn)
             mSounds.play(mSoundIDMap.get(R.raw.click), 1, 1, 1, 0, 1);
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
@@ -182,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements
         ft.commit();
     }
 
-    public void moveSettings() {
+    public void moveToSettings() {
         if (mSoundOn)
             mSounds.play(mSoundIDMap.get(R.raw.click), 1, 1, 1, 0, 1);
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
@@ -192,9 +193,29 @@ public class MainActivity extends AppCompatActivity implements
         ft.commit();
     }
 
-    void showDialog() {
-        DialogFragment newFragment = About.newInstance(
-                R.string.about_title);
+    public void moveToMyPicMapsDetail(View view, ImageModel viewModel) {
+        if (mSoundOn)
+            mSounds.play(mSoundIDMap.get(R.raw.click), 1, 1, 1, 0, 1);
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        MyPicMapsDetail myPicMapsDetail = new MyPicMapsDetail();
+        myPicMapsDetail.setExtras(view, viewModel);
+        ft.replace(R.id.my_pic_maps_screens, myPicMapsDetail);
+        ft.addToBackStack("fragment_my_pic_maps_detail");
+        ft.commit();
+    }
+
+    /*void moveToMyPicMapsDetail(View view, ImageModel viewModel) {
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        MyPicMapsDetail thisMyPicMapsDetail = MyPicMapsDetail.create(view,viewModel);
+        ft.replace(R.id.list, thisMyPicMapsDetail);
+        ft.addToBackStack("activity_my_pic_maps_detail");
+        ft.commit();
+    }*/
+
+    void thisShowDialog(int type) {
+        DialogFragment newFragment = MenuDialog.newInstance(type);
         newFragment.show(getSupportFragmentManager(), "dialog");
     }
 
@@ -289,6 +310,19 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onFragmentInteractionSettings(Uri uri) {
     }
+
+    @Override
+    public void onFragmentInteractionGrid(Uri uri) {
+    }
+
+    @Override
+    public void onFragmentInteractionMyPicMapsDetail(Uri uri) {
+    }
+
+    /*@Override
+    public void onFragmentInteractionMyPicMapsDetail(Uri uri) {
+    }*/
+
 //
 //    @Override
 //    protected void onPause(){
