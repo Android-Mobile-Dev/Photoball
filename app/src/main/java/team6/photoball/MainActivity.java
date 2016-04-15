@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements
         Camera.OnFragmentInteractionListener,
         Gallery.OnFragmentInteractionListener,
         Settings.OnFragmentInteractionListener,
-        GridFragment.OnFragmentInteractionListener,
         MyPicMapsDetail.OnFragmentInteractionListener {
 
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
@@ -200,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements
         FragmentTransaction ft = fm.beginTransaction();
         MyPicMapsDetail myPicMapsDetail = new MyPicMapsDetail();
         myPicMapsDetail.setExtras(view, viewModel);
-        ft.replace(R.id.my_pic_maps_screens, myPicMapsDetail);
+        ft.replace(R.id.the_screens, myPicMapsDetail);
         ft.addToBackStack("fragment_my_pic_maps_detail");
         ft.commit();
     }
@@ -309,10 +308,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onFragmentInteractionSettings(Uri uri) {
-    }
-
-    @Override
-    public void onFragmentInteractionGrid(Uri uri) {
     }
 
     @Override

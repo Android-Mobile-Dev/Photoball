@@ -1,15 +1,24 @@
 package team6.photoball;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -19,7 +28,32 @@ import android.view.ViewGroup;
  * to handle interaction events.
  * create an instance of this fragment.
  */
-public class MyPicMaps extends Fragment {
+public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemClickListener {
+
+    RecyclerView mRecyclerView;
+
+    public static List<ImageModel> items = new ArrayList<>();
+
+    static private String mAppDirectoryName = "Photoball";
+
+    static private File mImageRoot = null;
+
+    static private File[] mDirFiles = null;
+
+    static {
+        try {
+            File mImageRoot = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES) + "/" + mAppDirectoryName + "/");
+            mDirFiles = mImageRoot.listFiles();
+
+            for (int i = 0; i < mDirFiles.length; i++) {
+                int t = i + 1;
+                items.add(new ImageModel("Item " + t, mDirFiles[i].getAbsolutePath()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private OnFragmentInteractionListener mListener;
 
@@ -55,10 +89,13 @@ public class MyPicMaps extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_my_pic_maps, container, false);
 
-        Fragment gridFragment = GridFragment.newInstance("","");
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.addToBackStack("fragment_my_pic_maps_detail");
-        transaction.add(R.id.my_pic_maps_screens, gridFragment).commit();
+        initRecyclerView(view);
+
+        setRecyclerAdapter(mRecyclerView);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+
+        mRecyclerView.setBackgroundColor(prefs.getInt("background_preference_key",0));
 
         final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
         final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
@@ -86,6 +123,23 @@ public class MyPicMaps extends Fragment {
         playButton.setY(-100);
 
         return view;
+    }
+
+    private void initRecyclerView(View view) {
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.list);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        mRecyclerView.setHasFixedSize(true); // Helps improve performance
+    }
+
+    private void setRecyclerAdapter(RecyclerView recyclerView) {
+        MyPicMapsPageAdapter adapter = new MyPicMapsPageAdapter(this.getContext(), items);
+        adapter.setOnItemClickListener(this);
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onItemClick(View view, ImageModel viewModel) {
+        ((MainActivity)getActivity()).moveToMyPicMapsDetail(view, viewModel);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
