@@ -1,7 +1,9 @@
 package team6.photoball;
 
+import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.media.ExifInterface;
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
@@ -13,7 +15,10 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -40,6 +45,8 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
     int callerType;
     Fragment fragment;
     Bitmap mBitmap;
+    ImageView mImageView;
+    static Configuration mConf;
 
     public ProcessTask(Context context, Fragment fragment, int requestCode, int resultCode, Intent data, int callerType){
         this.requestCode = requestCode;
@@ -48,6 +55,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
         this.context = context;
         this.callerType = callerType;
         this.fragment = fragment;
+        this.mImageView = null;
     }
 
     //this is called BEFORE you start doing anything
@@ -69,10 +77,23 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
     @Override
     protected void onPostExecute(Void unused){
-        progressDialog.dismiss(); //hides the progress bar
-        //do whatever you want now
-        ImageView img = (ImageView) fragment.getView().findViewById(callerType);
-        img.setImageBitmap(mBitmap);
+        mImageView = (ImageView) fragment.getView().findViewById(callerType);
+        if (callerType == R.id.imageViewGallery) {
+            try {
+                ((Gallery) fragment).setImageView(mBitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (callerType == R.id.imageViewCamera) {
+            try {
+                ((Camera) fragment).setImageView(mBitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        progressDialog.dismiss();
     }
 
     //in here is where you execute your php script or whatever "heavy" stuff you need
@@ -89,17 +110,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
                 //Handle the image
 
-                Bitmap bitmap = modifyImage(fragment, imageFile);
-
-                if (callerType == R.id.imageViewCamera) {
-                    try {
-                        bitmap = rotateImageIfRequired(context, bitmap);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                mBitmap = bitmap;
+                mBitmap = modifyImage(imageFile);
 
                 String appDirectoryName = "Photoball";
 
@@ -122,7 +133,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
                 try {
                     FileOutputStream out = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                    mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
                     out.flush();
                     out.close();
                 } catch (Exception e) {
@@ -141,31 +152,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
         return null;
     }
 
-    private Bitmap rotateImageIfRequired(Context context, Bitmap img) throws IOException {
-
-        int orientation = context.getResources().getConfiguration().orientation;
-
-        switch (orientation) {
-            case 0:
-                if (img.getWidth() < img.getHeight())
-                    return rotateImage(img, 90);
-            case 1:
-                if (img.getWidth() > img.getHeight())
-                    return rotateImage(img, 90);
-            default:
-                return img;
-        }
-    }
-
-    private static Bitmap rotateImage(Bitmap img, int degree) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degree);
-        Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
-        img.recycle();
-        return rotatedImg;
-    }
-
-    private Bitmap modifyImage(Fragment fragment, File imageFile) {
+    private Bitmap modifyImage(File imageFile) {
 
         //Image modification here
         GPUImage gpuImage = new GPUImage(fragment.getActivity());
@@ -176,28 +163,6 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
         groupFilter.addFilter(new GPUImageColorInvertFilter());
         gpuImage.setFilter(groupFilter);
         Bitmap bmWithFilter = gpuImage.getBitmapWithFilterApplied();
-
-        if (callerType == R.id.imageViewGallery) {
-            try {
-                ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
-                int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
-                Log.d("EXIF", "Exif: " + orientation);
-                Matrix matrix = new Matrix();
-                if (orientation == 6) {
-                    matrix.postRotate(90);
-                }
-                else if (orientation == 3) {
-                    matrix.postRotate(180);
-                }
-                else if (orientation == 8) {
-                    matrix.postRotate(270);
-                }
-                bmWithFilter = Bitmap.createBitmap(bmWithFilter, 0, 0, bmWithFilter.getWidth(), bmWithFilter.getHeight(), matrix, true); // rotating bitmap
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
 
         return bmWithFilter;
     }

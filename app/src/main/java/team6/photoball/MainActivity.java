@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.Uri;
@@ -24,6 +25,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.HashMap;
 
@@ -46,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements
     private SoundPool mSounds;
     private HashMap<Integer, Integer> mSoundIDMap;
     private boolean mSoundOn;
-    static final int ORIENTATION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +59,6 @@ public class MainActivity extends AppCompatActivity implements
         getSupportActionBar().setIcon(R.mipmap.ic_launcher);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
 
-        getPermissions();
-
         moveToHome();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -70,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        getPermissions();
 
         createSoundPool();
 //        doBindService();
@@ -143,9 +144,21 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
+   /* @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+        }
+    }*/
+
     public void moveToHome() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.the_screens, new Home());
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.commit();
     }
 
@@ -156,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements
         FragmentTransaction ft = fm.beginTransaction();
         MyPicMaps thisMyPicMaps = MyPicMaps.create();
         ft.replace(R.id.the_screens, thisMyPicMaps);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.addToBackStack("fragment_my_pic_maps");
         ft.commit();
     }
@@ -167,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements
         FragmentTransaction ft = fm.beginTransaction();
         Camera thisCamera = Camera.create();
         ft.replace(R.id.the_screens, thisCamera);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.addToBackStack("fragment_camera");
         ft.commit();
     }
@@ -178,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements
         FragmentTransaction ft = fm.beginTransaction();
         Gallery thisGallery = Gallery.create();
         ft.replace(R.id.the_screens, thisGallery);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.addToBackStack("fragment_gallery");
         ft.commit();
     }
@@ -188,6 +204,7 @@ public class MainActivity extends AppCompatActivity implements
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.the_screens, new Settings());
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.addToBackStack("fragment_settings");
         ft.commit();
     }
@@ -200,18 +217,10 @@ public class MainActivity extends AppCompatActivity implements
         MyPicMapsDetail myPicMapsDetail = new MyPicMapsDetail();
         myPicMapsDetail.setExtras(view, viewModel);
         ft.replace(R.id.the_screens, myPicMapsDetail);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.addToBackStack("fragment_my_pic_maps_detail");
         ft.commit();
     }
-
-    /*void moveToMyPicMapsDetail(View view, ImageModel viewModel) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        MyPicMapsDetail thisMyPicMapsDetail = MyPicMapsDetail.create(view,viewModel);
-        ft.replace(R.id.list, thisMyPicMapsDetail);
-        ft.addToBackStack("activity_my_pic_maps_detail");
-        ft.commit();
-    }*/
 
     void thisShowDialog(int type) {
         DialogFragment newFragment = MenuDialog.newInstance(type);
@@ -228,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements
         Log.i("FragmentAlertDialog", "Negative click!");
     }
 
-    private void createSoundPool() {
+    private void createSoundPool()  {
         int[] soundIds = {R.raw.click};
         mSoundIDMap = new HashMap<Integer, Integer>();
         mSounds = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
@@ -247,13 +256,15 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        createSoundPool();
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        Boolean b = prefs.getBoolean("sound_preference_key", true);
-        if (b)
-            soundOn();
-        else
-            soundOff();
+        try {
+            createSoundPool();
+            final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            Boolean b = prefs.getBoolean("sound_preference_key", true);
+            if (b)
+                soundOn();
+            else
+                soundOff();
+        } catch (Exception e) {}
     }
 
     @Override
@@ -265,30 +276,6 @@ public class MainActivity extends AppCompatActivity implements
             mSounds = null;
         }
     }
-//    private ServiceConnection Scon = new ServiceConnection() {
-//
-//        public void onServiceConnected(ComponentName name, IBinder
-//                binder) {
-//            mServ = ((MusicService.ServiceBinder) binder).getService();
-//        }
-//
-//        public void onServiceDisconnected(ComponentName name) {
-//            mServ = null;
-//        }
-//    };
-//
-//    void doBindService() {
-//        bindService(new Intent(this, MusicService.class),
-//                Scon, Context.BIND_AUTO_CREATE);
-//        mIsBound = true;
-//    }
-//
-//    void doUnbindService() {
-//        if (mIsBound) {
-//            unbindService(Scon);
-//            mIsBound = false;
-//        }
-//    }
 
     @Override
     public void onFragmentInteractionHome(Uri uri) {
@@ -314,42 +301,6 @@ public class MainActivity extends AppCompatActivity implements
     public void onFragmentInteractionMyPicMapsDetail(Uri uri) {
     }
 
-    /*@Override
-    public void onFragmentInteractionMyPicMapsDetail(Uri uri) {
-    }*/
-
-//
-//    @Override
-//    protected void onPause(){
-//        super.onPause();
-//        if(mServ!=null)
-//            mServ.pauseMusic();
-//    }
-//
-//    @Override
-//    protected void onResume(){
-//        super.onResume();
-//        if(mServ!=null)
-//            mServ.resumeMusic();
-//    }
-//
-//    @Override
-//    protected void onStop(){
-//        if(mServ!=null)
-//            mServ.stopMusic();
-//        super.onStop();
-//    }
-//
-//    @Override
-//    protected void onDestroy() {
-//        if(mServ!=null) {
-//            mServ.stopMusic();
-//            mServ.onDestroy();
-//        }
-//        doUnbindService();
-//        super.onDestroy();
-//    }
-
     private void getPermissions() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -358,22 +309,11 @@ public class MainActivity extends AppCompatActivity implements
             /// Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
             } else {
-
                 // No explanation needed, we can request the permission.
-
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
             }
         }
 
@@ -384,22 +324,11 @@ public class MainActivity extends AppCompatActivity implements
             /// Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
             } else {
-
                 // No explanation needed, we can request the permission.
-
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
             }
         }
 
@@ -410,22 +339,12 @@ public class MainActivity extends AppCompatActivity implements
             /// Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.CAMERA)) {
-
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
             } else {
 
                 // No explanation needed, we can request the permission.
-
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.CAMERA},
                         MY_PERMISSIONS_REQUEST_CAMERA);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
             }
         }
         return;

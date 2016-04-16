@@ -2,13 +2,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context="team6.photoball.Gallery">
 
     <ImageView
         android:id="@+id/imageViewGallery"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:scaleType="fitStart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:fitsSystemWindows="true"
         android:gravity="center" />
 
     <LinearLayout
@@ -16,7 +18,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.4">
+        android:alpha="0.3">
     </LinearLayout>
 
     <include layout="@layout/floating_buttons_gallery" />

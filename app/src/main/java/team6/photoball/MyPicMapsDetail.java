@@ -2,12 +2,18 @@ package team6.photoball;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,7 +23,9 @@ import android.widget.LinearLayout;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 
 
 /**
@@ -38,6 +46,8 @@ public class MyPicMapsDetail extends Fragment {
     // TODO: Rename and change types of parameters
     private View mFromView;
     private ImageModel mViewModel;
+    ImageView mImageView = null;
+    private Bitmap mBitmap = null;
 
     private OnFragmentInteractionListener mListener;
 
@@ -82,11 +92,14 @@ public class MyPicMapsDetail extends Fragment {
 
         view.setBackgroundColor(getResources().getColor(R.color.black_transparent));
 
-        final ImageView image = (ImageView) view.findViewById(R.id.imageViewMyPicMapsDetail);
-        image.setImageBitmap(null);
+        mImageView = (ImageView) view.findViewById(R.id.imageViewMyPicMapsDetail);
+
+        mBitmap = BitmapFactory.decodeFile(iFile.getAbsolutePath());
+
+        mImageView.setImageBitmap(null);
         Picasso.with(this.getContext())
                 .load(iFile)
-                .into(image);
+                .into(mImageView);
 
         LinearLayout container_ = (LinearLayout) view.findViewById(R.id.linearLayoutMyPicMapsDetail);
 
@@ -95,6 +108,50 @@ public class MyPicMapsDetail extends Fragment {
         container_.setBackgroundColor(prefs.getInt("background_preference_key",0));
 
         container_.addView(new SimulationClass(this.getContext()));
+
+        final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
+        final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
+        final FloatingActionButton playButton = (FloatingActionButton) view.findViewById(R.id.playButton);
+
+        assert addButton != null;
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity)getActivity()).moveToGallery();
+            }
+        });
+
+        assert cameraButton != null;
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity)getActivity()).moveToCamera();
+            }
+        });
+
+        assert playButton != null;
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity)getActivity()).moveMyToPicMaps();
+            }
+        });
+
+        assert playButton != null;
+        playButton.setScaleX((float) 1.3);
+        playButton.setScaleY((float) 1.3);
+        playButton.setY(-100);
+
+        if (savedInstanceState != null) {
+            mBitmap = stringToBitMap(savedInstanceState.getString("mpm_bitmap"));
+        }
+
+        if (mBitmap != null)
+            try {
+                initRotateImageIfRequired();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         return view;
     }
@@ -147,4 +204,73 @@ public class MyPicMapsDetail extends Fragment {
         void onFragmentInteractionMyPicMapsDetail(Uri uri);
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (mBitmap != null)
+            try {
+                setRotateImageIfRequired(newConfig);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mBitmap != null) outState.putString("mpm_bitmap", bitMapToString(mBitmap));
+    }
+
+    public String bitMapToString(Bitmap bitmap){
+        ByteArrayOutputStream baos = new  ByteArrayOutputStream();
+        byte [] b = baos.toByteArray();
+        String temp = Base64.encodeToString(b, Base64.DEFAULT);
+        return temp;
+    }
+
+    public Bitmap stringToBitMap(String encodedString){
+        try {
+            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            return bitmap;
+        } catch(Exception e) {
+            e.getMessage();
+            return null;
+        }
+    }
+
+    private void setRotateImageIfRequired(Configuration newConfig) throws IOException {
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (mBitmap.getWidth() < mBitmap.getHeight())
+                mBitmap = rotateImage(mBitmap, 270);
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            if (mBitmap.getWidth() > mBitmap.getHeight())
+                mBitmap = rotateImage(mBitmap, 90);
+        }
+
+        mImageView.setImageBitmap(mBitmap);
+    }
+
+    private void initRotateImageIfRequired() throws IOException {
+        int orientation = this.getContext().getResources().getConfiguration().orientation;
+
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (mBitmap.getWidth() < mBitmap.getHeight())
+                mBitmap = rotateImage(mBitmap, 90);
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            if (mBitmap.getWidth() > mBitmap.getHeight())
+                mBitmap = rotateImage(mBitmap, 90);
+        }
+
+        mImageView.setImageBitmap(mBitmap);
+    }
+
+    private static Bitmap rotateImage(Bitmap img, int degree) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree);
+        Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
+        img.recycle();
+        return rotatedImg;
+    }
 }

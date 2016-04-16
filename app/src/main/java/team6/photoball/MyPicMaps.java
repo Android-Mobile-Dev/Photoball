@@ -83,9 +83,6 @@ public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemCl
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (((MainActivity)getActivity()).getSupportActionBar() != null) {
-            ((MainActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        }
 
         View view = inflater.inflate(R.layout.fragment_my_pic_maps, container, false);
 

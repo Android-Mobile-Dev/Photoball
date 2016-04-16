@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/transparent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.design.widget.FloatingActionButton
@@ -12,7 +13,8 @@
         android:layout_margin="@dimen/fab_margin"
         android:tint="@android:color/white"
         app:backgroundTint="@color/darkorange"
-        android:src="@mipmap/ic_play_arrow_white_24dp" />
+        android:src="@mipmap/ic_play_arrow_white_24dp"
+        app:elevation="@dimen/fab_margin" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addButton"
