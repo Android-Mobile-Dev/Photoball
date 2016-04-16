@@ -16,6 +16,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -179,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements
         MyPicMaps thisMyPicMaps = MyPicMaps.create();
         ft.replace(R.id.the_screens, thisMyPicMaps);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         ft.addToBackStack("fragment_my_pic_maps");
         ft.commit();
     }
@@ -191,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements
         Camera thisCamera = Camera.create();
         ft.replace(R.id.the_screens, thisCamera);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         ft.addToBackStack("fragment_camera");
         ft.commit();
     }
@@ -203,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements
         Gallery thisGallery = Gallery.create();
         ft.replace(R.id.the_screens, thisGallery);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         ft.addToBackStack("fragment_gallery");
         ft.commit();
     }
