@@ -45,9 +45,9 @@ public class MainActivity extends AppCompatActivity implements
     //    private boolean mIsBound = false;
 //    private MusicService mServ;
 // for all the sounds  we play
-    private SoundPool mSounds;
-    private HashMap<Integer, Integer> mSoundIDMap;
-    private boolean mSoundOn;
+    public SoundPool mSounds;
+    public HashMap<Integer, Integer> mSoundIDMap;
+    public boolean mSoundOn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,17 +143,6 @@ public class MainActivity extends AppCompatActivity implements
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-   /* @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
-        }
-    }*/
 
     public void moveToHome() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

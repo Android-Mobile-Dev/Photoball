@@ -118,6 +118,13 @@ public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemCl
         playButton.setScaleX((float) 1.3);
         playButton.setScaleY((float) 1.3);
         playButton.setY(-100);
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (((MainActivity)getActivity()).mSoundOn)
+                    ((MainActivity)getActivity()).mSounds.play(((MainActivity)getActivity()).mSoundIDMap.get(R.raw.click), 1, 1, 1, 0, 1);
+            }
+        });
 
         return view;
     }
