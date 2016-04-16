@@ -2,6 +2,9 @@ package team6.photoball;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +15,8 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.preference.PreferenceFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -73,9 +78,19 @@ public class Settings extends PreferenceFragment {
     }
 
     @Override
+    public void onPrepareOptionsMenu (Menu menu) {
+        MenuItem item = menu.findItem(R.id.action_settings);
+        item.setEnabled(false);
+        ColorFilter filter = new LightingColorFilter(Color.BLACK, Color.GRAY);
+        item.getIcon().setColorFilter(filter);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final SharedPreferences prefs = getPreferenceManager().getDefaultSharedPreferences(this.getActivity());
+
+        onPrepareOptionsMenu(((MainActivity)this.getActivity()).mMenu);
 
         Preference mBackgroundPreference = getPreferenceManager().findPreference("background_preference_key");
         final int background_color = prefs.getInt("background_preference_key",0);

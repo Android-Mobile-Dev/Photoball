@@ -90,6 +90,8 @@ public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemCl
 
         setRecyclerAdapter(mRecyclerView);
 
+        ((MainActivity)this.getActivity()).updateMenu();
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
 
         mRecyclerView.setBackgroundColor(prefs.getInt("background_preference_key",0));

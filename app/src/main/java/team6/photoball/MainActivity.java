@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.Uri;
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements
     public SoundPool mSounds;
     public HashMap<Integer, Integer> mSoundIDMap;
     public boolean mSoundOn;
+    public Menu mMenu = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +110,23 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        mMenu = menu;
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu (Menu menu) {
+        if (menu != null) {
+            MenuItem item = menu.findItem(R.id.action_settings);
+            item.setEnabled(true);
+            ColorFilter filter = new LightingColorFilter(Color.WHITE, Color.WHITE);
+            item.getIcon().setColorFilter(filter);
+        }
+        return true;
+    }
+
+    public void updateMenu() {
+        onPrepareOptionsMenu (mMenu);
     }
 
     @Override

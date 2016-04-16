@@ -66,6 +66,8 @@ public class Home extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        ((MainActivity)this.getActivity()).updateMenu();
+
         final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
         final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
         final FloatingActionButton playButton = (FloatingActionButton) view.findViewById(R.id.playButton);

@@ -71,6 +71,8 @@ public class Gallery extends Fragment {
 
         mImageView = (ImageView) view.findViewById(R.id.imageViewGallery);
 
+        ((MainActivity)this.getActivity()).updateMenu();
+
         final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
         final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
         final FloatingActionButton playButton = (FloatingActionButton) view.findViewById(R.id.playButton);

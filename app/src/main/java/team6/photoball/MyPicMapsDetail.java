@@ -96,6 +96,8 @@ public class MyPicMapsDetail extends Fragment {
 
         mBitmap = BitmapFactory.decodeFile(iFile.getAbsolutePath());
 
+        ((MainActivity)this.getActivity()).updateMenu();
+
         mImageView.setImageBitmap(null);
         Picasso.with(this.getContext())
                 .load(iFile)
