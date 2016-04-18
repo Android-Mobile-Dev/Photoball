@@ -1,0 +1,26 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="team6.photoball.Gallery">
+
+    <ImageView
+        android:id="@+id/imageViewMyPicMapsDetail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:fitsSystemWindows="true"
+        android:gravity="center" />
+
+    <LinearLayout
+        android:id="@+id/linearLayoutMyPicMapsDetail"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.3">
+    </LinearLayout>
+
+    <include layout="@layout/floating_buttons_my_pic_maps" />
+
+</FrameLayout>

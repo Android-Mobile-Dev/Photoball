@@ -30,3 +30,9 @@ proguard/
 
 # Android Studio captures folder
 captures/
+
+#.idea and some .iml files
+.idea/
+Photoball.iml
+app/app.iml
+2oefhnzy.e4h.txt
