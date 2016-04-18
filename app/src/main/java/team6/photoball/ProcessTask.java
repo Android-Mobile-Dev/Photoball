@@ -2,7 +2,9 @@ package team6.photoball;
 
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.media.ExifInterface;
 import android.support.v4.app.Fragment;
@@ -43,10 +45,11 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
     int requestCode, resultCode;
     Intent data;
     int callerType;
-    Fragment fragment;
-    Bitmap mBitmap;
-    ImageView mImageView;
+    private Fragment fragment;
+    private Bitmap mBitmap;
+    private ImageView mImageView;
     static Configuration mConf;
+    private Paint mBitmapPaint = new Paint();
 
     public ProcessTask(Context context, Fragment fragment, int requestCode, int resultCode, Intent data, int callerType){
         this.requestCode = requestCode;
@@ -105,6 +108,11 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                 //Some error handling
             }
 
+            /*protected void onDraw(Canvas canvas) {
+                canvas.drawColor(0xFFAAAAAA);
+                canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
+            }*/
+
             @Override
             public void onImagePicked(File imageFile, EasyImage.ImageSource imagePath, int type) {
 
@@ -146,6 +154,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
                 int t = MyPicMaps.items.size() + 1;
                 MyPicMaps.items.add(new ImageModel("Item " + t, file.getAbsolutePath()));
+
             }
         });
 

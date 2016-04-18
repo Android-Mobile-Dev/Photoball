@@ -1,6 +1,7 @@
 package team6.photoball;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
@@ -47,5 +48,9 @@ public class Ball {
     public void draw(Canvas canvas) {
         bounds.set(x-radius, y-radius, x+radius, y+radius);
         canvas.drawOval(bounds, paint);
+    }
+
+    public void setColor(int color) {
+        paint.setColor(color);
     }
 }
