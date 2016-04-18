@@ -64,6 +64,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
     //this is called BEFORE you start doing anything
     @Override
     protected void onPreExecute(){
+        mImageView = (ImageView) fragment.getView().findViewById(callerType);
         progressDialog = new ProgressDialog(context);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Please wait, processing image");
@@ -80,7 +81,6 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
     @Override
     protected void onPostExecute(Void unused){
-        mImageView = (ImageView) fragment.getView().findViewById(callerType);
         if (callerType == R.id.imageViewGallery) {
             try {
                 ((Gallery) fragment).setImageView(mBitmap);

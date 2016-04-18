@@ -35,7 +35,7 @@ import pl.aprilapps.easyphotopicker.EasyImage;
 public class Camera extends Fragment {
 
     private OnFragmentInteractionListener mListener;
-    ImageView mImageView = null;
+    private ImageView mImageView;
     private Bitmap mBitmap = null;
 
     public Camera() {

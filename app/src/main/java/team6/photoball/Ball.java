@@ -1,7 +1,6 @@
 package team6.photoball;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
@@ -9,7 +8,7 @@ import android.graphics.RectF;
  * Created by nelma on 4/18/2016.
  */
 public class Ball {
-    float radius = 30;      // Ball's radius
+    float radius = 20;      // Ball's radius
     float x = radius + 20;  // Ball's center (x,y)
     float y = radius + 40;
     float speedX = 35;       // Ball's speed (x,y)
