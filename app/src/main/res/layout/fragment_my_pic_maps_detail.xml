@@ -18,8 +18,10 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.3">
+        android:alpha="0.5">
     </LinearLayout>
+
+    <include layout="@layout/shape_holder_ball"/>
 
     <include layout="@layout/floating_buttons_my_pic_maps" />
 

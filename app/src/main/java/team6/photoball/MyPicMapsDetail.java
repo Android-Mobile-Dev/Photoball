@@ -103,17 +103,27 @@ public class MyPicMapsDetail extends Fragment {
                 .load(iFile)
                 .into(mImageView);
 
-        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.linearLayoutMyPicMapsDetail);
+        LinearLayout background = (LinearLayout) view.findViewById(R.id.linearLayoutMyPicMapsDetail);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
 
-        container_.setBackgroundColor(prefs.getInt("background_preference_key",0));
+        background.setBackgroundColor(prefs.getInt("background_preference_key",0));
 
-        container_.addView(new SimulationClass(this.getContext()));
+        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
+
+        View bouncingBallView = new SimulationClass(this.getContext());
+
+        container_.addView(bouncingBallView);
 
         final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
         final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
         final FloatingActionButton playButton = (FloatingActionButton) view.findViewById(R.id.playButton);
+
+        addButton.bringToFront();
+
+        cameraButton.bringToFront();
+
+        playButton.bringToFront();
 
         assert addButton != null;
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -145,7 +155,14 @@ public class MyPicMapsDetail extends Fragment {
         playButton.setY(-100);
 
         if (savedInstanceState != null) {
+
             mBitmap = stringToBitMap(savedInstanceState.getString("mpm_bitmap"));
+
+            container_ = (LinearLayout) view.findViewById(R.id.ball);
+
+            bouncingBallView = new SimulationClass(this.getContext());
+
+            container_.addView(bouncingBallView);
         }
 
         if (mBitmap != null)

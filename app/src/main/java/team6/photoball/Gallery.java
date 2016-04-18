@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
@@ -34,7 +32,7 @@ import pl.aprilapps.easyphotopicker.EasyImage;
 public class Gallery extends Fragment {
 
     private OnFragmentInteractionListener mListener;
-    ImageView mImageView = null;
+    private ImageView mImageView = null;
     private Bitmap mBitmap = null;
 
     public Gallery() {
@@ -104,13 +102,17 @@ public class Gallery extends Fragment {
             }
         });
 
-        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.linearLayoutGallery);
+        LinearLayout background = (LinearLayout) view.findViewById(R.id.linearLayoutGallery);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
 
-        container_.setBackgroundColor(prefs.getInt("background_preference_key",0));
+        background.setBackgroundColor(prefs.getInt("background_preference_key",0));
 
-        container_.addView(new SimulationClass(this.getContext()));
+        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
+
+        View bouncingBallView = new SimulationClass(this.getContext());
+
+        container_.addView(bouncingBallView);
 
         if (savedInstanceState != null) {
             mBitmap = stringToBitMap(savedInstanceState.getString("gallery_bitmap"));

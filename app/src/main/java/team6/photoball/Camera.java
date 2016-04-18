@@ -106,13 +106,17 @@ public class Camera extends Fragment {
             }
         });
 
-        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.linearLayoutCamera);
+        LinearLayout background = (LinearLayout) view.findViewById(R.id.linearLayoutCamera);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
 
-        container_.setBackgroundColor(prefs.getInt("background_preference_key", 0));
+        background.setBackgroundColor(prefs.getInt("background_preference_key",0));
 
-        container_.addView(new SimulationClass(getContext()));
+        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
+
+        View bouncingBallView = new SimulationClass(this.getContext());
+
+        container_.addView(bouncingBallView);
 
         if (savedInstanceState != null) {
             mBitmap = stringToBitMap(savedInstanceState.getString("camera_bitmap"));
