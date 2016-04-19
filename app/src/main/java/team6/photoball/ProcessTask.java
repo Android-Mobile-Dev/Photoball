@@ -83,19 +83,20 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
     protected void onPostExecute(Void unused){
         if (callerType == R.id.imageViewGallery) {
             try {
-                ((Gallery) fragment).setImageView(mBitmap);
+                ((Gallery) fragment).mBitmap = mBitmap;
+                ((Gallery) fragment).initRotateImageIfRequired();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         if (callerType == R.id.imageViewCamera) {
             try {
-                ((Camera) fragment).setImageView(mBitmap);
+                ((Camera) fragment).mBitmap = mBitmap;
+                ((Camera) fragment).initRotateImageIfRequired();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
         progressDialog.dismiss();
     }
 
@@ -118,7 +119,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
                 //Handle the image
 
-                mBitmap = modifyImage(imageFile);
+                modifyImage(imageFile);
 
                 String appDirectoryName = "Photoball";
 
@@ -161,18 +162,16 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
         return null;
     }
 
-    private Bitmap modifyImage(File imageFile) {
+    private void modifyImage(File imageFile) {
 
         //Image modification here
         GPUImage gpuImage = new GPUImage(fragment.getActivity());
-        Bitmap bm = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-        gpuImage.setImage(bm);
+        mBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+        gpuImage.setImage(mBitmap);
         GPUImageFilterGroup groupFilter = new GPUImageFilterGroup();
         groupFilter.addFilter(new GPUImageSobelEdgeDetection());
         groupFilter.addFilter(new GPUImageColorInvertFilter());
         gpuImage.setFilter(groupFilter);
-        Bitmap bmWithFilter = gpuImage.getBitmapWithFilterApplied();
-
-        return bmWithFilter;
+        mBitmap = gpuImage.getBitmapWithFilterApplied();
     }
 }

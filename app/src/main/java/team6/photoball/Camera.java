@@ -36,7 +36,7 @@ public class Camera extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private ImageView mImageView;
-    private Bitmap mBitmap = null;
+    public Bitmap mBitmap = null;
 
     public Camera() {
         // Required empty public constructor
@@ -243,7 +243,7 @@ public class Camera extends Fragment {
         mImageView.setImageBitmap(mBitmap);
     }
 
-    private void initRotateImageIfRequired() throws IOException {
+    public void initRotateImageIfRequired() throws IOException {
         int orientation = this.getContext().getResources().getConfiguration().orientation;
 
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {

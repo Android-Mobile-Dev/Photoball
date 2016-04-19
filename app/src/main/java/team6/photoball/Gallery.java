@@ -33,7 +33,7 @@ public class Gallery extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private ImageView mImageView = null;
-    private Bitmap mBitmap = null;
+    public Bitmap mBitmap = null;
 
     public Gallery() {
         // Required empty public constructor
@@ -128,13 +128,6 @@ public class Gallery extends Fragment {
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteractionGallery(uri);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -166,11 +159,6 @@ public class Gallery extends Fragment {
             this.getFragmentManager().popBackStack();
             ((MainActivity)getActivity()).moveToHome();
         }
-    }
-
-    public void setImageView(Bitmap bitmap) throws IOException {
-        mBitmap = bitmap;
-        initRotateImageIfRequired();
     }
 
     @Override
@@ -221,7 +209,7 @@ public class Gallery extends Fragment {
         mImageView.setImageBitmap(mBitmap);
     }
 
-    private void initRotateImageIfRequired() throws IOException {
+    public void initRotateImageIfRequired() throws IOException {
         int orientation = this.getContext().getResources().getConfiguration().orientation;
 
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
