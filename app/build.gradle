@@ -15,10 +15,11 @@ android {
 
     defaultConfig {
         applicationId "team6.photoball"
-        minSdkVersion 17
+        minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         debug {

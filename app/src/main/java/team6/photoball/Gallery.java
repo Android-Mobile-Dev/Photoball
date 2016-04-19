@@ -117,6 +117,9 @@ public class Gallery extends Fragment {
         container_.addView(bouncingBallView);
 
         if (savedInstanceState != null) {
+
+            mBitmap.recycle();
+
             mImageFile = new File(savedInstanceState.getString("gallery_image"));
 
             mBitmap = BitmapFactory.decodeFile(mImageFile.getAbsolutePath());

@@ -120,6 +120,9 @@ public class Camera extends Fragment {
         container_.addView(bouncingBallView);
 
         if (savedInstanceState != null) {
+
+            mBitmap.recycle();
+
             mImageFile = new File(savedInstanceState.getString("camera_image"));
 
             mBitmap = BitmapFactory.decodeFile(mImageFile.getAbsolutePath());
