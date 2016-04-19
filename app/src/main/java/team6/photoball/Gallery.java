@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
@@ -34,6 +35,7 @@ public class Gallery extends Fragment {
     private OnFragmentInteractionListener mListener;
     private ImageView mImageView = null;
     public Bitmap mBitmap = null;
+    public File mImageFile = null;
 
     public Gallery() {
         // Required empty public constructor
@@ -115,7 +117,9 @@ public class Gallery extends Fragment {
         container_.addView(bouncingBallView);
 
         if (savedInstanceState != null) {
-            mBitmap = stringToBitMap(savedInstanceState.getString("gallery_bitmap"));
+            mImageFile = new File(savedInstanceState.getString("gallery_image"));
+
+            mBitmap = BitmapFactory.decodeFile(mImageFile.getAbsolutePath());
         }
 
         if (mBitmap != null)
@@ -175,7 +179,7 @@ public class Gallery extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mBitmap != null) outState.putString("gallery_bitmap", bitMapToString(mBitmap));
+        if (mBitmap != null) outState.putString("gallery_image", mImageFile.getAbsolutePath());
     }
 
     public String bitMapToString(Bitmap bitmap){

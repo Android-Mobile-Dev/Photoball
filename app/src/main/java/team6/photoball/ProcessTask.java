@@ -153,6 +153,9 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
                 context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
+                if (callerType == R.id.imageViewGallery) ((Gallery) fragment).mImageFile = file;
+                if (callerType == R.id.imageViewCamera) ((Camera) fragment).mImageFile = file;
+
                 int t = MyPicMaps.items.size() + 1;
                 MyPicMaps.items.add(new ImageModel("Item " + t, file.getAbsolutePath()));
 

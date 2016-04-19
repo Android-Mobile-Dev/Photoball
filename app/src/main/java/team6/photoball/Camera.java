@@ -37,6 +37,7 @@ public class Camera extends Fragment {
     private OnFragmentInteractionListener mListener;
     private ImageView mImageView;
     public Bitmap mBitmap = null;
+    public File mImageFile = null;
 
     public Camera() {
         // Required empty public constructor
@@ -119,7 +120,9 @@ public class Camera extends Fragment {
         container_.addView(bouncingBallView);
 
         if (savedInstanceState != null) {
-            mBitmap = stringToBitMap(savedInstanceState.getString("camera_bitmap"));
+            mImageFile = new File(savedInstanceState.getString("camera_image"));
+
+            mBitmap = BitmapFactory.decodeFile(mImageFile.getAbsolutePath());
         }
 
         if (mBitmap != null)
@@ -130,13 +133,6 @@ public class Camera extends Fragment {
             }
 
         return view;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteractionCamera(uri);
-        }
     }
 
     @Override
@@ -182,11 +178,6 @@ public class Camera extends Fragment {
         }
     }
 
-    public void setImageView(Bitmap bitmap) throws IOException {
-        mBitmap = bitmap;
-        initRotateImageIfRequired();
-    }
-
     public void onCanceled(EasyImage.ImageSource source, int type) {
         //Cancel handling, you might wanna remove taken photo if it was canceled
         if (source == EasyImage.ImageSource.CAMERA) {
@@ -209,7 +200,7 @@ public class Camera extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mBitmap != null) outState.putString("camera_bitmap", bitMapToString(mBitmap));
+        if (mBitmap != null) outState.putString("camera_image", mImageFile.getAbsolutePath());
     }
 
     public String bitMapToString(Bitmap bitmap){

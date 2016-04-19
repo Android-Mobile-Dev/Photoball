@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
+import android.graphics.Point;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.Uri;
@@ -30,6 +31,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import java.util.HashMap;
 
@@ -77,12 +83,9 @@ public class MainActivity extends AppCompatActivity implements
 
         getPermissions();
 
-        createSoundPool();
-//        doBindService();
-//        Intent music = new Intent();
-//        music.setClass(this, MusicService.class);
-//        startService(music);
+        appTutorial();
 
+        createSoundPool();
     }
 
     @Override
@@ -362,4 +365,35 @@ public class MainActivity extends AppCompatActivity implements
         }
         return;
     }
+
+    private void appTutorial () {
+
+        Target homeTarget = new Target() {
+            @Override
+            public Point getPoint() {
+                // Get approximate position of home icon's center
+                Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+                int actionBarSize = toolbar.getHeight();
+                int x = actionBarSize / 2;
+                int y = actionBarSize / 2;
+                return new Point(x, y);
+            }
+        };
+
+        new ShowcaseView.Builder(this)
+                .setContentTitle("Its My Navigation Drawer")
+                .setContentText("Tap here to navigate to other sections.")
+                .setTarget(homeTarget)
+                .build();
+
+        /*Target target = new ViewTarget(R.id.addButton, this);
+
+        new ShowcaseView.Builder(this)
+                .setTarget(target)
+                .setContentTitle("Settings menu")
+                .setContentText("Tap here to view and set the app settings")
+                .hideOnTouchOutside()
+                .build();*/
+    }
+
 }
