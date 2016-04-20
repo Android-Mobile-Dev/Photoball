@@ -50,11 +50,11 @@ public class MyPicMapsPageAdapter extends RecyclerView.Adapter<MyPicMapsPageAdap
     }
 
     @Override public void onClick(final View v) {
-        onItemClickListener.onItemClick(v, (ImageModel) v.getTag());
+        onItemClickListener.onItemClick((ImageModel) v.getTag());
     }
 
     public interface OnItemClickListener {
-        void onItemClick(View view, ImageModel viewModel);
+        void onItemClick(ImageModel viewModel);
     }
 
     protected static class ItemHolder extends RecyclerView.ViewHolder {

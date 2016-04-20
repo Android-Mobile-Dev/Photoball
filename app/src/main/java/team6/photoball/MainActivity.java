@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
@@ -16,7 +15,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -29,13 +27,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+import team6.photoball.widgets.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.Target;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import java.util.HashMap;
 
@@ -52,13 +46,11 @@ public class MainActivity extends AppCompatActivity implements
     public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 2;
     public static final int MY_PERMISSIONS_REQUEST_CAMERA = 3;
 
-    //    private boolean mIsBound = false;
-//    private MusicService mServ;
-// for all the sounds  we play
     public SoundPool mSounds;
     public HashMap<Integer, Integer> mSoundIDMap;
     public boolean mSoundOn;
     public Menu mMenu = null;
+    public Home mHome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher_toolbar);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
 
         moveToHome();
@@ -170,7 +162,8 @@ public class MainActivity extends AppCompatActivity implements
 
     public void moveToHome() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.the_screens, new Home());
+        mHome = Home.create();
+        ft.replace(R.id.the_screens, mHome);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.commit();
     }
@@ -225,13 +218,12 @@ public class MainActivity extends AppCompatActivity implements
         ft.commit();
     }
 
-    public void moveToMyPicMapsDetail(View view, ImageModel viewModel) {
+    public void moveToMyPicMapsDetail(ImageModel viewModel) {
         if (mSoundOn)
             mSounds.play(mSoundIDMap.get(R.raw.click), 1, 1, 1, 0, 1);
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        MyPicMapsDetail myPicMapsDetail = new MyPicMapsDetail();
-        myPicMapsDetail.setExtras(view, viewModel);
+        MyPicMapsDetail myPicMapsDetail = MyPicMapsDetail.create(viewModel);
         ft.replace(R.id.the_screens, myPicMapsDetail);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.addToBackStack("fragment_my_pic_maps_detail");
@@ -371,29 +363,21 @@ public class MainActivity extends AppCompatActivity implements
         Target homeTarget = new Target() {
             @Override
             public Point getPoint() {
-                // Get approximate position of home icon's center
                 Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
                 int actionBarSize = toolbar.getHeight();
-                int x = actionBarSize / 2;
+                int x = 40;
                 int y = actionBarSize / 2;
                 return new Point(x, y);
             }
         };
 
-        new ShowcaseView.Builder(this)
-                .setContentTitle("Its My Navigation Drawer")
-                .setContentText("Tap here to navigate to other sections.")
-                .setTarget(homeTarget)
-                .build();
-
-        /*Target target = new ViewTarget(R.id.addButton, this);
-
-        new ShowcaseView.Builder(this)
-                .setTarget(target)
-                .setContentTitle("Settings menu")
-                .setContentText("Tap here to view and set the app settings")
-                .hideOnTouchOutside()
-                .build();*/
+        ShowcaseView.Builder v0 = new ShowcaseView.Builder(this);
+        v0.blockAllTouches();
+        v0.setContentTitle("Navigation Drawer");
+        v0.setContentText("Tap Here to See Your Saved PicMaps, Make Updates and Info.");
+        v0.setTarget(homeTarget);
+        v0.setStyle(R.style.CustomShowcaseTheme);
+        v0.build();
     }
 
 }

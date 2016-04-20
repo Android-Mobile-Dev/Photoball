@@ -8,22 +8,16 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Base64;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.squareup.picasso.Picasso;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -37,43 +31,26 @@ import java.io.IOException;
 public class MyPicMapsDetail extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     private static final String EXTRA_IMAGE = "team6.photoball.extraImage";
     private static final String EXTRA_TITLE = "team6.photoball.extraTitle";
 
     // TODO: Rename and change types of parameters
-    private View mFromView;
-    private ImageModel mViewModel;
-    ImageView mImageView = null;
+    private ImageModel mViewModel = null;
+    private ImageView mImageView = null;
     private Bitmap mBitmap = null;
-
-    private OnFragmentInteractionListener mListener;
 
     public MyPicMapsDetail() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MyPicMapsDetail.
-     */
     // TODO: Rename and change types and number of parameters
-    public static MyPicMapsDetail create(View fromView, ImageModel viewModel) {
+    public static MyPicMapsDetail create(ImageModel viewModel) {
         MyPicMapsDetail fragment = new MyPicMapsDetail();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        fragment.setExtras(fromView, viewModel);
+        fragment.setExtras(viewModel);
         return fragment;
     }
 
-    public void setExtras (View fromView, ImageModel viewModel) {
-        mFromView = fromView;
+    public void setExtras (ImageModel viewModel) {
         mViewModel = viewModel;
     }
 
@@ -88,20 +65,18 @@ public class MyPicMapsDetail extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_pic_maps_detail, container, false);
 
-        File iFile = new File(mViewModel.getImage());
+        view.setId(view.generateViewId());
 
-        view.setBackgroundColor(getResources().getColor(R.color.black_transparent));
+        File iFile = new File(mViewModel.getImage());
 
         mImageView = (ImageView) view.findViewById(R.id.imageViewMyPicMapsDetail);
 
-        mBitmap = BitmapFactory.decodeFile(iFile.getAbsolutePath());
+        BitmapFactory.Options bfOptions=new BitmapFactory.Options();
+        bfOptions.inDither=false;
+        bfOptions.inTempStorage=new byte[32 * 1024];
+        mBitmap = BitmapFactory.decodeFile(iFile.getAbsolutePath(),bfOptions);
 
         ((MainActivity)this.getActivity()).updateMenu();
-
-        mImageView.setImageBitmap(null);
-        Picasso.with(this.getContext())
-                .load(iFile)
-                .into(mImageView);
 
         LinearLayout background = (LinearLayout) view.findViewById(R.id.linearLayoutMyPicMapsDetail);
 
@@ -109,21 +84,11 @@ public class MyPicMapsDetail extends Fragment {
 
         background.setBackgroundColor(prefs.getInt("background_preference_key",0));
 
-        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
-
-        View bouncingBallView = new SimulationClass(this.getContext());
-
-        container_.addView(bouncingBallView);
+        setBallLayoutAnimation (this.getContext(), view);
 
         final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
         final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
         final FloatingActionButton playButton = (FloatingActionButton) view.findViewById(R.id.playButton);
-
-        addButton.bringToFront();
-
-        cameraButton.bringToFront();
-
-        playButton.bringToFront();
 
         assert addButton != null;
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -154,17 +119,6 @@ public class MyPicMapsDetail extends Fragment {
         playButton.setScaleY((float) 1.3);
         playButton.setY(-100);
 
-        if (savedInstanceState != null) {
-
-            mBitmap = stringToBitMap(savedInstanceState.getString("mpm_bitmap"));
-
-            container_ = (LinearLayout) view.findViewById(R.id.ball);
-
-            bouncingBallView = new SimulationClass(this.getContext());
-
-            container_.addView(bouncingBallView);
-        }
-
         if (mBitmap != null)
             try {
                 initRotateImageIfRequired();
@@ -175,27 +129,28 @@ public class MyPicMapsDetail extends Fragment {
         return view;
     }
 
-    public boolean dispatchTouchEvent(MotionEvent motionEvent) {
-        try {
-            return this.getActivity().dispatchTouchEvent(motionEvent);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            return false;
-        }
+    private static void setBallLayoutAnimation (Context context, View view) {
+
+        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
+
+        View bouncingBallView = new SimulationClass(context);
+
+        bouncingBallView.setId(view.generateViewId());
+
+        container_.addView(bouncingBallView);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteractionMyPicMapsDetail(uri);
-        }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mBitmap = null;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -205,7 +160,6 @@ public class MyPicMapsDetail extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     /**
@@ -226,35 +180,12 @@ public class MyPicMapsDetail extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (mBitmap != null)
+        if (mBitmap != null) {
             try {
                 setRotateImageIfRequired(newConfig);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (mBitmap != null) outState.putString("mpm_bitmap", bitMapToString(mBitmap));
-    }
-
-    public String bitMapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos = new  ByteArrayOutputStream();
-        byte [] b = baos.toByteArray();
-        String temp = Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
-    }
-
-    public Bitmap stringToBitMap(String encodedString){
-        try {
-            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            return bitmap;
-        } catch(Exception e) {
-            e.getMessage();
-            return null;
         }
     }
 
@@ -262,12 +193,11 @@ public class MyPicMapsDetail extends Fragment {
         // Checks the orientation of the screen
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (mBitmap.getWidth() < mBitmap.getHeight())
-                mBitmap = rotateImage(mBitmap, 270);
+                rotateImage(270);
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
             if (mBitmap.getWidth() > mBitmap.getHeight())
-                mBitmap = rotateImage(mBitmap, 90);
+                rotateImage(90);
         }
-
         mImageView.setImageBitmap(mBitmap);
     }
 
@@ -276,20 +206,17 @@ public class MyPicMapsDetail extends Fragment {
 
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (mBitmap.getWidth() < mBitmap.getHeight())
-                mBitmap = rotateImage(mBitmap, 90);
+                rotateImage(90);
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT){
             if (mBitmap.getWidth() > mBitmap.getHeight())
-                mBitmap = rotateImage(mBitmap, 90);
+                rotateImage(90);
         }
-
         mImageView.setImageBitmap(mBitmap);
     }
 
-    private static Bitmap rotateImage(Bitmap img, int degree) {
+    private void rotateImage(int degree) {
         Matrix matrix = new Matrix();
         matrix.postRotate(degree);
-        Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
-        img.recycle();
-        return rotatedImg;
+        mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
     }
 }
