@@ -14,6 +14,7 @@ import android.graphics.RadialGradient;
 import android.graphics.Shader;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
@@ -40,8 +41,8 @@ public class SimulationClass extends View {
         super(context);
 
         box = new Box();  // ARGB
-        int color = ContextCompat.getColor(context, R.color.darkgreen);
-        ball = new Ball(color);
+        int ball_color = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("ball_preference_key",0);
+        ball = new Ball(ball_color);
 
         // To enable keypad
         this.setFocusable(true);
