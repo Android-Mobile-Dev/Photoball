@@ -153,6 +153,7 @@ public class Camera extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        mBitmap.recycle();
     }
 
     /**
@@ -228,10 +229,10 @@ public class Camera extends Fragment {
         // Checks the orientation of the screen
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (mBitmap.getWidth() < mBitmap.getHeight())
-                mBitmap = rotateImage(mBitmap, 270);
+                rotateImage(270);
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
             if (mBitmap.getWidth() > mBitmap.getHeight())
-                mBitmap = rotateImage(mBitmap, 90);
+                rotateImage(90);
         }
 
         mImageView.setImageBitmap(mBitmap);
@@ -242,20 +243,18 @@ public class Camera extends Fragment {
 
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (mBitmap.getWidth() < mBitmap.getHeight())
-                mBitmap = rotateImage(mBitmap, 90);
+                rotateImage(90);
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT){
             if (mBitmap.getWidth() > mBitmap.getHeight())
-                mBitmap = rotateImage(mBitmap, 90);
+                rotateImage(90);
         }
 
         mImageView.setImageBitmap(mBitmap);
     }
 
-    private static Bitmap rotateImage(Bitmap img, int degree) {
+    private void rotateImage(int degree) {
         Matrix matrix = new Matrix();
         matrix.postRotate(degree);
-        Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
-        img.recycle();
-        return rotatedImg;
+        mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
     }
 }

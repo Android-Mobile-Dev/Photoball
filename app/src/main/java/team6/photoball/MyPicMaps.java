@@ -8,8 +8,6 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -30,13 +28,11 @@ import java.util.List;
  */
 public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemClickListener {
 
-    RecyclerView mRecyclerView;
+    private RecyclerView mRecyclerView;
 
     public static List<ImageModel> items = new ArrayList<>();
 
     static private String mAppDirectoryName = "Photoball";
-
-    static private File mImageRoot = null;
 
     static private File[] mDirFiles = null;
 
@@ -58,7 +54,7 @@ public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemCl
     private OnFragmentInteractionListener mListener;
 
     public MyPicMaps() {
-
+        setRetainInstance(true);
     }
 
     /**
@@ -70,8 +66,6 @@ public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemCl
     // TODO: Rename and change types and number of parameters
     public static MyPicMaps create() {
         MyPicMaps fragment = new MyPicMaps();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -144,15 +138,8 @@ public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemCl
     }
 
     @Override
-    public void onItemClick(View view, ImageModel viewModel) {
-        ((MainActivity)getActivity()).moveToMyPicMapsDetail(view, viewModel);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteractionMyPicMaps(uri);
-        }
+    public void onItemClick(ImageModel viewModel) {
+        ((MainActivity)getActivity()).moveToMyPicMapsDetail(viewModel);
     }
 
     @Override
