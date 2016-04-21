@@ -50,8 +50,6 @@ public class Gallery extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static Gallery create() {
         Gallery fragment = new Gallery();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -161,7 +159,8 @@ public class Gallery extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != 0) {
-            new ProcessTask(this.getContext(), (Fragment) this, requestCode, resultCode, data, R.id.imageViewGallery).execute();
+            new ProcessTask(this.getContext(), this, requestCode, resultCode, data, R.id.imageViewGallery).execute();
+            mImageView.setImageBitmap(mBitmap);
         } else {
             this.getFragmentManager().popBackStack();
             ((MainActivity)getActivity()).moveToHome();
@@ -174,6 +173,7 @@ public class Gallery extends Fragment {
         if (mBitmap != null)
             try {
                 setRotateImageIfRequired(newConfig);
+                mImageView.setImageBitmap(mBitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -185,24 +185,6 @@ public class Gallery extends Fragment {
         if (mBitmap != null) outState.putString("gallery_image", mImageFile.getAbsolutePath());
     }
 
-    public String bitMapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos = new  ByteArrayOutputStream();
-        byte [] b = baos.toByteArray();
-        String temp = Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
-    }
-
-    public Bitmap stringToBitMap(String encodedString){
-        try {
-            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            return bitmap;
-        } catch(Exception e) {
-            e.getMessage();
-            return null;
-        }
-    }
-
     private void setRotateImageIfRequired(Configuration newConfig) throws IOException {
         // Checks the orientation of the screen
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -212,8 +194,6 @@ public class Gallery extends Fragment {
             if (mBitmap.getWidth() > mBitmap.getHeight())
                 mBitmap = rotateImage(mBitmap, 90);
         }
-
-        mImageView.setImageBitmap(mBitmap);
     }
 
     public void initRotateImageIfRequired() throws IOException {
@@ -236,6 +216,12 @@ public class Gallery extends Fragment {
         Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
         img.recycle();
         return rotatedImg;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mBitmap = null;
     }
 
 }

@@ -97,6 +97,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                 e.printStackTrace();
             }
         }
+
         progressDialog.dismiss();
     }
 
@@ -140,15 +141,6 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
                 File file = new File(new File(imageRoot.toString()), firstPartFileName + "_img.jpg");
 
-                try {
-                    FileOutputStream out = new FileOutputStream(file);
-                    mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                    out.flush();
-                    out.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
                 values.put(MediaStore.MediaColumns.DATA, file.toString());
 
                 context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
@@ -167,14 +159,67 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
     private void modifyImage(File imageFile) {
 
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int reqWidth = size.x;
+        int reqHeight = size.y;
+
+        mBitmap = decodeSampledBitmapFromResource(imageFile, reqWidth, reqHeight);
+
         //Image modification here
         GPUImage gpuImage = new GPUImage(fragment.getActivity());
-        mBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
         gpuImage.setImage(mBitmap);
+        try {
+            FileOutputStream out = new FileOutputStream(imageFile);
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 0, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         GPUImageFilterGroup groupFilter = new GPUImageFilterGroup();
         groupFilter.addFilter(new GPUImageSobelEdgeDetection());
         groupFilter.addFilter(new GPUImageColorInvertFilter());
         gpuImage.setFilter(groupFilter);
         mBitmap = gpuImage.getBitmapWithFilterApplied();
+    }
+
+    public static Bitmap decodeSampledBitmapFromResource(File imageFile, int reqWidth, int reqHeight) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
+    }
+
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
     }
 }

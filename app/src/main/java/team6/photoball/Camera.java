@@ -35,7 +35,7 @@ import pl.aprilapps.easyphotopicker.EasyImage;
 public class Camera extends Fragment {
 
     private OnFragmentInteractionListener mListener;
-    private ImageView mImageView;
+    private ImageView mImageView = null;
     public Bitmap mBitmap = null;
     public File mImageFile = null;
 
@@ -52,8 +52,6 @@ public class Camera extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static Camera create() {
         Camera fragment = new Camera();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -91,7 +89,7 @@ public class Camera extends Fragment {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)getActivity()).moveMyToPicMaps();
+                ((MainActivity) getActivity()).moveMyToPicMaps();
             }
         });
 
@@ -99,7 +97,6 @@ public class Camera extends Fragment {
         cameraButton.setScaleX((float) 1.3);
         cameraButton.setScaleY((float) 1.3);
         cameraButton.setY(-100);
-        assert playButton != null;
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -153,19 +150,8 @@ public class Camera extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        mBitmap.recycle();
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteractionCamera(Uri uri);
@@ -205,24 +191,6 @@ public class Camera extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mBitmap != null) outState.putString("camera_image", mImageFile.getAbsolutePath());
-    }
-
-    public String bitMapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos = new  ByteArrayOutputStream();
-        byte [] b = baos.toByteArray();
-        String temp = Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
-    }
-
-    public Bitmap stringToBitMap(String encodedString){
-        try {
-            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            return bitmap;
-        } catch(Exception e) {
-            e.getMessage();
-            return null;
-        }
     }
 
     private void setRotateImageIfRequired(Configuration newConfig) throws IOException {
