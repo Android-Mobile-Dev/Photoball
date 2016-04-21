@@ -176,6 +176,6 @@ public class Gallery extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         b = true;
-        ProcessTask.mBitmap.recycle();
+        //if (ProcessTask.mBitmap != null) ProcessTask.mBitmap.recycle();
     }
 }
