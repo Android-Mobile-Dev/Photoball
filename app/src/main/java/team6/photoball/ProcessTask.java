@@ -22,6 +22,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -40,25 +42,23 @@ import pl.aprilapps.easyphotopicker.EasyImage;
  */
 public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
-    private ProgressDialog progressDialog; //to show a little modal with a progress Bar
-    private Context context;  //needed to create the progress bar
-    int requestCode, resultCode;
-    Intent data;
-    int callerType;
-    private Fragment fragment;
-    private Bitmap mBitmap;
-    private ImageView mImageView;
-    static Configuration mConf;
-    private Paint mBitmapPaint = new Paint();
+    private ProgressDialog progressDialog;
+    private static Context context;
+    private int requestCode, resultCode;
+    private Intent data;
+    private static int callerType;
+    private static Fragment fragment;
+    public static Bitmap mBitmap;
+    private static ImageView mImageView;
+    public static File mImageFile;
 
-    public ProcessTask(Context context, Fragment fragment, int requestCode, int resultCode, Intent data, int callerType){
+    public ProcessTask(Context tcontext, Fragment fragment, int requestCode, int resultCode, Intent data, int callerType){
         this.requestCode = requestCode;
         this.resultCode = resultCode;
         this.data = data;
-        this.context = context;
+        context = tcontext;
         this.callerType = callerType;
         this.fragment = fragment;
-        this.mImageView = null;
     }
 
     //this is called BEFORE you start doing anything
@@ -76,28 +76,17 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
     //every time you call publishProgress this method is executed, in this case receives an Integer
     @Override
     protected void onProgressUpdate(Integer ... option){
-        progressDialog.setMessage("I have found :" + option[0]);
+
     }
 
     @Override
     protected void onPostExecute(Void unused){
-        if (callerType == R.id.imageViewGallery) {
-            try {
-                ((Gallery) fragment).mBitmap = mBitmap;
-                ((Gallery) fragment).initRotateImageIfRequired();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            if (mBitmap != null) initRotateImageIfRequired();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        if (callerType == R.id.imageViewCamera) {
-            try {
-                ((Camera) fragment).mBitmap = mBitmap;
-                ((Camera) fragment).initRotateImageIfRequired();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
+        ((Gallery)fragment).b = true;
         progressDialog.dismiss();
     }
 
@@ -139,6 +128,15 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                 values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
                 values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
 
+                try {
+                    FileOutputStream out = new FileOutputStream(imageFile);
+                    mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                    out.flush();
+                    out.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 File file = new File(new File(imageRoot.toString()), firstPartFileName + "_img.jpg");
 
                 values.put(MediaStore.MediaColumns.DATA, file.toString());
@@ -147,79 +145,98 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
                 if (callerType == R.id.imageViewGallery) ((Gallery) fragment).mImageFile = file;
                 if (callerType == R.id.imageViewCamera) ((Camera) fragment).mImageFile = file;
+                mImageFile = file;
 
                 int t = MyPicMaps.items.size() + 1;
                 MyPicMaps.items.add(new ImageModel("Item " + t, file.getAbsolutePath()));
 
+            }
+
+            private void modifyImage(File imageFile) {
+                int reqWidth = mImageView.getWidth();
+                int reqHeight = mImageView.getHeight();
+
+                decodeSampledBitmapFromResource(imageFile, reqWidth, reqHeight);
+
+                //Image modification here
+                GPUImage gpuImage = new GPUImage(fragment.getActivity());
+                gpuImage.setImage(mBitmap);
+                GPUImageFilterGroup groupFilter = new GPUImageFilterGroup();
+                groupFilter.addFilter(new GPUImageSobelEdgeDetection());
+                groupFilter.addFilter(new GPUImageColorInvertFilter());
+                gpuImage.setFilter(groupFilter);
+                mBitmap = gpuImage.getBitmapWithFilterApplied();
+            }
+
+            public void decodeSampledBitmapFromResource(File imageFile, int reqWidth, int reqHeight) {
+
+                // First decode with inJustDecodeBounds=true to check dimensions
+                final BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                if (mBitmap != null) mBitmap.recycle();
+                mBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
+
+                // Calculate inSampleSize
+                options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+                // Decode bitmap with inSampleSize set
+                options.inJustDecodeBounds = false;
+                mBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
+            }
+
+            public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+                // Raw height and width of image
+                final int height = options.outHeight;
+                final int width = options.outWidth;
+                int inSampleSize = 1;
+
+                if (height > reqHeight || width > reqWidth) {
+
+                    final int halfHeight = height / 2;
+                    final int halfWidth = width / 2;
+
+                    // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+                    // height and width larger than the requested height and width.
+                    while ((halfHeight / inSampleSize) > reqHeight
+                            && (halfWidth / inSampleSize) > reqWidth) {
+                        inSampleSize *= 2;
+                    }
+                }
+
+                return inSampleSize;
             }
         });
 
         return null;
     }
 
-    private void modifyImage(File imageFile) {
-
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int reqWidth = size.x;
-        int reqHeight = size.y;
-
-        mBitmap = decodeSampledBitmapFromResource(imageFile, reqWidth, reqHeight);
-
-        //Image modification here
-        GPUImage gpuImage = new GPUImage(fragment.getActivity());
-        gpuImage.setImage(mBitmap);
-        try {
-            FileOutputStream out = new FileOutputStream(imageFile);
-            mBitmap.compress(Bitmap.CompressFormat.JPEG, 0, out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static void initRotateImageIfRequired() throws IOException {
+        int orientation = context.getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (mBitmap.getWidth() < mBitmap.getHeight())
+                rotateImage(90);
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            if (mBitmap.getWidth() > mBitmap.getHeight())
+                rotateImage(90);
         }
-        GPUImageFilterGroup groupFilter = new GPUImageFilterGroup();
-        groupFilter.addFilter(new GPUImageSobelEdgeDetection());
-        groupFilter.addFilter(new GPUImageColorInvertFilter());
-        gpuImage.setFilter(groupFilter);
-        mBitmap = gpuImage.getBitmapWithFilterApplied();
+        ((ImageView) fragment.getView().findViewById(callerType)).setImageBitmap(mBitmap);
     }
 
-    public static Bitmap decodeSampledBitmapFromResource(File imageFile, int reqWidth, int reqHeight) {
-
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
-
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
+    public static  void setRotateImageIfRequired(Configuration newConfig) throws IOException {
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (mBitmap.getWidth() < mBitmap.getHeight())
+                rotateImage(270);
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            if (mBitmap.getWidth() > mBitmap.getHeight())
+                rotateImage(90);
+        }
+        mImageView.setImageBitmap(mBitmap);
     }
 
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
+    private static void rotateImage(int degree) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree);
+        mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
     }
 }

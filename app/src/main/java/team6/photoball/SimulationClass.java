@@ -48,7 +48,7 @@ public class SimulationClass extends View {
 
         // Delay
         try {
-            Thread.sleep(30);
+            Thread.sleep(25);
         } catch (InterruptedException e) { }
 
         invalidate();  // Force a re-draw
