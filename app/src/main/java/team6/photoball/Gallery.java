@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -31,9 +30,7 @@ public class Gallery extends Fragment {
     public File mImageFile;
     public static boolean b = false;
 
-    public Gallery() {
-        // Required empty public constructor
-    }
+    public Gallery() {}
 
     /**
      * Use this factory method to create a new instance of
@@ -51,19 +48,6 @@ public class Gallery extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EasyImage.openGallery(this, 0);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (b) {
-            try {
-                ProcessTask.initRotateImageIfRequired();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        b = false;
     }
 
     @Override
@@ -119,9 +103,6 @@ public class Gallery extends Fragment {
 
         container_.addView(bouncingBallView);
 
-        if (b) {
-
-        }
         return view;
     }
 
@@ -174,6 +155,19 @@ public class Gallery extends Fragment {
         super.onSaveInstanceState(outState);
         mImageFile = ProcessTask.mImageFile;
         if (mImageFile != null) outState.putString("gallery_image", mImageFile.getAbsolutePath());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (b) {
+            try {
+                ProcessTask.initRotateImageIfRequired();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        b = false;
     }
 
     @Override

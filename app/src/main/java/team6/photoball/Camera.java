@@ -35,13 +35,10 @@ import pl.aprilapps.easyphotopicker.EasyImage;
 public class Camera extends Fragment {
 
     private OnFragmentInteractionListener mListener;
-    private ImageView mImageView = null;
-    public Bitmap mBitmap = null;
-    public File mImageFile = null;
+    public File mImageFile;
+    public static boolean b = false;
 
-    public Camera() {
-        // Required empty public constructor
-    }
+    public Camera() {}
 
     /**
      * Use this factory method to create a new instance of
@@ -67,9 +64,7 @@ public class Camera extends Fragment {
 
         final Camera fragment = this;
 
-        View view = inflater.inflate(R.layout.fragment_camera, container, false);
-
-        mImageView = (ImageView) view.findViewById(R.id.imageViewCamera);
+        final View view = inflater.inflate(R.layout.fragment_camera, container, false);
 
         ((MainActivity)this.getActivity()).updateMenu();
 
@@ -116,22 +111,6 @@ public class Camera extends Fragment {
 
         container_.addView(bouncingBallView);
 
-        if (savedInstanceState != null) {
-
-            mBitmap.recycle();
-
-            mImageFile = new File(savedInstanceState.getString("camera_image"));
-
-            mBitmap = BitmapFactory.decodeFile(mImageFile.getAbsolutePath());
-        }
-
-        if (mBitmap != null)
-            try {
-                initRotateImageIfRequired();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
         return view;
     }
 
@@ -161,7 +140,7 @@ public class Camera extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != 0) {
-            new ProcessTask(this.getContext(), (Fragment)this, requestCode, resultCode, data, R.id.imageViewCamera).execute();
+            new ProcessTask(this.getContext(), this, requestCode, resultCode, data, R.id.imageViewCamera).execute();
         } else {
             this.getFragmentManager().popBackStack();
             ((MainActivity)getActivity()).moveToHome();
@@ -179,9 +158,9 @@ public class Camera extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (mBitmap != null)
+        if (mImageFile != null)
             try {
-                setRotateImageIfRequired(newConfig);
+                ProcessTask.setRotateImageIfRequired(newConfig);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -190,39 +169,26 @@ public class Camera extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mBitmap != null) outState.putString("camera_image", mImageFile.getAbsolutePath());
+        mImageFile = ProcessTask.mImageFile;
+        if (mImageFile != null) outState.putString("camera_image", mImageFile.getAbsolutePath());
     }
 
-    private void setRotateImageIfRequired(Configuration newConfig) throws IOException {
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (mBitmap.getWidth() < mBitmap.getHeight())
-                rotateImage(270);
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            if (mBitmap.getWidth() > mBitmap.getHeight())
-                rotateImage(90);
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (b) {
+            try {
+                ProcessTask.initRotateImageIfRequired();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
-        mImageView.setImageBitmap(mBitmap);
+        b = false;
     }
 
-    public void initRotateImageIfRequired() throws IOException {
-        int orientation = this.getContext().getResources().getConfiguration().orientation;
-
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (mBitmap.getWidth() < mBitmap.getHeight())
-                rotateImage(90);
-        } else if (orientation == Configuration.ORIENTATION_PORTRAIT){
-            if (mBitmap.getWidth() > mBitmap.getHeight())
-                rotateImage(90);
-        }
-
-        mImageView.setImageBitmap(mBitmap);
-    }
-
-    private void rotateImage(int degree) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degree);
-        mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        b = true;
     }
 }

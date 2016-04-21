@@ -29,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import jp.co.cyberagent.android.gpuimage.GPUImage;
 import jp.co.cyberagent.android.gpuimage.GPUImageColorInvertFilter;
@@ -52,13 +53,13 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
     private static ImageView mImageView;
     public static File mImageFile;
 
-    public ProcessTask(Context tcontext, Fragment fragment, int requestCode, int resultCode, Intent data, int callerType){
+    public ProcessTask(Context tcontext, Fragment tfragment, int requestCode, int resultCode, Intent data, int tcallerType){
         this.requestCode = requestCode;
         this.resultCode = resultCode;
         this.data = data;
         context = tcontext;
-        this.callerType = callerType;
-        this.fragment = fragment;
+        callerType = tcallerType;
+        fragment = tfragment;
     }
 
     //this is called BEFORE you start doing anything
@@ -69,7 +70,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Please wait, processing image");
         progressDialog.setIndeterminate(true);
-        progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.show();
     }
 
@@ -86,7 +87,8 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ((Gallery)fragment).b = true;
+        if (callerType == R.id.imageViewGallery) ((Gallery)fragment).b = true;
+        if (callerType == R.id.imageViewCamera) ((Camera)fragment).b = true;
         progressDialog.dismiss();
     }
 
@@ -98,11 +100,6 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
             public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
                 //Some error handling
             }
-
-            /*protected void onDraw(Canvas canvas) {
-                canvas.drawColor(0xFFAAAAAA);
-                canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
-            }*/
 
             @Override
             public void onImagePicked(File imageFile, EasyImage.ImageSource imagePath, int type) {
@@ -122,7 +119,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
                 ContentValues values = new ContentValues();
 
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US);
                 String firstPartFileName = sdf.format(new Date());
 
                 values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
@@ -231,7 +228,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
             if (mBitmap.getWidth() > mBitmap.getHeight())
                 rotateImage(90);
         }
-        mImageView.setImageBitmap(mBitmap);
+        ((ImageView) fragment.getView().findViewById(callerType)).setImageBitmap(mBitmap);
     }
 
     private static void rotateImage(int degree) {
