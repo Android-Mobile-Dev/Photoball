@@ -36,7 +36,7 @@ public class Camera extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     public File mImageFile;
-    public static boolean b = false;
+    public boolean b = false;
 
     public Camera() {}
 
@@ -178,6 +178,7 @@ public class Camera extends Fragment {
         super.onResume();
         if (b) {
             try {
+                ProcessTask.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
                 ProcessTask.initRotateImageIfRequired();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -190,5 +191,6 @@ public class Camera extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         b = true;
+        ProcessTask.mBitmap.recycle();
     }
 }

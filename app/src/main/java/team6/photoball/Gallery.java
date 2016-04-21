@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -28,7 +29,7 @@ public class Gallery extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     public File mImageFile;
-    public static boolean b = false;
+    public boolean b = false;
 
     public Gallery() {}
 
@@ -162,6 +163,7 @@ public class Gallery extends Fragment {
         super.onResume();
         if (b) {
             try {
+                ProcessTask.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
                 ProcessTask.initRotateImageIfRequired();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -174,5 +176,6 @@ public class Gallery extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         b = true;
+        ProcessTask.mBitmap.recycle();
     }
 }

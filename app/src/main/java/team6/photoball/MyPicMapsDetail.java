@@ -71,10 +71,7 @@ public class MyPicMapsDetail extends Fragment {
 
         mImageView = (ImageView) view.findViewById(R.id.imageViewMyPicMapsDetail);
 
-        BitmapFactory.Options bfOptions=new BitmapFactory.Options();
-        bfOptions.inDither=false;
-        bfOptions.inTempStorage=new byte[32 * 1024];
-        mBitmap = BitmapFactory.decodeFile(iFile.getAbsolutePath(),bfOptions);
+        mBitmap = BitmapFactory.decodeFile(iFile.getAbsolutePath());
 
         ((MainActivity)this.getActivity()).updateMenu();
 

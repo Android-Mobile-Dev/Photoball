@@ -125,8 +125,10 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                 values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
                 values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
 
+                File file = new File(new File(imageRoot.toString()), firstPartFileName + "_img.jpg");
+
                 try {
-                    FileOutputStream out = new FileOutputStream(imageFile);
+                    FileOutputStream out = new FileOutputStream(file);
                     mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
                     out.flush();
                     out.close();
@@ -134,26 +136,20 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                     e.printStackTrace();
                 }
 
-                File file = new File(new File(imageRoot.toString()), firstPartFileName + "_img.jpg");
-
                 values.put(MediaStore.MediaColumns.DATA, file.toString());
 
                 context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
-                if (callerType == R.id.imageViewGallery) ((Gallery) fragment).mImageFile = file;
-                if (callerType == R.id.imageViewCamera) ((Camera) fragment).mImageFile = file;
+                if (imagePath.name().contains("GALLERY")) ((Gallery) fragment).mImageFile = file;
+                if (imagePath.name().contains("CAMERA")) ((Camera) fragment).mImageFile = file;
                 mImageFile = file;
-
-                int t = MyPicMaps.items.size() + 1;
-                MyPicMaps.items.add(new ImageModel("Item " + t, file.getAbsolutePath()));
-
             }
 
             private void modifyImage(File imageFile) {
                 int reqWidth = mImageView.getWidth();
                 int reqHeight = mImageView.getHeight();
 
-                decodeSampledBitmapFromResource(imageFile, reqWidth, reqHeight);
+                decodeSampledBitmapFromFile(imageFile, reqWidth, reqHeight);
 
                 //Image modification here
                 GPUImage gpuImage = new GPUImage(fragment.getActivity());
@@ -165,7 +161,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                 mBitmap = gpuImage.getBitmapWithFilterApplied();
             }
 
-            public void decodeSampledBitmapFromResource(File imageFile, int reqWidth, int reqHeight) {
+            public void decodeSampledBitmapFromFile(File imageFile, int reqWidth, int reqHeight) {
 
                 // First decode with inJustDecodeBounds=true to check dimensions
                 final BitmapFactory.Options options = new BitmapFactory.Options();
