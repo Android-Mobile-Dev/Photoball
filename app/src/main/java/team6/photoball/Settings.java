@@ -9,7 +9,6 @@ import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.preference.PreferenceFragment;
@@ -19,6 +18,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.pavelsikun.seekbarpreference.SeekBarPreference;
 
 import java.util.HashMap;
 
@@ -42,12 +43,11 @@ public class Settings extends PreferenceFragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    private ListPreference mPresetListPreference;
+    private CheckBoxPreference mInstructionPreference;
     private CheckBoxPreference mSoundPreference;
     private Preference mDefaultPreference;
-
-    private SoundPool mSounds;
-    private HashMap<Integer, Integer> mSoundIDMap;
+    private SeekBarPreference mSizePreference;
+    private SeekBarPreference mSpeedPreference;
 
     public Settings() {
         // Required empty public constructor
@@ -103,19 +103,6 @@ public class Settings extends PreferenceFragment {
             }
         });
 
-        mPresetListPreference = (ListPreference) getPreferenceManager().findPreference("preset_preference_key");
-        mPresetListPreference.setSummary(prefs.getString("preset_preference_key", getResources().getString(R.string.setting_preset_3d)));
-        mPresetListPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                mPresetListPreference.setSummary((CharSequence) newValue);
-                SharedPreferences.Editor ed = prefs.edit();
-                ed.putString("preset_preference_key", newValue.toString());
-                ed.apply();
-                return true;
-            }
-        });
-
         mSoundPreference = (CheckBoxPreference) getPreferenceManager().findPreference("sound_preference_key");
         Boolean b = prefs.getBoolean("sound_preference_key", true);
         if (b) {
@@ -139,6 +126,26 @@ public class Settings extends PreferenceFragment {
                 }
                 SharedPreferences.Editor ed = prefs.edit();
                 ed.putBoolean("sound_preference_key", (boolean) newValue);
+                ed.apply();
+                return true;
+            }
+        });
+
+        mInstructionPreference = (CheckBoxPreference) getPreferenceManager().findPreference("instruction_preference_key");
+        Boolean x = prefs.getBoolean("instruction_preference_key", true);
+        mInstructionPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+//                if ((boolean) newValue) {
+//                    mSoundPreference.setSummary(getResources().getString(R.string.setting_sound_on));
+//                    ((MainActivity)getActivity()).soundOn();
+//                }
+//                else {
+//                    mSoundPreference.setSummary(getResources().getString(R.string.setting_sound_off));
+//                    ((MainActivity)getActivity()).soundOff();
+//                }
+                SharedPreferences.Editor ed = prefs.edit();
+                ed.putBoolean("instruction_preference_key", (boolean) newValue);
                 ed.apply();
                 return true;
             }

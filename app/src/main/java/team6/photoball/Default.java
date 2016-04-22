@@ -22,8 +22,6 @@ import java.io.IOException;
  */
 public class Default extends DialogFragment {
 
-    private Settings settings = new Settings();
-
     public static Default newInstance(int title) {
         Default frag = new Default();
         Bundle args = new Bundle();
@@ -58,9 +56,9 @@ public class Default extends DialogFragment {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
         SharedPreferences.Editor ed = prefs.edit();
         ed.putBoolean("sound_preference_key", true);
-        ed.putString("preset_preference_key", getResources().getString(R.string.setting_preset_3d));
         ed.putInt("background_preference_key", 0xffffffff);
         ed.putInt("ball_preference_key", 0xff006600);
+        ed.putBoolean("instruction_preference_key", true);
         ed.apply();
 
         ((MainActivity)getActivity()).soundOn();

@@ -282,6 +282,7 @@ public class MainActivity extends AppCompatActivity implements
         if (mSounds != null) {
             mSounds.release();
             mSounds = null;
+            soundOff();
         }
     }
 
