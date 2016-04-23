@@ -138,7 +138,7 @@ public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemCl
     }
 
     @Override
-    public void onItemClick(ImageModel viewModel) {
+    public void onItemClick(String viewModel) {
         ((MainActivity)getActivity()).moveToMyPicMapsDetail(viewModel);
     }
 

@@ -2,11 +2,7 @@ package team6.photoball;
 
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.media.ExifInterface;
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -16,14 +12,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
-import android.view.Display;
-import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.Toast;
-
-import com.squareup.picasso.Picasso;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -76,9 +65,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
     //every time you call publishProgress this method is executed, in this case receives an Integer
     @Override
-    protected void onProgressUpdate(Integer ... option){
-
-    }
+    protected void onProgressUpdate(Integer ... option){}
 
     @Override
     protected void onPostExecute(Void unused){
@@ -200,7 +187,6 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                         inSampleSize *= 2;
                     }
                 }
-
                 return inSampleSize;
             }
         });

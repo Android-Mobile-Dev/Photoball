@@ -35,7 +35,7 @@ public class MyPicMapsDetail extends Fragment {
     private static final String EXTRA_TITLE = "team6.photoball.extraTitle";
 
     // TODO: Rename and change types of parameters
-    private ImageModel mViewModel = null;
+    private String mFilePath = null;
     private ImageView mImageView = null;
     private Bitmap mBitmap = null;
 
@@ -44,14 +44,14 @@ public class MyPicMapsDetail extends Fragment {
     }
 
     // TODO: Rename and change types and number of parameters
-    public static MyPicMapsDetail create(ImageModel viewModel) {
+    public static MyPicMapsDetail create(String filePath) {
         MyPicMapsDetail fragment = new MyPicMapsDetail();
-        fragment.setExtras(viewModel);
+        fragment.setExtras(filePath);
         return fragment;
     }
 
-    public void setExtras (ImageModel viewModel) {
-        mViewModel = viewModel;
+    public void setExtras (String filePath) {
+        mFilePath = filePath;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class MyPicMapsDetail extends Fragment {
 
         view.setId(view.generateViewId());
 
-        File iFile = new File(mViewModel.getImage());
+        File iFile = new File(mFilePath);
 
         mImageView = (ImageView) view.findViewById(R.id.imageViewMyPicMapsDetail);
 
@@ -140,6 +140,7 @@ public class MyPicMapsDetail extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mBitmap.recycle();
         mBitmap = null;
     }
 
@@ -204,4 +205,5 @@ public class MyPicMapsDetail extends Fragment {
         matrix.postRotate(degree);
         mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
     }
+
 }

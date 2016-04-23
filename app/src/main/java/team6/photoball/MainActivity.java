@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements
         ft.commit();
     }
 
-    public void moveToMyPicMapsDetail(ImageModel viewModel) {
+    public void moveToMyPicMapsDetail(String viewModel) {
         if (mSoundOn)
             mSounds.play(mSoundIDMap.get(R.raw.click), 1, 1, 1, 0, 1);
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
