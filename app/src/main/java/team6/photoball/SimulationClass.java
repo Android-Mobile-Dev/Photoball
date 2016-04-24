@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -26,14 +27,16 @@ public class SimulationClass extends View {
     private float previousX;
     private float previousY;
 
+//    http://stackoverflow.com/questions/7266836/get-associated-image-drawable-in-imageview-android
+//    http://stackoverflow.com/questions/9632114/how-to-find-pixels-color-in-particular-coordinate-in-images
     private Bitmap img;
 
     // Constructor
-    public SimulationClass(Context context, Bitmap bm) {
+    public SimulationClass(Context context, Drawable img) {
         super(context);
 
-        if(bm != null) {
-            img = bm;
+        if(img != null) {
+            this.img = ((BitmapDrawable) img).getBitmap();
         }
         box = new Box();  // ARGB
         int ball_color = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("ball_preference_key",0);
@@ -46,13 +49,13 @@ public class SimulationClass extends View {
         this.setFocusableInTouchMode(true);
     }
 
-    public void setBitmap(Bitmap bm){
-        img = bm;
+    public void setBitmap(Drawable img){
+        this.img = ((BitmapDrawable) img).getBitmap();
     }
 
     // Called back to draw the view. Also called after invalidate().
     @Override
-    protected void onDraw(Canvas canvas) {
+    synchronized protected void onDraw(Canvas canvas) {
         if(img != null) {
             // Draw the components
             box.draw(canvas);
@@ -62,10 +65,10 @@ public class SimulationClass extends View {
             ball.moveWithCollisionDetection(box, img);
 
             // Delay
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-            }
+//            try {
+//                Thread.sleep(1);
+//            } catch (InterruptedException e) {
+//            }
         }
         invalidate();
     }

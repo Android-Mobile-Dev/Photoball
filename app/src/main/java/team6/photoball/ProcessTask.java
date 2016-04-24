@@ -39,7 +39,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
     private static int callerType;
     private static Fragment fragment;
     public static Bitmap mBitmap;
-    private static ImageView mImageView;
+    public static ImageView mImageView;
     public static File mImageFile;
 
     private static SimulationClass bouncingBallView;
@@ -147,7 +147,10 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                 GPUImage gpuImage = new GPUImage(fragment.getActivity());
                 gpuImage.setImage(mBitmap);
                 GPUImageFilterGroup groupFilter = new GPUImageFilterGroup();
-                groupFilter.addFilter(new GPUImageSobelEdgeDetection());
+                //5.0f from gpu image sample
+                GPUImageSobelEdgeDetection detection = new GPUImageSobelEdgeDetection();
+                detection.setLineSize(10.0f);
+                groupFilter.addFilter(detection);
                 groupFilter.addFilter(new GPUImageColorInvertFilter());
                 gpuImage.setFilter(groupFilter);
                 mBitmap = gpuImage.getBitmapWithFilterApplied();
@@ -203,8 +206,9 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
             if (mBitmap.getWidth() > mBitmap.getHeight())
                 rotateImage(90);
         }
-        ((ImageView) fragment.getView().findViewById(callerType)).setImageBitmap(mBitmap);
-        bouncingBallView.setBitmap(mBitmap);
+        ImageView imgView = (ImageView) fragment.getView().findViewById(callerType);
+        imgView.setImageBitmap(mBitmap);
+        bouncingBallView.setBitmap(imgView.getDrawable());
     }
 
     public static  void setRotateImageIfRequired(Configuration newConfig) throws IOException {
@@ -216,8 +220,9 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
             if (mBitmap.getWidth() > mBitmap.getHeight())
                 rotateImage(90);
         }
-        ((ImageView) fragment.getView().findViewById(callerType)).setImageBitmap(mBitmap);
-        bouncingBallView.setBitmap(mBitmap);
+        ImageView imgView = (ImageView) fragment.getView().findViewById(callerType);
+        imgView.setImageBitmap(mBitmap);
+        bouncingBallView.setBitmap(imgView.getDrawable());
     }
 
     private static void rotateImage(int degree) {

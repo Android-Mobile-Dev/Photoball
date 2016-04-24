@@ -102,8 +102,8 @@ public class Gallery extends Fragment {
 
         LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
 
-        //TODO: get rid of null
         bouncingBallView = new SimulationClass(this.getContext(), null);
+        container_.addView(bouncingBallView);
 
         return view;
     }
@@ -166,7 +166,7 @@ public class Gallery extends Fragment {
             try {
                 ProcessTask.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
                 ProcessTask.initRotateImageIfRequired();
-                ((SimulationClass) bouncingBallView).setBitmap(ProcessTask.mBitmap);
+//               ((SimulationClass) bouncingBallView).setBitmap(ProcessTask.mImageView.getDrawable());
             } catch (IOException e) {
                 e.printStackTrace();
             }

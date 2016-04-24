@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -81,8 +82,6 @@ public class MyPicMapsDetail extends Fragment {
 
         background.setBackgroundColor(prefs.getInt("background_preference_key",0));
 
-        setBallLayoutAnimation (this.getContext(), view, mBitmap);
-
         final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
         final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
         final FloatingActionButton playButton = (FloatingActionButton) view.findViewById(R.id.playButton);
@@ -119,6 +118,7 @@ public class MyPicMapsDetail extends Fragment {
         if (mBitmap != null)
             try {
                 initRotateImageIfRequired();
+                setBallLayoutAnimation (this.getContext(), view, mImageView.getDrawable());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -126,11 +126,11 @@ public class MyPicMapsDetail extends Fragment {
         return view;
     }
 
-    private static void setBallLayoutAnimation (Context context, View view, Bitmap bm) {
+    private static void setBallLayoutAnimation (Context context, View view, Drawable draw) {
 
         LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
 
-        View bouncingBallView = new SimulationClass(context, bm);
+        View bouncingBallView = new SimulationClass(context, draw);
 
         bouncingBallView.setId(view.generateViewId());
 
