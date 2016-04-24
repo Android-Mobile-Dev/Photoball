@@ -5,6 +5,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="team6.photoball.MyPicMaps">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="No media found."
+        android:id="@+id/noMedia"
+        android:layout_gravity="center"
+        android:elegantTextHeight="true"
+        android:background="@android:color/transparent"
+        android:visibility="invisible"
+        android:gravity="center"
+        android:textSize="36dp" />
+
     <team6.photoball.widgets.GridRecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"

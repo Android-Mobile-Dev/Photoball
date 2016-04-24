@@ -80,6 +80,9 @@ public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemCl
 
         View view = inflater.inflate(R.layout.fragment_my_pic_maps, container, false);
 
+        if (items.isEmpty()) view.findViewById(R.id.noMedia).setVisibility(View.VISIBLE);
+        else view.findViewById(R.id.noMedia).setVisibility(View.INVISIBLE);
+
         initRecyclerView(view);
 
         setRecyclerAdapter(mRecyclerView);
@@ -138,8 +141,8 @@ public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemCl
     }
 
     @Override
-    public void onItemClick(String viewModel) {
-        ((MainActivity)getActivity()).moveToMyPicMapsDetail(viewModel);
+    public void onItemClick(String filePath) {
+        ((MainActivity)getActivity()).moveToMyPicMapsDetail(filePath);
     }
 
     @Override

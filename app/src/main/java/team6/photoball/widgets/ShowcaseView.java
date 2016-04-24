@@ -91,6 +91,7 @@ public class ShowcaseView extends RelativeLayout
     private int showcaseColor;
     private boolean blockAllTouches;
     private final int[] positionInWindow = new int[2];
+    private Context mContext;
 
     public ShowcaseView(Context context, boolean newStyle) {
         this(context, null, R.styleable.CustomTheme_showcaseViewStyle, newStyle);
@@ -99,6 +100,7 @@ public class ShowcaseView extends RelativeLayout
     protected ShowcaseView(Context context, AttributeSet attrs, int defStyle, boolean newStyle) {
         super(context, attrs, defStyle);
 
+        mContext = context;
         ApiUtils apiUtils = new ApiUtils();
         if (apiUtils.isCompatWithHoneycomb()) {
             animationFactory = new AnimatorAnimationFactory();
@@ -124,9 +126,8 @@ public class ShowcaseView extends RelativeLayout
         if (viewCounter == 2) mEndButton.setBackgroundColor(getResources().getColor(R.color.pink_button));
         if (viewCounter == 3) mEndButton.setBackgroundColor(getResources().getColor(R.color.blue_button));
         if (viewCounter == 4) mEndButton.setBackgroundColor(getResources().getColor(R.color.orange_button));
-        if (viewCounter > 1) {
-            mEndButton.setX((px - ((MainActivity) context).findViewById(R.id.content).getWidth()) / 2);
-            mEndButton.setY(-30 - ((MainActivity) context).findViewById(R.id.content).getHeight() / 2);
+        if (viewCounter > 2) {
+            mEndButton.setY(-((MainActivity) context).findViewById(R.id.content).getHeight() + 150);
         }
         if (newStyle) {
             showcaseDrawer = new NewShowcaseDrawer(getResources(), context.getTheme());
@@ -838,11 +839,12 @@ public class ShowcaseView extends RelativeLayout
         public void onClick(View v) {
             hide();
             ++viewCounter;
+            MainActivity.mViewCounter = viewCounter;
             if (viewCounter == 1) {
                 Target settingsTarget = new Target() {
                     @Override
                     public Point getPoint() {
-                        Toolbar toolbar = (Toolbar) ((MainActivity) getContext()).findViewById(R.id.toolbar);
+                        Toolbar toolbar = (Toolbar) ((MainActivity)mContext).findViewById(R.id.toolbar);
                         int actionBarHeight = toolbar.getHeight();
                         int actionBarWidth = toolbar.getWidth();
                         int x = actionBarWidth - 40;
@@ -851,7 +853,7 @@ public class ShowcaseView extends RelativeLayout
                     }
                 };
 
-                ShowcaseView.Builder v1 = new ShowcaseView.Builder((MainActivity) v.getContext());
+                ShowcaseView.Builder v1 = new ShowcaseView.Builder((MainActivity)mContext);
                 v1.blockAllTouches();
                 v1.setContentTitle("Settings");
                 v1.setContentText("Tap Here to Change App Settings or Reset to Default.");
@@ -864,7 +866,7 @@ public class ShowcaseView extends RelativeLayout
                 Target addButtonTarget = new Target() {
                     @Override
                     public Point getPoint() {
-                        FloatingActionButton addButton = (FloatingActionButton) (((MainActivity)getContext()).mHome).getView().findViewById(R.id.addButton);
+                        FloatingActionButton addButton = (FloatingActionButton) (((MainActivity)mContext).mHome).getView().findViewById(R.id.addButton);
                         View content = ((MainActivity) getContext()).findViewById(R.id.content);
                         int addButtonX = (int) (addButton.getX() + 80);
                         int addButtonY = content.getHeight();
@@ -874,7 +876,7 @@ public class ShowcaseView extends RelativeLayout
                     }
                 };
 
-                ShowcaseView.Builder v1 = new ShowcaseView.Builder((MainActivity) v.getContext());
+                ShowcaseView.Builder v1 = new ShowcaseView.Builder((MainActivity)mContext);
                 v1.blockAllTouches();
                 v1.setContentTitle("Add From Gallery");
                 v1.setContentText("Tap Here to Add a PicMap from your Device Gallery and Start the Simulation.");
@@ -887,7 +889,7 @@ public class ShowcaseView extends RelativeLayout
                 Target addButtonTarget = new Target() {
                     @Override
                     public Point getPoint() {
-                        View content = ((MainActivity) getContext()).findViewById(R.id.content);
+                        View content = ((MainActivity)mContext).findViewById(R.id.content);
                         int cameraButtonX = content.getWidth() / 2;
                         int cameraButtonY = content.getHeight();
                         int x = cameraButtonX;
@@ -896,7 +898,7 @@ public class ShowcaseView extends RelativeLayout
                     }
                 };
 
-                ShowcaseView.Builder v1 = new ShowcaseView.Builder((MainActivity) v.getContext());
+                ShowcaseView.Builder v1 = new ShowcaseView.Builder((MainActivity)mContext);
                 v1.blockAllTouches();
                 v1.setContentTitle("Add From Camera");
                 v1.setContentText("Tap Here to Add a PicMap from your Device Camera and Start the Simulation.");
@@ -909,8 +911,8 @@ public class ShowcaseView extends RelativeLayout
                 Target addButtonTarget = new Target() {
                     @Override
                     public Point getPoint() {
-                        FloatingActionButton playButton = (FloatingActionButton) (((MainActivity)getContext()).mHome).getView().findViewById(R.id.playButton);
-                        View content = ((MainActivity) getContext()).findViewById(R.id.content);
+                        FloatingActionButton playButton = (FloatingActionButton) (((MainActivity)mContext).mHome).getView().findViewById(R.id.playButton);
+                        View content = ((MainActivity)mContext).findViewById(R.id.content);
                         int playButtonX = (int) (playButton.getX() + 80);
                         int playButtonY = content.getHeight();
                         int x = playButtonX;
@@ -919,7 +921,7 @@ public class ShowcaseView extends RelativeLayout
                     }
                 };
 
-                ShowcaseView.Builder v1 = new ShowcaseView.Builder((MainActivity) v.getContext());
+                ShowcaseView.Builder v1 = new ShowcaseView.Builder((MainActivity)mContext);
                 v1.blockAllTouches();
                 v1.setContentTitle("Your Picture Maps");
                 v1.setContentText("Tap Here to See a List of your Saved Picture Maps and Start the Simulation.");
