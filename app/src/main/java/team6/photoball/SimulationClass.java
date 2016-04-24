@@ -1,13 +1,18 @@
 package team6.photoball;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 
 import java.io.Serializable;
 
@@ -21,10 +26,15 @@ public class SimulationClass extends View {
     private float previousX;
     private float previousY;
 
+    private Bitmap img;
+
     // Constructor
-    public SimulationClass(Context context) {
+    public SimulationClass(Context context, Bitmap bm) {
         super(context);
 
+        if(bm != null) {
+            img = bm;
+        }
         box = new Box();  // ARGB
         int ball_color = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("ball_preference_key",0);
         ball = new Ball(ball_color);
@@ -36,22 +46,28 @@ public class SimulationClass extends View {
         this.setFocusableInTouchMode(true);
     }
 
+    public void setBitmap(Bitmap bm){
+        img = bm;
+    }
+
     // Called back to draw the view. Also called after invalidate().
     @Override
     protected void onDraw(Canvas canvas) {
-        // Draw the components
-        box.draw(canvas);
-        ball.draw(canvas);
+        if(img != null) {
+            // Draw the components
+            box.draw(canvas);
+            ball.draw(canvas);
 
-        // Update the position of the ball, including collision detection and reaction.
-        ball.moveWithCollisionDetection(box);
+            // Update the position of the ball, including collision detection and reaction.
+            ball.moveWithCollisionDetection(box, img);
 
-        // Delay
-        try {
-            Thread.sleep(25);
-        } catch (InterruptedException e) { }
-
-        invalidate();  // Force a re-draw
+            // Delay
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+            }
+        }
+        invalidate();
     }
 
     // Called back when the view is first created or its size changes.

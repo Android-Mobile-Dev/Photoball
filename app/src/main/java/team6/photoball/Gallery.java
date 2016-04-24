@@ -31,6 +31,8 @@ public class Gallery extends Fragment {
     public File mImageFile;
     public boolean b = false;
 
+    private SimulationClass bouncingBallView;
+
     public Gallery() {}
 
     /**
@@ -100,9 +102,8 @@ public class Gallery extends Fragment {
 
         LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
 
-        View bouncingBallView = new SimulationClass(this.getContext());
-
-        container_.addView(bouncingBallView);
+        //TODO: get rid of null
+        bouncingBallView = new SimulationClass(this.getContext(), null);
 
         return view;
     }
@@ -133,7 +134,7 @@ public class Gallery extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != 0) {
-            new ProcessTask(getContext(), this, requestCode, resultCode, data, R.id.imageViewGallery).execute();
+            new ProcessTask(getContext(), this, requestCode, resultCode, data, R.id.imageViewGallery, bouncingBallView).execute();
         } else {
             this.getFragmentManager().popBackStack();
             ((MainActivity)getActivity()).moveToHome();
@@ -165,6 +166,7 @@ public class Gallery extends Fragment {
             try {
                 ProcessTask.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
                 ProcessTask.initRotateImageIfRequired();
+                ((SimulationClass) bouncingBallView).setBitmap(ProcessTask.mBitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -42,13 +42,16 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
     private static ImageView mImageView;
     public static File mImageFile;
 
-    public ProcessTask(Context tcontext, Fragment tfragment, int requestCode, int resultCode, Intent data, int tcallerType){
+    private static SimulationClass bouncingBallView;
+
+    public ProcessTask(Context tcontext, Fragment tfragment, int requestCode, int resultCode, Intent data, int tcallerType, SimulationClass simClass){
         this.requestCode = requestCode;
         this.resultCode = resultCode;
         this.data = data;
         context = tcontext;
         callerType = tcallerType;
         fragment = tfragment;
+        bouncingBallView = simClass;
     }
 
     //this is called BEFORE you start doing anything
@@ -76,6 +79,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
         }
         if (callerType == R.id.imageViewGallery) ((Gallery)fragment).b = true;
         if (callerType == R.id.imageViewCamera) ((Camera)fragment).b = true;
+
         progressDialog.dismiss();
     }
 
@@ -116,7 +120,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
                 try {
                     FileOutputStream out = new FileOutputStream(file);
-                    mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                    mBitmap.compress(Bitmap.CompressFormat.JPEG, 50, out);
                     out.flush();
                     out.close();
                 } catch (Exception e) {
@@ -200,6 +204,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                 rotateImage(90);
         }
         ((ImageView) fragment.getView().findViewById(callerType)).setImageBitmap(mBitmap);
+        bouncingBallView.setBitmap(mBitmap);
     }
 
     public static  void setRotateImageIfRequired(Configuration newConfig) throws IOException {
@@ -212,6 +217,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                 rotateImage(90);
         }
         ((ImageView) fragment.getView().findViewById(callerType)).setImageBitmap(mBitmap);
+        bouncingBallView.setBitmap(mBitmap);
     }
 
     private static void rotateImage(int degree) {

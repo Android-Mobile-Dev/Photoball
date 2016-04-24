@@ -81,7 +81,7 @@ public class MyPicMapsDetail extends Fragment {
 
         background.setBackgroundColor(prefs.getInt("background_preference_key",0));
 
-        setBallLayoutAnimation (this.getContext(), view);
+        setBallLayoutAnimation (this.getContext(), view, mBitmap);
 
         final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
         final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
@@ -126,11 +126,11 @@ public class MyPicMapsDetail extends Fragment {
         return view;
     }
 
-    private static void setBallLayoutAnimation (Context context, View view) {
+    private static void setBallLayoutAnimation (Context context, View view, Bitmap bm) {
 
         LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
 
-        View bouncingBallView = new SimulationClass(context);
+        View bouncingBallView = new SimulationClass(context, bm);
 
         bouncingBallView.setId(view.generateViewId());
 
