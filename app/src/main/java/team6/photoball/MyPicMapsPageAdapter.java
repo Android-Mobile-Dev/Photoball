@@ -16,12 +16,10 @@ import java.util.List;
 
 public class MyPicMapsPageAdapter extends RecyclerView.Adapter<MyPicMapsPageAdapter.ItemHolder> implements View.OnClickListener {
     private Context context;
-    private List<ImageModel> items;
     private OnItemClickListener onItemClickListener;
 
-    public MyPicMapsPageAdapter(Context context, List<ImageModel> items) {
+    public MyPicMapsPageAdapter(Context context) {
         this.context = context;
-        this.items = items;
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -36,7 +34,7 @@ public class MyPicMapsPageAdapter extends RecyclerView.Adapter<MyPicMapsPageAdap
     }
     @Override
     public void onBindViewHolder(MyPicMapsPageAdapter.ItemHolder holder, int position) {
-        ImageModel item = items.get(position);
+        ImageModel item = MyPicMaps.items.get(position);
         holder.text.setText(item.getText());
         File iFile = new File(item.getImage());
 
@@ -53,7 +51,7 @@ public class MyPicMapsPageAdapter extends RecyclerView.Adapter<MyPicMapsPageAdap
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return MyPicMaps.items.size();
     }
 
     @Override public void onClick(final View v) {

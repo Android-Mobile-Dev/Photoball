@@ -131,10 +131,6 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                 if (imagePath.name().contains("CAMERA")) ((Camera) fragment).mImageFile = file;
                 mImageFile = file;
 
-                if (!(MyPicMaps.items.get(MyPicMaps.items.size() - 1).getImage().contains(file.getAbsolutePath()))) {
-                    int t = MyPicMaps.items.size() + 1;
-                    MyPicMaps.items.add(new ImageModel("Item " + t, file.getAbsolutePath()));
-                }
             }
 
             private void modifyImage(File imageFile) {

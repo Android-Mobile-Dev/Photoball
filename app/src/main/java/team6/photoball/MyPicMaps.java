@@ -36,21 +36,6 @@ public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemCl
 
     static private File[] mDirFiles = null;
 
-    static {
-        try {
-            File mImageRoot = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_PICTURES) + "/" + mAppDirectoryName + "/");
-            mDirFiles = mImageRoot.listFiles();
-
-            for (int i = 0; i < mDirFiles.length; i++) {
-                int t = i + 1;
-                items.add(new ImageModel("Item " + t, mDirFiles[i].getAbsolutePath()));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private OnFragmentInteractionListener mListener;
 
     public MyPicMaps() {
@@ -79,6 +64,21 @@ public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemCl
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_my_pic_maps, container, false);
+
+        items.clear();
+
+        try {
+            File mImageRoot = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES) + "/" + mAppDirectoryName + "/");
+            mDirFiles = mImageRoot.listFiles();
+
+            for (int i = 0; i < mDirFiles.length; i++) {
+                int t = i + 1;
+                items.add(new ImageModel("Item " + t, mDirFiles[i].getAbsolutePath()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (items.isEmpty()) view.findViewById(R.id.noMedia).setVisibility(View.VISIBLE);
         else view.findViewById(R.id.noMedia).setVisibility(View.INVISIBLE);
@@ -135,8 +135,9 @@ public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemCl
     }
 
     private void setRecyclerAdapter(RecyclerView recyclerView) {
-        MyPicMapsPageAdapter adapter = new MyPicMapsPageAdapter(this.getContext(), items);
+        MyPicMapsPageAdapter adapter = new MyPicMapsPageAdapter(this.getContext());
         adapter.setOnItemClickListener(this);
+        adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
     }
 
