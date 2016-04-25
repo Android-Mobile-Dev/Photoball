@@ -53,12 +53,15 @@ public class MainActivity extends AppCompatActivity implements
     public static Tutorial mTutorial;
     public static int mViewCounter = 0;
     public static boolean tutorialChanged = false;
+    public static boolean runTutorial;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mViewCounter = 0;
+
+        runTutorial = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("instruction_preference_key",true);
 
         createView ();
 
@@ -178,20 +181,22 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void moveToTutorial() {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        if (tutorialChanged) {
-            Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("tutorial");
-            View v = findViewById(R.id.drawer_layout);;
-            v.invalidate();
-            createView();
-            tutorialChanged = false;
-            moveToHome();
-            moveToTutorial();
-        } else {
-            mTutorial = Tutorial.create();
-            ft.add(R.id.the_screens, mTutorial, "tutorial");
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            ft.commit();
+        if(runTutorial) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            if (tutorialChanged) {
+                Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("tutorial");
+                View v = findViewById(R.id.drawer_layout);
+                v.invalidate();
+                createView();
+                tutorialChanged = false;
+                moveToHome();
+                moveToTutorial();
+            } else {
+                mTutorial = Tutorial.create();
+                ft.add(R.id.the_screens, mTutorial, "tutorial");
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.commit();
+            }
         }
     }
 
