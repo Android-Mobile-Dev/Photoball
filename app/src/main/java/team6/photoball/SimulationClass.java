@@ -29,14 +29,16 @@ public class SimulationClass extends View {
 
 //    http://stackoverflow.com/questions/7266836/get-associated-image-drawable-in-imageview-android
 //    http://stackoverflow.com/questions/9632114/how-to-find-pixels-color-in-particular-coordinate-in-images
-    private Bitmap img;
+    private Bitmap bm;
+    private ImageView img;
 
     // Constructor
-    public SimulationClass(Context context, Drawable img) {
+    public SimulationClass(Context context, ImageView img) {
         super(context);
 
         if(img != null) {
-            this.img = ((BitmapDrawable) img).getBitmap();
+            this.bm = ((BitmapDrawable) img.getDrawable()).getBitmap();
+            this.img = img;
         }
         box = new Box();  // ARGB
         int ball_color = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("ball_preference_key",0);
@@ -51,8 +53,9 @@ public class SimulationClass extends View {
         this.setFocusableInTouchMode(true);
     }
 
-    public void setBitmap(Drawable img){
-        this.img = ((BitmapDrawable) img).getBitmap();
+    public void setBitmap(ImageView img){
+        this.bm = ((BitmapDrawable) img.getDrawable()).getBitmap();
+        this.img = img;
     }
 
     // Called back to draw the view. Also called after invalidate().
@@ -64,7 +67,7 @@ public class SimulationClass extends View {
             ball.draw(canvas);
 
             // Update the position of the ball, including collision detection and reaction.
-            ball.moveWithCollisionDetection(box, img);
+            ball.moveWithCollisionDetection(box, img, bm);
 
             // Delay
 //            try {

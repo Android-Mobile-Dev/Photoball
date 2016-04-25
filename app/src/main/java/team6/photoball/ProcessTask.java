@@ -120,7 +120,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
                 try {
                     FileOutputStream out = new FileOutputStream(file);
-                    mBitmap.compress(Bitmap.CompressFormat.JPEG, 50, out);
+                    mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
                     out.flush();
                     out.close();
                 } catch (Exception e) {
@@ -208,7 +208,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
         }
         ImageView imgView = (ImageView) fragment.getView().findViewById(callerType);
         imgView.setImageBitmap(mBitmap);
-        bouncingBallView.setBitmap(imgView.getDrawable());
+        bouncingBallView.setBitmap(imgView);
     }
 
     public static  void setRotateImageIfRequired(Configuration newConfig) throws IOException {
@@ -222,7 +222,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
         }
         ImageView imgView = (ImageView) fragment.getView().findViewById(callerType);
         imgView.setImageBitmap(mBitmap);
-        bouncingBallView.setBitmap(imgView.getDrawable());
+        bouncingBallView.setBitmap(imgView);
     }
 
     private static void rotateImage(int degree) {
