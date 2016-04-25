@@ -103,6 +103,28 @@ public class Settings extends PreferenceFragment {
             }
         });
 
+        SeekBarPreference mSizePreference = (SeekBarPreference) getPreferenceManager().findPreference("size_preference_key");
+        mSizePreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                SharedPreferences.Editor ed = prefs.edit();
+                ed.putInt("size_preference_key", (Integer) newValue);
+                ed.apply();
+                return true;
+            }
+        });
+
+        SeekBarPreference mSpeedPreference = (SeekBarPreference) getPreferenceManager().findPreference("speed_preference_key");
+        mSpeedPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                SharedPreferences.Editor ed = prefs.edit();
+                ed.putInt("speed_preference_key", (Integer) newValue);
+                ed.apply();
+                return true;
+            }
+        });
+
         mSoundPreference = (CheckBoxPreference) getPreferenceManager().findPreference("sound_preference_key");
         Boolean b = prefs.getBoolean("sound_preference_key", true);
         if (b) {

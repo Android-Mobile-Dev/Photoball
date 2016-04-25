@@ -71,7 +71,15 @@ public class MainActivity extends AppCompatActivity implements
 
         getPermissions();
 
-        createSoundPool();
+        try {
+            createSoundPool();
+            final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            Boolean b = prefs.getBoolean("sound_preference_key", true);
+            if (b)
+                soundOn();
+            else
+                soundOff();
+        } catch (Exception e) {}
     }
 
     protected void createView () {
