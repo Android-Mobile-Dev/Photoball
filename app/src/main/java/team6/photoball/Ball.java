@@ -1,11 +1,14 @@
 package team6.photoball;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -13,7 +16,7 @@ import android.widget.ImageView;
  * Created by nelma on 4/18/2016.
  */
 public class Ball {
-    int radius = 20;      // Ball's radius
+    int radius = 20;   // Ball's radius
     int x = radius + 20;  // Ball's center (x,y)
     int y = radius + 40;
     int xBitmap;
@@ -360,5 +363,15 @@ public class Ball {
 
     public void setColor(int color) {
         paint.setColor(color);
+    }
+
+    public void setRadius(int value) {
+        radius = value;      // Ball's radius
+        x = radius + 20;  // Ball's center (x,y)
+        y = radius + 40;
+    }
+    public void setSpeed(float value) {
+        speedX = value / ((float) 2.5);       // Ball's speed (x,y)
+        speedY = value / ((float) 2.5);
     }
 }

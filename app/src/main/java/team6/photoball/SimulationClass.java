@@ -43,6 +43,8 @@ public class SimulationClass extends View {
         box = new Box();  // ARGB
         int ball_color = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("ball_preference_key",0);
         ball = new Ball(ball_color);
+        ball.setRadius(PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("size_preference_key",0));
+        ball.setSpeed((float)PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("speed_preference_key",0));
 
         // To enable keypad
         this.setFocusable(true);

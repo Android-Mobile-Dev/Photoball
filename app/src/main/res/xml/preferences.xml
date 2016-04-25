@@ -27,7 +27,6 @@
             android:title="@string/setting_background"
             android:icon="@mipmap/ic_colorize_black_24dp"
             app:supportsAlpha="true" />
-
         <yuku.ambilwarna.widget.AmbilWarnaPreference
             android:defaultValue="0xff006600"
             android:key="ball_preference_key"
@@ -42,20 +41,20 @@
             android:key="size_preference_key"
             android:title="Ball Size"
             android:enabled="true"
-            android:defaultValue="50"
-            sample:msbp_minValue="10"
+            android:defaultValue="20"
+            sample:msbp_minValue="20"
             sample:msbp_maxValue="100"
-            sample:msbp_interval="10"
+            sample:msbp_interval="20"
             sample:msbp_measurementUnit="pixels"/>
 
         <com.pavelsikun.seekbarpreference.SeekBarPreference
             android:key="speed_preference_key"
             android:title="Animation Speed"
             android:enabled="true"
-            android:defaultValue="50"
-            sample:msbp_minValue="10"
-            sample:msbp_maxValue="100"
-            sample:msbp_interval="10"
+            android:defaultValue="35"
+            sample:msbp_minValue="5"
+            sample:msbp_maxValue="35"
+            sample:msbp_interval="5"
             sample:msbp_measurementUnit="pixels/sec"/>
     </PreferenceCategory>
 

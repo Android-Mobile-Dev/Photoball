@@ -132,18 +132,10 @@ public class Settings extends PreferenceFragment {
         });
 
         mInstructionPreference = (CheckBoxPreference) getPreferenceManager().findPreference("instruction_preference_key");
-        Boolean x = prefs.getBoolean("instruction_preference_key", true);
         mInstructionPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-//                if ((boolean) newValue) {
-//                    mSoundPreference.setSummary(getResources().getString(R.string.setting_sound_on));
-//                    ((MainActivity)getActivity()).soundOn();
-//                }
-//                else {
-//                    mSoundPreference.setSummary(getResources().getString(R.string.setting_sound_off));
-//                    ((MainActivity)getActivity()).soundOff();
-//                }
+                MainActivity.runTutorial = (boolean) newValue;
                 SharedPreferences.Editor ed = prefs.edit();
                 ed.putBoolean("instruction_preference_key", (boolean) newValue);
                 ed.apply();
