@@ -1,26 +1,25 @@
 package team6.photoball;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
+import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
-
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import java.io.File;
 import java.util.List;
 
 public class MyPicMapsPageAdapter extends RecyclerView.Adapter<MyPicMapsPageAdapter.ItemHolder> implements View.OnClickListener {
     private Context context;
-    private List<ImageModel> items;
     private OnItemClickListener onItemClickListener;
-    public MyPicMapsPageAdapter(Context context, List<ImageModel> items) {
+
+    public MyPicMapsPageAdapter(Context context) {
         this.context = context;
-        this.items = items;
-        //notifyDataSetChanged();
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -35,26 +34,32 @@ public class MyPicMapsPageAdapter extends RecyclerView.Adapter<MyPicMapsPageAdap
     }
     @Override
     public void onBindViewHolder(MyPicMapsPageAdapter.ItemHolder holder, int position) {
-        ImageModel item = items.get(position);
+        ImageModel item = MyPicMaps.items.get(position);
         holder.text.setText(item.getText());
         File iFile = new File(item.getImage());
+
         holder.image.setImageBitmap(null);
-        Picasso.with(context)
-                .load(iFile)
+
+        Glide.with(context).load(iFile)
+                .thumbnail(0.5f)
+                .crossFade()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.image);
-        holder.itemView.setTag(item);
+
+        holder.itemView.setTag(item.getImage());
     }
+
     @Override
     public int getItemCount() {
-        return items.size();
+        return MyPicMaps.items.size();
     }
 
     @Override public void onClick(final View v) {
-        onItemClickListener.onItemClick((ImageModel) v.getTag());
+        onItemClickListener.onItemClick((String)v.getTag());
     }
 
     public interface OnItemClickListener {
-        void onItemClick(ImageModel viewModel);
+        void onItemClick(String viewModel);
     }
 
     protected static class ItemHolder extends RecyclerView.ViewHolder {

@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -35,7 +36,7 @@ public class MyPicMapsDetail extends Fragment {
     private static final String EXTRA_TITLE = "team6.photoball.extraTitle";
 
     // TODO: Rename and change types of parameters
-    private ImageModel mViewModel = null;
+    private String mFilePath = null;
     private ImageView mImageView = null;
     private Bitmap mBitmap = null;
 
@@ -44,14 +45,14 @@ public class MyPicMapsDetail extends Fragment {
     }
 
     // TODO: Rename and change types and number of parameters
-    public static MyPicMapsDetail create(ImageModel viewModel) {
+    public static MyPicMapsDetail create(String filePath) {
         MyPicMapsDetail fragment = new MyPicMapsDetail();
-        fragment.setExtras(viewModel);
+        fragment.setExtras(filePath);
         return fragment;
     }
 
-    public void setExtras (ImageModel viewModel) {
-        mViewModel = viewModel;
+    public void setExtras (String filePath) {
+        mFilePath = filePath;
     }
 
     @Override
@@ -67,7 +68,7 @@ public class MyPicMapsDetail extends Fragment {
 
         view.setId(view.generateViewId());
 
-        File iFile = new File(mViewModel.getImage());
+        File iFile = new File(mFilePath);
 
         mImageView = (ImageView) view.findViewById(R.id.imageViewMyPicMapsDetail);
 
@@ -80,8 +81,6 @@ public class MyPicMapsDetail extends Fragment {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
 
         background.setBackgroundColor(prefs.getInt("background_preference_key",0));
-
-        setBallLayoutAnimation (this.getContext(), view);
 
         final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
         final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
@@ -119,6 +118,7 @@ public class MyPicMapsDetail extends Fragment {
         if (mBitmap != null)
             try {
                 initRotateImageIfRequired();
+                setBallLayoutAnimation (this.getContext(), view, mImageView.getDrawable());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -126,11 +126,11 @@ public class MyPicMapsDetail extends Fragment {
         return view;
     }
 
-    private static void setBallLayoutAnimation (Context context, View view) {
+    private static void setBallLayoutAnimation (Context context, View view, Drawable draw) {
 
         LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
 
-        View bouncingBallView = new SimulationClass(context);
+        View bouncingBallView = new SimulationClass(context, draw);
 
         bouncingBallView.setId(view.generateViewId());
 
@@ -140,6 +140,7 @@ public class MyPicMapsDetail extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mBitmap.recycle();
         mBitmap = null;
     }
 
@@ -204,4 +205,5 @@ public class MyPicMapsDetail extends Fragment {
         matrix.postRotate(degree);
         mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
     }
+
 }

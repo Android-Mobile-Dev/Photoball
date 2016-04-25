@@ -16,7 +16,7 @@
             android:key="sound_preference_key" />
         <Preference android:title="@string/setting_default"
             android:icon="@mipmap/ic_delete_black_24dp"
-            android:key="default_preference_key"></Preference>
+            android:key="default_preference_key"/>
     </PreferenceCategory>
     <PreferenceCategory
         android:key="pref_key_storage_settings_colors"

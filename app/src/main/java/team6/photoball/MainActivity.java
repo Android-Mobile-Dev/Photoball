@@ -1,13 +1,13 @@
 package team6.photoball;
 
 import android.Manifest;
+import android.support.v4.app.Fragment;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
-import android.graphics.Point;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.Uri;
@@ -27,9 +27,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
-import team6.photoball.widgets.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.Target;
 
 import java.util.HashMap;
 
@@ -51,18 +50,34 @@ public class MainActivity extends AppCompatActivity implements
     public boolean mSoundOn;
     public Menu mMenu = null;
     public Home mHome;
+    public static Tutorial mTutorial;
+    public static int mViewCounter = 0;
+    public static boolean tutorialChanged = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mViewCounter = 0;
+
+        createView ();
+
+        moveToHome();
+
+        moveToTutorial();
+
+        getPermissions();
+
+        createSoundPool();
+    }
+
+    protected void createView () {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setIcon(R.mipmap.ic_launcher_toolbar);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
-
-        moveToHome();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -72,12 +87,6 @@ public class MainActivity extends AppCompatActivity implements
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        getPermissions();
-
-        appTutorial();
-
-        createSoundPool();
     }
 
     @Override
@@ -168,6 +177,24 @@ public class MainActivity extends AppCompatActivity implements
         ft.commit();
     }
 
+    public void moveToTutorial() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        if (tutorialChanged) {
+            Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("tutorial");
+            View v = findViewById(R.id.drawer_layout);;
+            v.invalidate();
+            createView();
+            tutorialChanged = false;
+            moveToHome();
+            moveToTutorial();
+        } else {
+            mTutorial = Tutorial.create();
+            ft.add(R.id.the_screens, mTutorial, "tutorial");
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            ft.commit();
+        }
+    }
+
     public void moveMyToPicMaps() {
         if (mSoundOn)
             mSounds.play(mSoundIDMap.get(R.raw.click), 1, 1, 1, 0, 1);
@@ -218,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements
         ft.commit();
     }
 
-    public void moveToMyPicMapsDetail(ImageModel viewModel) {
+    public void moveToMyPicMapsDetail(String viewModel) {
         if (mSoundOn)
             mSounds.play(mSoundIDMap.get(R.raw.click), 1, 1, 1, 0, 1);
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
@@ -357,28 +384,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
         return;
-    }
-
-    private void appTutorial () {
-
-        Target homeTarget = new Target() {
-            @Override
-            public Point getPoint() {
-                Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-                int actionBarSize = toolbar.getHeight();
-                int x = 40;
-                int y = actionBarSize / 2;
-                return new Point(x, y);
-            }
-        };
-
-        ShowcaseView.Builder v0 = new ShowcaseView.Builder(this);
-        v0.blockAllTouches();
-        v0.setContentTitle("Navigation Drawer");
-        v0.setContentText("Tap Here to See Your Saved PicMaps, Make Updates and Info.");
-        v0.setTarget(homeTarget);
-        v0.setStyle(R.style.CustomShowcaseTheme);
-        v0.build();
     }
 
 }

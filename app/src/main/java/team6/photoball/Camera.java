@@ -38,7 +38,10 @@ public class Camera extends Fragment {
     public File mImageFile;
     public boolean b = false;
 
+    private SimulationClass bouncingBallView;
+
     public Camera() {}
+
 
     /**
      * Use this factory method to create a new instance of
@@ -107,7 +110,8 @@ public class Camera extends Fragment {
 
         LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
 
-        View bouncingBallView = new SimulationClass(this.getContext());
+        //TODO: get rid of null
+        bouncingBallView = new SimulationClass(this.getContext(), null);
 
         container_.addView(bouncingBallView);
 
@@ -140,7 +144,7 @@ public class Camera extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != 0) {
-            new ProcessTask(this.getContext(), this, requestCode, resultCode, data, R.id.imageViewCamera).execute();
+            new ProcessTask(this.getContext(), this, requestCode, resultCode, data, R.id.imageViewCamera, bouncingBallView).execute();
         } else {
             this.getFragmentManager().popBackStack();
             ((MainActivity)getActivity()).moveToHome();
@@ -180,6 +184,7 @@ public class Camera extends Fragment {
             try {
                 ProcessTask.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
                 ProcessTask.initRotateImageIfRequired();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

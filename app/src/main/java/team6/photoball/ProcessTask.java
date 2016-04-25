@@ -2,11 +2,7 @@ package team6.photoball;
 
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.media.ExifInterface;
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -16,14 +12,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
-import android.view.Display;
-import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.Toast;
-
-import com.squareup.picasso.Picasso;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -50,16 +39,19 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
     private static int callerType;
     private static Fragment fragment;
     public static Bitmap mBitmap;
-    private static ImageView mImageView;
+    public static ImageView mImageView;
     public static File mImageFile;
 
-    public ProcessTask(Context tcontext, Fragment tfragment, int requestCode, int resultCode, Intent data, int tcallerType){
+    private static SimulationClass bouncingBallView;
+
+    public ProcessTask(Context tcontext, Fragment tfragment, int requestCode, int resultCode, Intent data, int tcallerType, SimulationClass simClass){
         this.requestCode = requestCode;
         this.resultCode = resultCode;
         this.data = data;
         context = tcontext;
         callerType = tcallerType;
         fragment = tfragment;
+        bouncingBallView = simClass;
     }
 
     //this is called BEFORE you start doing anything
@@ -76,9 +68,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
     //every time you call publishProgress this method is executed, in this case receives an Integer
     @Override
-    protected void onProgressUpdate(Integer ... option){
-
-    }
+    protected void onProgressUpdate(Integer ... option){}
 
     @Override
     protected void onPostExecute(Void unused){
@@ -89,6 +79,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
         }
         if (callerType == R.id.imageViewGallery) ((Gallery)fragment).b = true;
         if (callerType == R.id.imageViewCamera) ((Camera)fragment).b = true;
+
         progressDialog.dismiss();
     }
 
@@ -129,7 +120,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
                 try {
                     FileOutputStream out = new FileOutputStream(file);
-                    mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                    mBitmap.compress(Bitmap.CompressFormat.JPEG, 50, out);
                     out.flush();
                     out.close();
                 } catch (Exception e) {
@@ -144,10 +135,6 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                 if (imagePath.name().contains("CAMERA")) ((Camera) fragment).mImageFile = file;
                 mImageFile = file;
 
-                if (!(MyPicMaps.items.get(MyPicMaps.items.size() - 1).getImage().contains(file.getAbsolutePath()))) {
-                    int t = MyPicMaps.items.size() + 1;
-                    MyPicMaps.items.add(new ImageModel("Item " + t, file.getAbsolutePath()));
-                }
             }
 
             private void modifyImage(File imageFile) {
@@ -160,7 +147,10 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                 GPUImage gpuImage = new GPUImage(fragment.getActivity());
                 gpuImage.setImage(mBitmap);
                 GPUImageFilterGroup groupFilter = new GPUImageFilterGroup();
-                groupFilter.addFilter(new GPUImageSobelEdgeDetection());
+                //5.0f from gpu image sample
+                GPUImageSobelEdgeDetection detection = new GPUImageSobelEdgeDetection();
+                detection.setLineSize(10.0f);
+                groupFilter.addFilter(detection);
                 groupFilter.addFilter(new GPUImageColorInvertFilter());
                 gpuImage.setFilter(groupFilter);
                 mBitmap = gpuImage.getBitmapWithFilterApplied();
@@ -200,7 +190,6 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                         inSampleSize *= 2;
                     }
                 }
-
                 return inSampleSize;
             }
         });
@@ -217,7 +206,9 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
             if (mBitmap.getWidth() > mBitmap.getHeight())
                 rotateImage(90);
         }
-        ((ImageView) fragment.getView().findViewById(callerType)).setImageBitmap(mBitmap);
+        ImageView imgView = (ImageView) fragment.getView().findViewById(callerType);
+        imgView.setImageBitmap(mBitmap);
+        bouncingBallView.setBitmap(imgView.getDrawable());
     }
 
     public static  void setRotateImageIfRequired(Configuration newConfig) throws IOException {
@@ -229,7 +220,9 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
             if (mBitmap.getWidth() > mBitmap.getHeight())
                 rotateImage(90);
         }
-        ((ImageView) fragment.getView().findViewById(callerType)).setImageBitmap(mBitmap);
+        ImageView imgView = (ImageView) fragment.getView().findViewById(callerType);
+        imgView.setImageBitmap(mBitmap);
+        bouncingBallView.setBitmap(imgView.getDrawable());
     }
 
     private static void rotateImage(int degree) {
