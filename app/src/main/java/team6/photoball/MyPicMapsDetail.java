@@ -118,7 +118,7 @@ public class MyPicMapsDetail extends Fragment {
         if (mBitmap != null)
             try {
                 initRotateImageIfRequired();
-                setBallLayoutAnimation (this.getContext(), view, mImageView.getDrawable());
+                setBallLayoutAnimation (this.getContext(), view, mImageView);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -126,11 +126,11 @@ public class MyPicMapsDetail extends Fragment {
         return view;
     }
 
-    private static void setBallLayoutAnimation (Context context, View view, Drawable draw) {
+    private static void setBallLayoutAnimation (Context context, View view, ImageView img) {
 
         LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
 
-        View bouncingBallView = new SimulationClass(context, draw);
+        View bouncingBallView = new SimulationClass(context, img);
 
         bouncingBallView.setId(view.generateViewId());
 

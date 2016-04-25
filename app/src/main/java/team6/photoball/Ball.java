@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.widget.ImageView;
 
 /**
  * Created by nelma on 4/18/2016.
@@ -15,6 +16,8 @@ public class Ball {
     int radius = 20;      // Ball's radius
     int x = radius + 20;  // Ball's center (x,y)
     int y = radius + 40;
+    int xBitmap;
+    int yBitmap;
     float speedX = 35 / ((float) 2.5);       // Ball's speed (x,y)
     float speedY = 35 / ((float) 2.5);
     private RectF bounds;   // Needed for Canvas.drawOval
@@ -31,7 +34,7 @@ public class Ball {
         paint.setColor(color);
     }
 
-    public void moveWithCollisionDetection(Box box, Bitmap img) {
+    public void moveWithCollisionDetection(Box box, ImageView img, Bitmap bm) {
         // Get new (x,y) position
         x += speedX;
         y += speedY;
@@ -89,19 +92,29 @@ public class Ball {
 
         boolean collision = false;
         int c = radius;
-        for(int i = -c; i < c; ++i){
-            try{
-                int r = Color.red(img.getPixel( x + i,  y + i));
-                if (r < 180){collision = true;}
-            } catch (IllegalArgumentException e){
-
-            }
+        double xScale = ((double) bm.getWidth()/img.getWidth());
+        double yScale = ((double) bm.getHeight()/img.getHeight());
+        xBitmap = (int) (x * xScale);
+        yBitmap = (int) (y * yScale);
+        int r = Color.red(bm.getPixel(xBitmap, yBitmap));
+        if( r < 180 ){
+            collision = true;
         }
+//
+//        return;
+//        for(int i = -c; i < c; ++i){
+//            try{
+//                int r = Color.red(img.getPixel( xBitmap + i,  yBitmap + i));
+//                if (r < 180){collision = true;}
+//            } catch (IllegalArgumentException e){
+//
+//            }
+//        }
 
-        if(x < 800 && x > 300 && y < 900 && y > 500) {
-            int r = Color.red(img.getPixel(x, y));
-            Log.d("COLOR", "X: " + x + "Y: " + y + " RED --> " + r);
-        }
+//        if(x < 800 && x > 300 && y < 900 && y > 500) {
+//            int r = Color.red(img.getPixel(x, y));
+//            Log.d("COLOR", "X: " + x + "Y: " + y + " RED --> " + r);
+//        }
 //        int g = Color.green(img.getPixel((int) x, (int) y));
 //        int b = Color.blue(img.getPixel((int) x, (int) y));
 //        Log.d("Color @ Pixel", "r: " + r + " " + "g: " + g + " b: " + b); // r == g == b since it's black and white
@@ -120,30 +133,31 @@ public class Ball {
 //            speedY = -speedY;
 //            return;
             //http://stackoverflow.com/questions/6391777/switch-on-enum-in-java
+
             switch (direction) {
                 case N:
-                    checkNorth(img);
+                    checkNorth(xScale, yScale, bm);
                     break;
                 case NE:
-                    checkNortheast(img);
+                    checkNortheast(xScale, yScale, bm);
                     break;
                 case E:
-                    checkEast(img);
+                    checkEast(xScale, yScale, bm);
                     break;
                 case SE:
-                    checkSoutheast(img);
+                    checkSoutheast(xScale, yScale, bm);
                     break;
                 case S:
-                    checkSouth(img);
+                    checkSouth(xScale, yScale, bm);
                     break;
                 case SW:
-                    checkSouthwest(img);
+                    checkSouthwest(xScale, yScale, bm);
                     break;
                 case W:
-                    checkWest(img);
+                    checkWest(xScale, yScale, bm);
                     break;
                 case NW:
-                    checkNorthwest(img);
+                    checkNorthwest(xScale, yScale, bm);
                     break;
                 default:
                     speedX = -speedX;
@@ -152,17 +166,18 @@ public class Ball {
 
             }
 
+
         }
 
     }
 
-    private void checkNorth(Bitmap img) {
+    private void checkNorth(double xScale, double yScale, Bitmap bm) {
         //case 1 --> /
         int[] nearbyPixels = new int[2 * radius];
-        if (hitForwardSlash(nearbyPixels, img)) {
+        if (hitForwardSlash(nearbyPixels, xScale, yScale, bm)) {
             speedX = -speedY;
             speedY = 0;
-        } else if (hitBackSlash(nearbyPixels, img)) {
+        } else if (hitBackSlash(nearbyPixels, xScale, yScale, bm)) {
             speedX = speedY;
             speedY = 0;
         } else {
@@ -170,11 +185,11 @@ public class Ball {
         }
     }
 
-    private void checkNortheast(Bitmap img) {
+    private void checkNortheast(double xScale, double yScale, Bitmap bm) {
         int[] nearbyPixels = new int[2 * radius];
-        if (hitVertical(nearbyPixels, img)) {
+        if (hitVertical(nearbyPixels, xScale, yScale, bm)) {
             speedX = -speedX;
-        } else if (hitHorizontal(nearbyPixels, img)) {
+        } else if (hitHorizontal(nearbyPixels, xScale, yScale, bm)) {
             speedY = -speedY;
         } else {
             speedX = -speedX;
@@ -182,12 +197,12 @@ public class Ball {
         }
     }
 
-    private void checkEast(Bitmap img) {
+    private void checkEast(double xScale, double yScale, Bitmap bm) {
         int[] nearbyPixels = new int[2 * radius];
-        if (hitForwardSlash(nearbyPixels, img)) {
+        if (hitForwardSlash(nearbyPixels, xScale, yScale, bm)) {
             speedY = -speedX;
             speedX = 0;
-        } else if (hitBackSlash(nearbyPixels, img)) {
+        } else if (hitBackSlash(nearbyPixels, xScale, yScale, bm)) {
             speedY = speedX;
             speedX = 0;
         } else {
@@ -195,11 +210,11 @@ public class Ball {
         }
     }
 
-    private void checkSoutheast(Bitmap img) {
+    private void checkSoutheast(double xScale, double yScale, Bitmap bm) {
         int[] nearbyPixels = new int[2 * radius];
-        if (hitVertical(nearbyPixels, img)) {
+        if (hitVertical(nearbyPixels, xScale, yScale, bm)) {
             speedX = -speedX;
-        } else if (hitHorizontal(nearbyPixels, img)) {
+        } else if (hitHorizontal(nearbyPixels, xScale, yScale, bm)) {
             speedY = -speedY;
         } else {
             speedX = -speedX;
@@ -207,12 +222,12 @@ public class Ball {
         }
     }
 
-    private void checkSouth(Bitmap img) {
+    private void checkSouth(double xScale, double yScale, Bitmap bm) {
         int[] nearbyPixels = new int[2 * radius];
-        if (hitForwardSlash(nearbyPixels, img)) {
+        if (hitForwardSlash(nearbyPixels, xScale, yScale, bm)) {
             speedX = -speedY;
             speedY = 0;
-        } else if (hitBackSlash(nearbyPixels, img)) {
+        } else if (hitBackSlash(nearbyPixels, xScale, yScale, bm)) {
             speedX = speedY;
             speedY = 0;
         } else {
@@ -220,11 +235,11 @@ public class Ball {
         }
     }
 
-    private void checkSouthwest(Bitmap img) {
+    private void checkSouthwest(double xScale, double yScale, Bitmap bm) {
         int[] nearbyPixels = new int[2 * radius];
-        if (hitVertical(nearbyPixels, img)) {
+        if (hitVertical(nearbyPixels, xScale, yScale, bm)) {
             speedX = -speedX;
-        } else if (hitHorizontal(nearbyPixels, img)) {
+        } else if (hitHorizontal(nearbyPixels, xScale, yScale, bm)) {
             speedY = -speedY;
         } else {
             speedX = -speedX;
@@ -232,12 +247,12 @@ public class Ball {
         }
     }
 
-    private void checkWest(Bitmap img) {
+    private void checkWest(double xScale, double yScale, Bitmap bm) {
         int[] nearbyPixels = new int[2 * radius];
-        if (hitForwardSlash(nearbyPixels, img)) {
+        if (hitForwardSlash(nearbyPixels, xScale, yScale, bm)) {
             speedY = -speedX;
             speedX = 0;
-        } else if (hitBackSlash(nearbyPixels, img)) {
+        } else if (hitBackSlash(nearbyPixels, xScale, yScale, bm)) {
             speedY = speedX;
             speedX = 0;
         } else {
@@ -245,11 +260,11 @@ public class Ball {
         }
     }
 
-    private void checkNorthwest(Bitmap img) {
+    private void checkNorthwest(double xScale, double yScale, Bitmap bm) {
         int[] nearbyPixels = new int[2 * radius];
-        if (hitVertical(nearbyPixels, img)) {
+        if (hitVertical(nearbyPixels, xScale, yScale, bm)) {
             speedX = -speedX;
-        } else if (hitHorizontal(nearbyPixels, img)) {
+        } else if (hitHorizontal(nearbyPixels, xScale, yScale, bm)) {
             speedY = -speedY;
         } else {
             speedX = -speedX;
@@ -257,7 +272,7 @@ public class Ball {
         }
     }
 
-    private boolean hitForwardSlash(int[] pixels, Bitmap img) {
+    private boolean hitForwardSlash(int[] pixels, double xScale, double yScale, Bitmap bm) {
         int c = radius;
         int numTrue = 0;
         int ind = 0;
@@ -266,7 +281,7 @@ public class Ball {
                 continue;
             }
             try {
-                pixels[ind] = Color.red(img.getPixel( x + c, y - c));
+                pixels[ind] = Color.red(bm.getPixel( xBitmap + c, yBitmap - c));
                 numTrue += pixels[ind] < 180 ? 1 : 0;
             } catch (IllegalArgumentException e) {//from going out of bounds
 
@@ -277,8 +292,7 @@ public class Ball {
         return numTrue > (radius / 2);
     }
 
-    private boolean hitBackSlash(int[] pixels, Bitmap img) {
-
+    private boolean hitBackSlash(int[] pixels, double xScale, double yScale, Bitmap bm) {
         int c = radius;
         int numTrue = 0;
         int ind = 0;
@@ -287,7 +301,7 @@ public class Ball {
                 continue;
             }
             try {
-                pixels[ind] = Color.red(img.getPixel( x + c,  y + c));
+                pixels[ind] = Color.red(bm.getPixel( xBitmap + c,  yBitmap + c));
                 numTrue += pixels[ind] < 180 ? 1 : 0;
             } catch (IllegalArgumentException e) {//from going out of bounds
 
@@ -298,7 +312,7 @@ public class Ball {
         return numTrue > (radius / 2);
     }
 
-    private boolean hitVertical(int[] pixels, Bitmap img) {
+    private boolean hitVertical(int[] pixels, double xScale, double yScale, Bitmap bm) {
         int c = radius;
         int numTrue = 0;
         int ind = 0;
@@ -307,7 +321,7 @@ public class Ball {
                 continue;
             }
             try {
-                pixels[ind] = Color.red(img.getPixel( x, y + c));
+                pixels[ind] = Color.red(bm.getPixel( xBitmap, yBitmap + c));
                 numTrue += pixels[ind] < 180 ? 1 : 0;
             } catch (IllegalArgumentException e) {//from going out of bounds
 
@@ -318,7 +332,7 @@ public class Ball {
         return numTrue > (radius / 2);
     }
 
-    private boolean hitHorizontal(int[] pixels, Bitmap img) {
+    private boolean hitHorizontal(int[] pixels, double xScale, double yScale, Bitmap bm) {
         int c = radius;
         int numTrue = 0;
         int ind = 0;
@@ -327,7 +341,7 @@ public class Ball {
                 continue;
             }
             try {
-                pixels[ind] = Color.red(img.getPixel( x + c, y));
+                pixels[ind] = Color.red(bm.getPixel( xBitmap + c, yBitmap));
                 numTrue += pixels[ind] < 180 ? 1 : 0;
             } catch (IllegalArgumentException e) {//from going out of bounds
 
