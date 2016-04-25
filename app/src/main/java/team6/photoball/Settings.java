@@ -151,6 +151,25 @@ public class Settings extends PreferenceFragment {
             }
         });
 
+        mSizePreference = (SeekBarPreference) getPreferenceManager().findPreference("size_preference_key");
+        mSizePreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+                SimulationClass s = new SimulationClass(getActivity());
+                s.onSizeChanged(mSizePreference.getCurrentValue(),mSizePreference.getCurrentValue(), 0, 0);
+                return true;
+            }
+        });
+
+        mSpeedPreference = (SeekBarPreference) getPreferenceManager().findPreference("speed_preference_key");
+        mSpeedPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+
+                return true;
+            }
+        });
+
         mDefaultPreference = getPreferenceManager().findPreference("default_preference_key");
         mDefaultPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override

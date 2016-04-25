@@ -12,7 +12,11 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+
+import com.pavelsikun.seekbarpreference.SeekBarPreference;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,6 +63,8 @@ public class Default extends DialogFragment {
         ed.putInt("background_preference_key", 0xffffffff);
         ed.putInt("ball_preference_key", 0xff006600);
         ed.putBoolean("instruction_preference_key", true);
+        ed.putInt("speed_preference_key", 35);
+        ed.putInt("size_preference_key", 20);
         ed.apply();
 
         ((MainActivity)getActivity()).soundOn();
@@ -78,6 +84,14 @@ public class Default extends DialogFragment {
         }
 
         getFragmentManager().popBackStack();
+
+        android.support.v4.app.FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.the_screens, new Settings());
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        ft.addToBackStack("fragment_settings");
+        ft.commit();
+
     }
 
     public void doNegativeClick() {
