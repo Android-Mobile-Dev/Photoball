@@ -88,90 +88,89 @@ public class Ball {
                     direction = BallDirection.NW;
                 }
             }
-
-
             return;
         }
 
-        boolean collision = false;
-        int c = radius;
-        double xScale = ((double) bm.getWidth()/img.getWidth());
-        double yScale = ((double) bm.getHeight()/img.getHeight());
-        xBitmap = (int) (x * xScale);
-        yBitmap = (int) (y * yScale);
-        int r = Color.red(bm.getPixel(xBitmap, yBitmap));
-        if( r < 180 ){
-            collision = true;
-        }
-//
-//        return;
-//        for(int i = -c; i < c; ++i){
-//            try{
-//                int r = Color.red(img.getPixel( xBitmap + i,  yBitmap + i));
-//                if (r < 180){collision = true;}
-//            } catch (IllegalArgumentException e){
-//
-//            }
-//        }
+        if (bm != null && !bm.isRecycled()) {
+            boolean collision = false;
+            int c = radius;
+            double xScale = ((double) bm.getWidth() / img.getWidth());
+            double yScale = ((double) bm.getHeight() / img.getHeight());
+            xBitmap = (int) (x * xScale);
+            yBitmap = (int) (y * yScale);
+            int r = Color.red(bm.getPixel(xBitmap, yBitmap));
+            if (r < 180) {
+                collision = true;
+            }
+            //
+            //        return;
+            //        for(int i = -c; i < c; ++i){
+            //            try{
+            //                int r = Color.red(img.getPixel( xBitmap + i,  yBitmap + i));
+            //                if (r < 180){collision = true;}
+            //            } catch (IllegalArgumentException e){
+            //
+            //            }
+            //        }
 
-//        if(x < 800 && x > 300 && y < 900 && y > 500) {
-//            int r = Color.red(img.getPixel(x, y));
-//            Log.d("COLOR", "X: " + x + "Y: " + y + " RED --> " + r);
-//        }
-//        int g = Color.green(img.getPixel((int) x, (int) y));
-//        int b = Color.blue(img.getPixel((int) x, (int) y));
-//        Log.d("Color @ Pixel", "r: " + r + " " + "g: " + g + " b: " + b); // r == g == b since it's black and white
-        //for now if r g or b is below 75, that is considered black
+            //        if(x < 800 && x > 300 && y < 900 && y > 500) {
+            //            int r = Color.red(img.getPixel(x, y));
+            //            Log.d("COLOR", "X: " + x + "Y: " + y + " RED --> " + r);
+            //        }
+            //        int g = Color.green(img.getPixel((int) x, (int) y));
+            //        int b = Color.blue(img.getPixel((int) x, (int) y));
+            //        Log.d("Color @ Pixel", "r: " + r + " " + "g: " + g + " b: " + b); // r == g == b since it's black and white
+            //for now if r g or b is below 75, that is considered black
 
-        // Detect collision and react
+            // Detect collision and react
 
-        if (collision) {
+            if (collision) {
 
-            //black --> rebound
-            //case 1 /
-            //case 2 \
-            //case 3 |
-            //case 4 _
-//            speedX = -speedX;
-//            speedY = -speedY;
-//            return;
-            //http://stackoverflow.com/questions/6391777/switch-on-enum-in-java
+                //black --> rebound
+                //case 1 /
+                //case 2 \
+                //case 3 |
+                //case 4 _
+                //            speedX = -speedX;
+                //            speedY = -speedY;
+                //            return;
+                //http://stackoverflow.com/questions/6391777/switch-on-enum-in-java
 
-            switch (direction) {
-                case N:
-                    checkNorth(xScale, yScale, bm);
-                    break;
-                case NE:
-                    checkNortheast(xScale, yScale, bm);
-                    break;
-                case E:
-                    checkEast(xScale, yScale, bm);
-                    break;
-                case SE:
-                    checkSoutheast(xScale, yScale, bm);
-                    break;
-                case S:
-                    checkSouth(xScale, yScale, bm);
-                    break;
-                case SW:
-                    checkSouthwest(xScale, yScale, bm);
-                    break;
-                case W:
-                    checkWest(xScale, yScale, bm);
-                    break;
-                case NW:
-                    checkNorthwest(xScale, yScale, bm);
-                    break;
-                default:
-                    speedX = -speedX;
-                    speedY = -speedY;
-                    break;
+                switch (direction) {
+                    case N:
+                        checkNorth(xScale, yScale, bm);
+                        break;
+                    case NE:
+                        checkNortheast(xScale, yScale, bm);
+                        break;
+                    case E:
+                        checkEast(xScale, yScale, bm);
+                        break;
+                    case SE:
+                        checkSoutheast(xScale, yScale, bm);
+                        break;
+                    case S:
+                        checkSouth(xScale, yScale, bm);
+                        break;
+                    case SW:
+                        checkSouthwest(xScale, yScale, bm);
+                        break;
+                    case W:
+                        checkWest(xScale, yScale, bm);
+                        break;
+                    case NW:
+                        checkNorthwest(xScale, yScale, bm);
+                        break;
+                    default:
+                        speedX = -speedX;
+                        speedY = -speedY;
+                        break;
+
+                }
+
 
             }
-
-
         }
-
     }
 
     private void checkNorth(double xScale, double yScale, Bitmap bm) {
