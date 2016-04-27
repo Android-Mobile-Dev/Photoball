@@ -203,6 +203,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void moveMyToPicMaps() {
+        if (ProcessTask.mBitmap != null && !ProcessTask.mBitmap.isRecycled()) {
+            ProcessTask.mBitmap.recycle();
+            ProcessTask.mBitmap = null;
+        }
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         MyPicMaps thisMyPicMaps = MyPicMaps.create();
@@ -214,6 +218,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void moveToCamera() {
+        if (ProcessTask.mBitmap != null && !ProcessTask.mBitmap.isRecycled()) {
+            ProcessTask.mBitmap.recycle();
+            ProcessTask.mBitmap = null;
+        }
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         Camera thisCamera = Camera.create();
@@ -225,6 +233,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void moveToGallery() {
+        if (ProcessTask.mBitmap != null && !ProcessTask.mBitmap.isRecycled()) {
+            ProcessTask.mBitmap.recycle();
+            ProcessTask.mBitmap = null;
+        }
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         Gallery thisGallery = Gallery.create();
