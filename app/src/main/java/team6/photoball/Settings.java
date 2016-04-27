@@ -129,22 +129,20 @@ public class Settings extends PreferenceFragment {
         Boolean b = prefs.getBoolean("sound_preference_key", true);
         if (b) {
             mSoundPreference.setSummary(getResources().getString(R.string.setting_sound_on));
-            ((MainActivity)getActivity()).soundOn();
         }
         else {
             mSoundPreference.setSummary(getResources().getString(R.string.setting_sound_off));
-            ((MainActivity)getActivity()).soundOff();
         }
         mSoundPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 if ((boolean) newValue) {
                     mSoundPreference.setSummary(getResources().getString(R.string.setting_sound_on));
-                    ((MainActivity)getActivity()).soundOn();
+                    ((MainActivity)getActivity()).playMusic();
                 }
                 else {
                     mSoundPreference.setSummary(getResources().getString(R.string.setting_sound_off));
-                    ((MainActivity)getActivity()).soundOff();
+                    ((MainActivity)getActivity()).stopMusic();
                 }
                 SharedPreferences.Editor ed = prefs.edit();
                 ed.putBoolean("sound_preference_key", (boolean) newValue);

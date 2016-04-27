@@ -67,7 +67,7 @@ public class Default extends DialogFragment {
         ed.putInt("size_preference_key", 20);
         ed.apply();
 
-        ((MainActivity)getActivity()).soundOn();
+        ((MainActivity)getActivity()).playMusic();
 
         String appDirectoryName = "Photoball";
         File imageRoot = new File(Environment.getExternalStoragePublicDirectory(
