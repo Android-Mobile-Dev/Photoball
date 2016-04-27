@@ -72,6 +72,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
     @Override
     protected void onPostExecute(Void unused){
+        progressDialog.dismiss();
         try {
             if (mBitmap != null) initRotateImageIfRequired();
         } catch (IOException e) {
@@ -79,8 +80,6 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
         }
         if (callerType == R.id.imageViewGallery) ((Gallery)fragment).b = true;
         if (callerType == R.id.imageViewCamera) ((Camera)fragment).b = true;
-
-        progressDialog.dismiss();
     }
 
     //in here is where you execute your php script or whatever "heavy" stuff you need
@@ -154,6 +153,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                 groupFilter.addFilter(new GPUImageColorInvertFilter());
                 gpuImage.setFilter(groupFilter);
                 mBitmap = gpuImage.getBitmapWithFilterApplied();
+                gpuImage.deleteImage();
             }
 
             public void decodeSampledBitmapFromFile(File imageFile, int reqWidth, int reqHeight) {
