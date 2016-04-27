@@ -40,6 +40,10 @@ public class SimulationClass extends View {
             this.bm = ((BitmapDrawable) img.getDrawable()).getBitmap();
             this.img = img;
         }
+        else{
+            this.bm = ProcessTask.mBitmap;
+            this.img = ProcessTask.mImageView;
+        }
         box = new Box();  // ARGB
         int ball_color = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("ball_preference_key",0);
         ball = new Ball(ball_color);
