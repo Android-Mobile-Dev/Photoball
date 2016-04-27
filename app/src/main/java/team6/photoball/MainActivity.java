@@ -290,7 +290,9 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        playMusic();
+        boolean b = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("sound_preference_key",true);
+        if(b)
+            playMusic();
 
     }
 
