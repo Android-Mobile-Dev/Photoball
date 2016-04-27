@@ -168,7 +168,6 @@ public class Gallery extends Fragment {
             try {
                 ProcessTask.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
                 ProcessTask.initRotateImageIfRequired();
-               ((SimulationClass) bouncingBallView).setBitmap((ImageView) getView().findViewById(R.id.imageViewGallery));
             } catch (IOException e) {
                 e.printStackTrace();
             }
