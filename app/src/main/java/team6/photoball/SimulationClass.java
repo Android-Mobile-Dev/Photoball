@@ -69,11 +69,10 @@ public class SimulationClass extends View {
             // Update the position of the ball, including collision detection and reaction.
             ball.moveWithCollisionDetection(box, img, bm);
 
-            // Delay
-//            try {
-//                Thread.sleep(1);
-//            } catch (InterruptedException e) {
-//            }
+            //Delay
+            try {
+                Thread.sleep(30);
+            } catch (InterruptedException e) {}
         }
         invalidate();
     }
