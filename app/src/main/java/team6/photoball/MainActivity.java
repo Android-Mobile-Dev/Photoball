@@ -60,15 +60,15 @@ public class MainActivity extends AppCompatActivity implements
 
         mViewCounter = 0;
 
-        runTutorial = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("instruction_preference_key",true);
-
         createView ();
 
         moveToHome();
 
-        moveToTutorial();
-
         getPermissions();
+
+        runTutorial = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("instruction_preference_key",true);
+
+        if (runTutorial) moveToTutorial();
 
         boolean b = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("sound_preference_key",true);
         if(b)
@@ -183,22 +183,20 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void moveToTutorial() {
-        if(runTutorial) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            if (tutorialChanged) {
-                Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("tutorial");
-                View v = findViewById(R.id.drawer_layout);
-                v.invalidate();
-                createView();
-                tutorialChanged = false;
-                moveToHome();
-                moveToTutorial();
-            } else {
-                mTutorial = Tutorial.create();
-                ft.add(R.id.the_screens, mTutorial, "tutorial");
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.commit();
-            }
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        if (tutorialChanged) {
+            Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("tutorial");
+            View v = findViewById(R.id.drawer_layout);
+            v.invalidate();
+            createView();
+            tutorialChanged = false;
+            moveToHome();
+            moveToTutorial();
+        } else {
+            mTutorial = Tutorial.create();
+            ft.add(R.id.the_screens, mTutorial, "tutorial");
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            ft.commit();
         }
     }
 
