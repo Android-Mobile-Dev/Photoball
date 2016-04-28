@@ -4,22 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -34,12 +30,12 @@ import pl.aprilapps.easyphotopicker.EasyImage;
 public class Gallery extends Fragment {
 
     private OnFragmentInteractionListener mListener;
-    ImageView mImageView = null;
-    private Bitmap mBitmap = null;
+    public File mImageFile;
+    public boolean b = false;
 
-    public Gallery() {
-        // Required empty public constructor
-    }
+    private SimulationClass bouncingBallView;
+
+    public Gallery() {}
 
     /**
      * Use this factory method to create a new instance of
@@ -50,8 +46,6 @@ public class Gallery extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static Gallery create() {
         Gallery fragment = new Gallery();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -68,8 +62,6 @@ public class Gallery extends Fragment {
         final Gallery fragment = this;
 
         final View view = inflater.inflate(R.layout.fragment_gallery, container, false);
-
-        mImageView = (ImageView) view.findViewById(R.id.imageViewGallery);
 
         ((MainActivity)this.getActivity()).updateMenu();
 
@@ -104,33 +96,18 @@ public class Gallery extends Fragment {
             }
         });
 
-        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.linearLayoutGallery);
+        LinearLayout background = (LinearLayout) view.findViewById(R.id.linearLayoutGallery);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
 
-        container_.setBackgroundColor(prefs.getInt("background_preference_key",0));
+        background.setBackgroundColor(prefs.getInt("background_preference_key",0));
 
-        container_.addView(new SimulationClass(this.getContext()));
+        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
 
-        if (savedInstanceState != null) {
-            mBitmap = stringToBitMap(savedInstanceState.getString("gallery_bitmap"));
-        }
-
-        if (mBitmap != null)
-            try {
-                initRotateImageIfRequired();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        bouncingBallView = new SimulationClass(this.getContext());
+        container_.addView(bouncingBallView);
 
         return view;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteractionGallery(uri);
-        }
     }
 
     @Override
@@ -159,24 +136,19 @@ public class Gallery extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != 0) {
-            new ProcessTask(this.getContext(), (Fragment) this, requestCode, resultCode, data, R.id.imageViewGallery).execute();
+            new ProcessTask(getContext(), this, requestCode, resultCode, data, R.id.imageViewGallery, bouncingBallView).execute();
         } else {
             this.getFragmentManager().popBackStack();
             ((MainActivity)getActivity()).moveToHome();
         }
     }
 
-    public void setImageView(Bitmap bitmap) throws IOException {
-        mBitmap = bitmap;
-        initRotateImageIfRequired();
-    }
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (mBitmap != null)
+        if (mImageFile != null)
             try {
-                setRotateImageIfRequired(newConfig);
+                ProcessTask.setRotateImageIfRequired(newConfig);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -185,60 +157,28 @@ public class Gallery extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mBitmap != null) outState.putString("gallery_bitmap", bitMapToString(mBitmap));
+        mImageFile = ProcessTask.mImageFile;
+        if (mImageFile != null) outState.putString("gallery_image", mImageFile.getAbsolutePath());
     }
 
-    public String bitMapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos = new  ByteArrayOutputStream();
-        byte [] b = baos.toByteArray();
-        String temp = Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
-    }
-
-    public Bitmap stringToBitMap(String encodedString){
-        try {
-            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            return bitmap;
-        } catch(Exception e) {
-            e.getMessage();
-            return null;
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (b) {
+            try {
+                ProcessTask.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
+                ProcessTask.initRotateImageIfRequired();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        b = false;
     }
 
-    private void setRotateImageIfRequired(Configuration newConfig) throws IOException {
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (mBitmap.getWidth() < mBitmap.getHeight())
-                mBitmap = rotateImage(mBitmap, 270);
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            if (mBitmap.getWidth() > mBitmap.getHeight())
-                mBitmap = rotateImage(mBitmap, 90);
-        }
-
-        mImageView.setImageBitmap(mBitmap);
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        b = true;
+        //if (ProcessTask.mBitmap != null) ProcessTask.mBitmap.recycle();
     }
-
-    private void initRotateImageIfRequired() throws IOException {
-        int orientation = this.getContext().getResources().getConfiguration().orientation;
-
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (mBitmap.getWidth() < mBitmap.getHeight())
-                mBitmap = rotateImage(mBitmap, 90);
-        } else if (orientation == Configuration.ORIENTATION_PORTRAIT){
-            if (mBitmap.getWidth() > mBitmap.getHeight())
-                mBitmap = rotateImage(mBitmap, 90);
-        }
-
-        mImageView.setImageBitmap(mBitmap);
-    }
-
-    private static Bitmap rotateImage(Bitmap img, int degree) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degree);
-        Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
-        img.recycle();
-        return rotatedImg;
-    }
-
 }

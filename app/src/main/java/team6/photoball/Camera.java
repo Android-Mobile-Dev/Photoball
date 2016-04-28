@@ -35,12 +35,13 @@ import pl.aprilapps.easyphotopicker.EasyImage;
 public class Camera extends Fragment {
 
     private OnFragmentInteractionListener mListener;
-    ImageView mImageView = null;
-    private Bitmap mBitmap = null;
+    public File mImageFile;
+    public boolean b = false;
 
-    public Camera() {
-        // Required empty public constructor
-    }
+    private SimulationClass bouncingBallView;
+
+    public Camera() {}
+
 
     /**
      * Use this factory method to create a new instance of
@@ -51,8 +52,6 @@ public class Camera extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static Camera create() {
         Camera fragment = new Camera();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -68,9 +67,7 @@ public class Camera extends Fragment {
 
         final Camera fragment = this;
 
-        View view = inflater.inflate(R.layout.fragment_camera, container, false);
-
-        mImageView = (ImageView) view.findViewById(R.id.imageViewCamera);
+        final View view = inflater.inflate(R.layout.fragment_camera, container, false);
 
         ((MainActivity)this.getActivity()).updateMenu();
 
@@ -90,7 +87,7 @@ public class Camera extends Fragment {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)getActivity()).moveMyToPicMaps();
+                ((MainActivity) getActivity()).moveMyToPicMaps();
             }
         });
 
@@ -98,7 +95,6 @@ public class Camera extends Fragment {
         cameraButton.setScaleX((float) 1.3);
         cameraButton.setScaleY((float) 1.3);
         cameraButton.setY(-100);
-        assert playButton != null;
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,33 +102,20 @@ public class Camera extends Fragment {
             }
         });
 
-        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.linearLayoutCamera);
+        LinearLayout background = (LinearLayout) view.findViewById(R.id.linearLayoutCamera);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
 
-        container_.setBackgroundColor(prefs.getInt("background_preference_key", 0));
+        background.setBackgroundColor(prefs.getInt("background_preference_key",0));
 
-        container_.addView(new SimulationClass(getContext()));
+        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
 
-        if (savedInstanceState != null) {
-            mBitmap = stringToBitMap(savedInstanceState.getString("camera_bitmap"));
-        }
+        //TODO: get rid of null
+        bouncingBallView = new SimulationClass(this.getContext());
 
-        if (mBitmap != null)
-            try {
-                initRotateImageIfRequired();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        container_.addView(bouncingBallView);
 
         return view;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteractionCamera(uri);
-        }
     }
 
     @Override
@@ -152,16 +135,6 @@ public class Camera extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteractionCamera(Uri uri);
@@ -171,16 +144,11 @@ public class Camera extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != 0) {
-            new ProcessTask(this.getContext(), (Fragment)this, requestCode, resultCode, data, R.id.imageViewCamera).execute();
+            new ProcessTask(this.getContext(), this, requestCode, resultCode, data, R.id.imageViewCamera, bouncingBallView).execute();
         } else {
             this.getFragmentManager().popBackStack();
             ((MainActivity)getActivity()).moveToHome();
         }
-    }
-
-    public void setImageView(Bitmap bitmap) throws IOException {
-        mBitmap = bitmap;
-        initRotateImageIfRequired();
     }
 
     public void onCanceled(EasyImage.ImageSource source, int type) {
@@ -194,9 +162,9 @@ public class Camera extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (mBitmap != null)
+        if (mImageFile != null)
             try {
-                setRotateImageIfRequired(newConfig);
+                ProcessTask.setRotateImageIfRequired(newConfig);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -205,59 +173,28 @@ public class Camera extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mBitmap != null) outState.putString("camera_bitmap", bitMapToString(mBitmap));
+        mImageFile = ProcessTask.mImageFile;
+        if (mImageFile != null) outState.putString("camera_image", mImageFile.getAbsolutePath());
     }
 
-    public String bitMapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos = new  ByteArrayOutputStream();
-        byte [] b = baos.toByteArray();
-        String temp = Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
-    }
-
-    public Bitmap stringToBitMap(String encodedString){
-        try {
-            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            return bitmap;
-        } catch(Exception e) {
-            e.getMessage();
-            return null;
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (b) {
+            try {
+                ProcessTask.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
+                ProcessTask.initRotateImageIfRequired();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        b = false;
     }
 
-    private void setRotateImageIfRequired(Configuration newConfig) throws IOException {
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (mBitmap.getWidth() < mBitmap.getHeight())
-                mBitmap = rotateImage(mBitmap, 270);
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            if (mBitmap.getWidth() > mBitmap.getHeight())
-                mBitmap = rotateImage(mBitmap, 90);
-        }
-
-        mImageView.setImageBitmap(mBitmap);
-    }
-
-    private void initRotateImageIfRequired() throws IOException {
-        int orientation = this.getContext().getResources().getConfiguration().orientation;
-
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (mBitmap.getWidth() < mBitmap.getHeight())
-                mBitmap = rotateImage(mBitmap, 90);
-        } else if (orientation == Configuration.ORIENTATION_PORTRAIT){
-            if (mBitmap.getWidth() > mBitmap.getHeight())
-                mBitmap = rotateImage(mBitmap, 90);
-        }
-
-        mImageView.setImageBitmap(mBitmap);
-    }
-
-    private static Bitmap rotateImage(Bitmap img, int degree) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degree);
-        Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
-        img.recycle();
-        return rotatedImg;
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        b = true;
+        //if (ProcessTask.mBitmap != null) ProcessTask.mBitmap.recycle();
     }
 }

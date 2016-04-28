@@ -12,7 +12,11 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+
+import com.pavelsikun.seekbarpreference.SeekBarPreference;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,8 +25,6 @@ import java.io.IOException;
  * Created by rosar on 3/31/2016.
  */
 public class Default extends DialogFragment {
-
-    private Settings settings = new Settings();
 
     public static Default newInstance(int title) {
         Default frag = new Default();
@@ -58,12 +60,14 @@ public class Default extends DialogFragment {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
         SharedPreferences.Editor ed = prefs.edit();
         ed.putBoolean("sound_preference_key", true);
-        ed.putString("preset_preference_key", getResources().getString(R.string.setting_preset_3d));
         ed.putInt("background_preference_key", 0xffffffff);
         ed.putInt("ball_preference_key", 0xff006600);
+        ed.putBoolean("instruction_preference_key", true);
+        ed.putInt("speed_preference_key", 35);
+        ed.putInt("size_preference_key", 20);
         ed.apply();
 
-        ((MainActivity)getActivity()).soundOn();
+        ((MainActivity)getActivity()).playMusic();
 
         String appDirectoryName = "Photoball";
         File imageRoot = new File(Environment.getExternalStoragePublicDirectory(
@@ -80,6 +84,14 @@ public class Default extends DialogFragment {
         }
 
         getFragmentManager().popBackStack();
+
+        android.support.v4.app.FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.the_screens, new Settings());
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        ft.addToBackStack("fragment_settings");
+        ft.commit();
+
     }
 
     public void doNegativeClick() {

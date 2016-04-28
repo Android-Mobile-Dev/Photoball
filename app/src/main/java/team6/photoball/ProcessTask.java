@@ -3,8 +3,6 @@ package team6.photoball;
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.Point;
-import android.media.ExifInterface;
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -14,17 +12,13 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
-import android.view.Display;
-import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.Toast;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import jp.co.cyberagent.android.gpuimage.GPUImage;
 import jp.co.cyberagent.android.gpuimage.GPUImageColorInvertFilter;
@@ -38,62 +32,54 @@ import pl.aprilapps.easyphotopicker.EasyImage;
  */
 public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
-    private ProgressDialog progressDialog; //to show a little modal with a progress Bar
-    private Context context;  //needed to create the progress bar
-    int requestCode, resultCode;
-    Intent data;
-    int callerType;
-    Fragment fragment;
-    Bitmap mBitmap;
-    ImageView mImageView;
-    static Configuration mConf;
+    private ProgressDialog progressDialog;
+    private static Context context;
+    private int requestCode, resultCode;
+    private Intent data;
+    private static int callerType;
+    private static Fragment fragment;
+    public static Bitmap mBitmap;
+    public static ImageView mImageView;
+    public static File mImageFile;
 
-    public ProcessTask(Context context, Fragment fragment, int requestCode, int resultCode, Intent data, int callerType){
+    private static SimulationClass bouncingBallView;
+
+    public ProcessTask(Context tcontext, Fragment tfragment, int requestCode, int resultCode, Intent data, int tcallerType, SimulationClass simClass){
         this.requestCode = requestCode;
         this.resultCode = resultCode;
         this.data = data;
-        this.context = context;
-        this.callerType = callerType;
-        this.fragment = fragment;
-        this.mImageView = null;
+        context = tcontext;
+        callerType = tcallerType;
+        fragment = tfragment;
+        bouncingBallView = simClass;
     }
 
     //this is called BEFORE you start doing anything
     @Override
     protected void onPreExecute(){
+        mImageView = (ImageView) fragment.getView().findViewById(callerType);
         progressDialog = new ProgressDialog(context);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Please wait, processing image");
         progressDialog.setIndeterminate(true);
-        progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.show();
     }
 
     //every time you call publishProgress this method is executed, in this case receives an Integer
     @Override
-    protected void onProgressUpdate(Integer ... option){
-        progressDialog.setMessage("I have found :" + option[0]);
-    }
+    protected void onProgressUpdate(Integer ... option){}
 
     @Override
     protected void onPostExecute(Void unused){
-        mImageView = (ImageView) fragment.getView().findViewById(callerType);
-        if (callerType == R.id.imageViewGallery) {
-            try {
-                ((Gallery) fragment).setImageView(mBitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        if (callerType == R.id.imageViewCamera) {
-            try {
-                ((Camera) fragment).setImageView(mBitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
         progressDialog.dismiss();
+        try {
+            if (mBitmap != null) initRotateImageIfRequired();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (callerType == R.id.imageViewGallery) ((Gallery)fragment).b = true;
+        if (callerType == R.id.imageViewCamera) ((Camera)fragment).b = true;
     }
 
     //in here is where you execute your php script or whatever "heavy" stuff you need
@@ -110,7 +96,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
                 //Handle the image
 
-                mBitmap = modifyImage(imageFile);
+                modifyImage(imageFile);
 
                 String appDirectoryName = "Photoball";
 
@@ -123,7 +109,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
                 ContentValues values = new ContentValues();
 
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US);
                 String firstPartFileName = sdf.format(new Date());
 
                 values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
@@ -144,26 +130,104 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
                 context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
-                int t = MyPicMaps.items.size() + 1;
-                MyPicMaps.items.add(new ImageModel("Item " + t, file.getAbsolutePath()));
+                if (imagePath.name().contains("GALLERY")) ((Gallery) fragment).mImageFile = file;
+                if (imagePath.name().contains("CAMERA")) ((Camera) fragment).mImageFile = file;
+                mImageFile = file;
+
+            }
+
+            private void modifyImage(File imageFile) {
+                int reqWidth = mImageView.getWidth();
+                int reqHeight = mImageView.getHeight();
+
+                decodeSampledBitmapFromFile(imageFile, reqWidth, reqHeight);
+
+                //Image modification here
+                GPUImage gpuImage = new GPUImage(fragment.getActivity());
+                gpuImage.setImage(mBitmap);
+                GPUImageFilterGroup groupFilter = new GPUImageFilterGroup();
+                //5.0f from gpu image sample
+                GPUImageSobelEdgeDetection detection = new GPUImageSobelEdgeDetection();
+                detection.setLineSize(10.0f);
+                groupFilter.addFilter(detection);
+                groupFilter.addFilter(new GPUImageColorInvertFilter());
+                gpuImage.setFilter(groupFilter);
+                mBitmap = gpuImage.getBitmapWithFilterApplied();
+                gpuImage.deleteImage();
+            }
+
+            public void decodeSampledBitmapFromFile(File imageFile, int reqWidth, int reqHeight) {
+
+                // First decode with inJustDecodeBounds=true to check dimensions
+                final BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                if (mBitmap != null) mBitmap.recycle();
+                mBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
+
+                // Calculate inSampleSize
+                options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+                // Decode bitmap with inSampleSize set
+                options.inJustDecodeBounds = false;
+                mBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
+            }
+
+            public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+                // Raw height and width of image
+                final int height = options.outHeight;
+                final int width = options.outWidth;
+                int inSampleSize = 1;
+
+                if (height > reqHeight || width > reqWidth) {
+
+                    final int halfHeight = height / 2;
+                    final int halfWidth = width / 2;
+
+                    // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+                    // height and width larger than the requested height and width.
+                    while ((halfHeight / inSampleSize) > reqHeight
+                            && (halfWidth / inSampleSize) > reqWidth) {
+                        inSampleSize *= 2;
+                    }
+                }
+                return inSampleSize;
             }
         });
 
         return null;
     }
 
-    private Bitmap modifyImage(File imageFile) {
+    public static void initRotateImageIfRequired() throws IOException {
+        int orientation = context.getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (mBitmap.getWidth() < mBitmap.getHeight())
+                rotateImage(90);
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            if (mBitmap.getWidth() > mBitmap.getHeight())
+                rotateImage(90);
+        }
+        ImageView imgView = (ImageView) fragment.getView().findViewById(callerType);
+        imgView.setImageBitmap(mBitmap);
+        bouncingBallView.setBitmap(imgView);
+    }
 
-        //Image modification here
-        GPUImage gpuImage = new GPUImage(fragment.getActivity());
-        Bitmap bm = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-        gpuImage.setImage(bm);
-        GPUImageFilterGroup groupFilter = new GPUImageFilterGroup();
-        groupFilter.addFilter(new GPUImageSobelEdgeDetection());
-        groupFilter.addFilter(new GPUImageColorInvertFilter());
-        gpuImage.setFilter(groupFilter);
-        Bitmap bmWithFilter = gpuImage.getBitmapWithFilterApplied();
+    public static  void setRotateImageIfRequired(Configuration newConfig) throws IOException {
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (mBitmap.getWidth() < mBitmap.getHeight())
+                rotateImage(270);
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            if (mBitmap.getWidth() > mBitmap.getHeight())
+                rotateImage(90);
+        }
+        ImageView imgView = (ImageView) fragment.getView().findViewById(callerType);
+        imgView.setImageBitmap(mBitmap);
+        bouncingBallView.setBitmap(imgView);
+    }
 
-        return bmWithFilter;
+    private static void rotateImage(int degree) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree);
+        mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
     }
 }

@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:sample="http://schemas.android.com/apk/res-auto">
 
+
+    <PreferenceCategory android:key="pref_key_storage_settings_others"
+        android:title="@string/action_settings">
+        <CheckBoxPreference android:title="@string/setting_instruction"
+            android:defaultValue="true"
+            android:icon="@mipmap/ic_description_black_24dp"
+            android:key="instruction_preference_key" />
+        <CheckBoxPreference android:title="@string/setting_sound"
+            android:defaultValue="true"
+            android:icon="@mipmap/ic_volume_up_black_24dp"
+            android:key="sound_preference_key" />
+        <Preference android:title="@string/setting_default"
+            android:icon="@mipmap/ic_delete_black_24dp"
+            android:key="default_preference_key"/>
+    </PreferenceCategory>
     <PreferenceCategory
         android:key="pref_key_storage_settings_colors"
         android:title="@string/setting_colors">
@@ -11,7 +27,6 @@
             android:title="@string/setting_background"
             android:icon="@mipmap/ic_colorize_black_24dp"
             app:supportsAlpha="true" />
-
         <yuku.ambilwarna.widget.AmbilWarnaPreference
             android:defaultValue="0xff006600"
             android:key="ball_preference_key"
@@ -19,20 +34,28 @@
             android:icon="@mipmap/ic_color_lens_black_24dp"
             app:supportsAlpha="true" />
     </PreferenceCategory>
-    <PreferenceCategory android:key="pref_key_storage_settings_colors">
-        <ListPreference android:title="@string/setting_preset"
-            android:key="preset_preference_key"
-            android:defaultValue="@string/setting_preset_3d"
-            android:entries="@array/list_presets"
-            android:icon="@mipmap/ic_tonality_black_24dp"
-            android:entryValues="@array/list_presets" />
-        <CheckBoxPreference android:title="@string/setting_sound"
-            android:defaultValue="true"
-            android:icon="@mipmap/ic_volume_up_black_24dp"
-            android:key="sound_preference_key" />
-        <Preference android:title="@string/setting_default"
-            android:icon="@mipmap/ic_delete_black_24dp"
-            android:key="default_preference_key"></Preference>
+    <PreferenceCategory
+        android:key="pref_key_storage_settings_animation"
+        android:title="@string/setting_animation">
+        <com.pavelsikun.seekbarpreference.SeekBarPreference
+            android:key="size_preference_key"
+            android:title="Ball Size"
+            android:enabled="true"
+            android:defaultValue="20"
+            sample:msbp_minValue="20"
+            sample:msbp_maxValue="100"
+            sample:msbp_interval="20"
+            sample:msbp_measurementUnit="pixels"/>
+
+        <com.pavelsikun.seekbarpreference.SeekBarPreference
+            android:key="speed_preference_key"
+            android:title="Animation Speed"
+            android:enabled="true"
+            android:defaultValue="35"
+            sample:msbp_minValue="5"
+            sample:msbp_maxValue="35"
+            sample:msbp_interval="5"
+            sample:msbp_measurementUnit="pixels/sec"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:layout_marginTop="@dimen/abc_action_bar_default_height_material"
+    android:id="@+id/content"
     tools:context="team6.photoball.MainActivity"
     tools:showIn="@layout/app_bar_main">
 

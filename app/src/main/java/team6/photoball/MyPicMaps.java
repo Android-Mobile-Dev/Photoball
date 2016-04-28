@@ -8,8 +8,6 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -30,35 +28,18 @@ import java.util.List;
  */
 public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemClickListener {
 
-    RecyclerView mRecyclerView;
+    private RecyclerView mRecyclerView;
 
     public static List<ImageModel> items = new ArrayList<>();
 
     static private String mAppDirectoryName = "Photoball";
 
-    static private File mImageRoot = null;
-
     static private File[] mDirFiles = null;
-
-    static {
-        try {
-            File mImageRoot = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_PICTURES) + "/" + mAppDirectoryName + "/");
-            mDirFiles = mImageRoot.listFiles();
-
-            for (int i = 0; i < mDirFiles.length; i++) {
-                int t = i + 1;
-                items.add(new ImageModel("Item " + t, mDirFiles[i].getAbsolutePath()));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     private OnFragmentInteractionListener mListener;
 
     public MyPicMaps() {
-
+        setRetainInstance(true);
     }
 
     /**
@@ -70,8 +51,6 @@ public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemCl
     // TODO: Rename and change types and number of parameters
     public static MyPicMaps create() {
         MyPicMaps fragment = new MyPicMaps();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -85,6 +64,24 @@ public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemCl
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_my_pic_maps, container, false);
+
+        items.clear();
+
+        try {
+            File mImageRoot = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES) + "/" + mAppDirectoryName + "/");
+            mDirFiles = mImageRoot.listFiles();
+
+            for (int i = 0; i < mDirFiles.length; i++) {
+                int t = i + 1;
+                items.add(new ImageModel("Item " + t, mDirFiles[i].getAbsolutePath()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (items.isEmpty()) view.findViewById(R.id.noMedia).setVisibility(View.VISIBLE);
+        else view.findViewById(R.id.noMedia).setVisibility(View.INVISIBLE);
 
         initRecyclerView(view);
 
@@ -120,13 +117,6 @@ public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemCl
         playButton.setScaleX((float) 1.3);
         playButton.setScaleY((float) 1.3);
         playButton.setY(-100);
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (((MainActivity)getActivity()).mSoundOn)
-                    ((MainActivity)getActivity()).mSounds.play(((MainActivity)getActivity()).mSoundIDMap.get(R.raw.click), 1, 1, 1, 0, 1);
-            }
-        });
 
         return view;
     }
@@ -138,21 +128,15 @@ public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemCl
     }
 
     private void setRecyclerAdapter(RecyclerView recyclerView) {
-        MyPicMapsPageAdapter adapter = new MyPicMapsPageAdapter(this.getContext(), items);
+        MyPicMapsPageAdapter adapter = new MyPicMapsPageAdapter(this.getContext());
         adapter.setOnItemClickListener(this);
+        adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
     }
 
     @Override
-    public void onItemClick(View view, ImageModel viewModel) {
-        ((MainActivity)getActivity()).moveToMyPicMapsDetail(view, viewModel);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteractionMyPicMaps(uri);
-        }
+    public void onItemClick(String filePath) {
+        ((MainActivity)getActivity()).moveToMyPicMapsDetail(filePath);
     }
 
     @Override
