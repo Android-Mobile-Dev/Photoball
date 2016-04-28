@@ -104,7 +104,7 @@ public class Gallery extends Fragment {
 
         LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
 
-        bouncingBallView = new SimulationClass(this.getContext(), null);
+        bouncingBallView = new SimulationClass(this.getContext());
         container_.addView(bouncingBallView);
 
         return view;

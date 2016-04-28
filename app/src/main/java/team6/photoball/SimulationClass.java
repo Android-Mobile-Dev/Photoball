@@ -33,15 +33,13 @@ public class SimulationClass extends View {
     private ImageView img;
 
     // Constructor
-    public SimulationClass(Context context, ImageView img) {
+    public SimulationClass(Context context) {
         super(context);
 
-        if(img != null) {
-            this.bm = ((BitmapDrawable) img.getDrawable()).getBitmap();
-            this.img = img;
-        }
-        else{
+        if(ProcessTask.mBitmap != null) {
             this.bm = ProcessTask.mBitmap;
+        }
+        if(ProcessTask.mImageView != null){
             this.img = ProcessTask.mImageView;
         }
         box = new Box();  // ARGB

@@ -130,7 +130,7 @@ public class MyPicMapsDetail extends Fragment {
 
         LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
 
-        View bouncingBallView = new SimulationClass(context, img);
+        View bouncingBallView = new SimulationClass(context);
 
         bouncingBallView.setId(view.generateViewId());
 

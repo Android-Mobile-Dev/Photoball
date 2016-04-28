@@ -111,7 +111,7 @@ public class Camera extends Fragment {
         LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
 
         //TODO: get rid of null
-        bouncingBallView = new SimulationClass(this.getContext(), null);
+        bouncingBallView = new SimulationClass(this.getContext());
 
         container_.addView(bouncingBallView);
 
