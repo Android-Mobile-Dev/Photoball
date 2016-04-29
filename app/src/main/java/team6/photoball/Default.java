@@ -83,7 +83,7 @@ public class Default extends DialogFragment {
             for (int i = 0; i < children.length; i++)
             {
                 File f = new File(mImageRoot, children[i]);
-                if(ProcessTask.mBitmap == null || !f.getAbsolutePath().equals(ProcessTask.mImageFile.getAbsolutePath()))
+                if(ProcessTask.mImageFile == null || !f.getAbsolutePath().equals(ProcessTask.mImageFile.getAbsolutePath()))
                     deleteFileFromMediaStore(contentResolver, f);
             }
         }
