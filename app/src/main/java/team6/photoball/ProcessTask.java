@@ -52,7 +52,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
     //this is called BEFORE you start doing anything
     @Override
     protected void onPreExecute(){
-        //MainActivity.mImageView = (ImageView) fragment.getView().findViewById(callerType);
+        MainActivity.mImageView = (ImageView) fragment.getView().findViewById(callerType);
         progressDialog = new ProgressDialog(context);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Please wait, processing image");
