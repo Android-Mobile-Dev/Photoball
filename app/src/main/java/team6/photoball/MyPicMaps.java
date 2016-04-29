@@ -70,7 +70,6 @@ public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemCl
             MainActivity.mBitmap.recycle();
 
             MainActivity.mBitmap = null;
-
         }
 
         items.clear();

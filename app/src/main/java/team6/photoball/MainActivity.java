@@ -184,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void moveToHome() {
+        bitmapRecycle();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         mHome = Home.create();
         ft.replace(R.id.the_screens, mHome);
