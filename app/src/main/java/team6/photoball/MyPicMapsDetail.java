@@ -14,6 +14,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -39,7 +40,6 @@ public class MyPicMapsDetail extends Fragment {
     private String mFilePath = null;
     private ImageView mImageView = null;
     private Bitmap mBitmap = null;
-    LinearLayout container_;
 
     public MyPicMapsDetail() {
         // Required empty public constructor
@@ -119,7 +119,7 @@ public class MyPicMapsDetail extends Fragment {
         if (mBitmap != null)
             try {
                 initRotateImageIfRequired();
-                setBallLayoutAnimation (this.getContext(), view, mImageView);
+                setBallLayoutAnimation (this.getContext(), view);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -127,15 +127,20 @@ public class MyPicMapsDetail extends Fragment {
         return view;
     }
 
-    private static void setBallLayoutAnimation (Context context, View view, ImageView img) {
+    private static void setBallLayoutAnimation (final Context context, View view) {
 
-        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
+        final LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
 
-        View bouncingBallView = new SimulationClass(context, 0, 0);
+        view.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
 
-        bouncingBallView.setId(view.generateViewId());
-
-        container_.addView(bouncingBallView);
+                if(event.getAction() == MotionEvent.ACTION_MOVE){
+                    SimulationClass bouncingBallView = new SimulationClass(context, event.getX(), event.getY());
+                    container_.addView(bouncingBallView, 0);
+                }
+                return true;
+            }
+        });
     }
 
     @Override
