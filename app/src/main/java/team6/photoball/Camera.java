@@ -167,13 +167,14 @@ public class Camera extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (mImageFile != null && getView() != null && MainActivity.mBitmap != null)
+        if (mImageFile != null && getView() != null && !MainActivity.mBitmap.isRecycled() && MainActivity.mBitmap != null)
             try {
                 ProcessTask.setRotateImageIfRequired(newConfig);
             } catch (IOException e) {
                 e.printStackTrace();
             }
     }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -187,8 +188,10 @@ public class Camera extends Fragment {
         super.onResume();
         if (b) {
             try {
-                MainActivity.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
-                ProcessTask.initRotateImageIfRequired();
+                if (mImageFile != null && getView() != null && !MainActivity.mBitmap.isRecycled() && MainActivity.mBitmap != null) {
+                    MainActivity.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
+                    ProcessTask.initRotateImageIfRequired();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

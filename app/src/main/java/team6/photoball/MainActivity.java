@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void moveToCamera() {
-        bitmapRecycle();
+        //bitmapRecycle();
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         Camera thisCamera = Camera.create();
@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void moveToGallery() {
-        bitmapRecycle();
+        //bitmapRecycle();
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         Gallery thisGallery = Gallery.create();
