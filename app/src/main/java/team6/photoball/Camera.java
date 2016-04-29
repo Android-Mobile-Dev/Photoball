@@ -167,10 +167,9 @@ public class Camera extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (mImageFile != null && getView() != null && MainActivity.mBitmap != null && MainActivity.mBouncingBallView != null)
+        if (mImageFile != null && getView() != null && MainActivity.mBitmap != null)
             try {
                 ProcessTask.setRotateImageIfRequired(newConfig);
-                MainActivity.mBouncingBallView.setPosition(0, 0);
             } catch (IOException e) {
                 e.printStackTrace();
             }

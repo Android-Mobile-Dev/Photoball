@@ -164,7 +164,6 @@ public class MyPicMapsDetail extends Fragment {
         if (getView() != null && MainActivity.mBitmap != null) {
             try {
                 setRotateImageIfRequired(newConfig);
-                MainActivity.mBouncingBallView.setPosition(0, 0);
             } catch (IOException e) {
                 e.printStackTrace();
             }
