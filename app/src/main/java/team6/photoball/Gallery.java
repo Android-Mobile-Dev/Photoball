@@ -150,12 +150,10 @@ public class Gallery extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (mImageFile != null)
+        if (mImageFile != null && getView() != null && MainActivity.mBitmap != null && MainActivity.mBouncingBallView != null)
             try {
-                if (getView() != null) {
-                    ProcessTask.setRotateImageIfRequired(newConfig);
-                    MainActivity.mBouncingBallView.setPosition(0, 0);
-                }
+                ProcessTask.setRotateImageIfRequired(newConfig);
+                MainActivity.mBouncingBallView.setPosition(0, 0);
             } catch (IOException e) {
                 e.printStackTrace();
             }

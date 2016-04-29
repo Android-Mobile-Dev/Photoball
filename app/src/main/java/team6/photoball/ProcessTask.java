@@ -69,7 +69,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
     protected void onPostExecute(Void unused){
         progressDialog.dismiss();
         try {
-            if (MainActivity.mBitmap != null) initRotateImageIfRequired();
+            initRotateImageIfRequired();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -188,7 +188,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                     // height and width larger than the requested height and width.
                     while ((halfHeight / inSampleSize) > reqHeight
                             && (halfWidth / inSampleSize) > reqWidth) {
-                        inSampleSize = 2;
+                        inSampleSize *= 2;
                     }
                 }
                 return inSampleSize;
@@ -207,8 +207,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
             if (MainActivity.mBitmap.getWidth() > MainActivity.mBitmap.getHeight())
                 rotateImage(90);
         }
-        ImageView imgView = (ImageView) fragment.getView().findViewById(callerType);
-        imgView.setImageBitmap(MainActivity.mBitmap);
+        MainActivity.mImageView.setImageBitmap(MainActivity.mBitmap);
     }
 
     public static  void setRotateImageIfRequired(Configuration newConfig) throws IOException {
@@ -220,8 +219,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
             if (MainActivity.mBitmap.getWidth() > MainActivity.mBitmap.getHeight())
                 rotateImage(90);
         }
-        ImageView imgView = (ImageView) fragment.getView().findViewById(callerType);
-        imgView.setImageBitmap(MainActivity.mBitmap);
+        MainActivity.mImageView.setImageBitmap(MainActivity.mBitmap);
     }
 
     private static void rotateImage(int degree) {

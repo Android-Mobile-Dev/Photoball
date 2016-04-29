@@ -161,12 +161,10 @@ public class MyPicMapsDetail extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (MainActivity.mBitmap != null) {
+        if (getView() != null && MainActivity.mBitmap != null) {
             try {
-                if (getView() != null) {
-                    setRotateImageIfRequired(newConfig);
-                    MainActivity.mBouncingBallView.setPosition(0, 0);
-                }
+                setRotateImageIfRequired(newConfig);
+                MainActivity.mBouncingBallView.setPosition(0, 0);
             } catch (IOException e) {
                 e.printStackTrace();
             }
