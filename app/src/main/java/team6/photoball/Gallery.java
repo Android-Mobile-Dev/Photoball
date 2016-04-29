@@ -113,7 +113,7 @@ public class Gallery extends Fragment {
             }
         });
 
-        if (MainActivity.mBitmap != null)
+        if (MainActivity.mBitmap != null && !MainActivity.mBitmap.isRecycled())
             try {
                 ProcessTask.initRotateImageIfRequired();
             } catch (IOException e) {
@@ -168,19 +168,14 @@ public class Gallery extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mImageFile = ProcessTask.mImageFile;
-        if (mImageFile != null) outState.putString("gallery_image", mImageFile.getAbsolutePath());
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         if (b) {
             try {
-                MainActivity.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
-                ProcessTask.initRotateImageIfRequired();
+                if (this.mImageFile != null) {
+                    MainActivity.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
+                    ProcessTask.initRotateImageIfRequired();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

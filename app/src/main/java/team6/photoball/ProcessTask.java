@@ -69,7 +69,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
     protected void onPostExecute(Void unused){
         progressDialog.dismiss();
         try {
-            initRotateImageIfRequired();
+            if (MainActivity.mBitmap != null && !MainActivity.mBitmap.isRecycled()) initRotateImageIfRequired();
         } catch (IOException e) {
             e.printStackTrace();
         }

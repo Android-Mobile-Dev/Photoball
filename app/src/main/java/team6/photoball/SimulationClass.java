@@ -48,7 +48,7 @@ public class SimulationClass extends View {
     // Called back to draw the view. Also called after invalidate().
     @Override
     synchronized protected void onDraw(Canvas canvas) {
-        if(MainActivity.mImageView != null) {
+        if(MainActivity.mImageView != null && MainActivity.mBitmap != null && !MainActivity.mBitmap.isRecycled()) {
             // Draw the components
             box.draw(canvas);
             ball.draw(canvas);

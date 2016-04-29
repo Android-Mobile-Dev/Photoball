@@ -36,13 +36,6 @@ public class Home extends Fragment {
 
         ((MainActivity)this.getActivity()).updateMenu();
 
-        if (MainActivity.mBitmap != null && !MainActivity.mBitmap.isRecycled()) {
-
-            MainActivity.mBitmap.recycle();
-
-            MainActivity.mBitmap = null;
-        }
-
         final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
         final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
         final FloatingActionButton playButton = (FloatingActionButton) view.findViewById(R.id.playButton);
@@ -72,6 +65,17 @@ public class Home extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        /*if (MainActivity.mBitmap != null && !MainActivity.mBitmap.isRecycled()) {
+
+            MainActivity.mBitmap.recycle();
+
+            MainActivity.mBitmap = null;
+        }*/
     }
 
     // TODO: Rename method, update argument and hook method into UI event
