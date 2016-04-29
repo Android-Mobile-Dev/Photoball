@@ -132,14 +132,21 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
             }
 
             private void modifyImage(File imageFile) {
-                int reqWidth = MainActivity.mImageView.getWidth();
-                int reqHeight = MainActivity.mImageView.getHeight();
+                int reqWidth = 480;
+                int reqHeight = 320;
+                if (MainActivity.mImageView.getWidth() < MainActivity.mImageView.getHeight()) {
+                    reqWidth = 320;
+                    reqHeight = 480;
+                }
 
-                decodeSampledBitmapFromFile(imageFile, reqWidth, reqHeight);
+                if (MainActivity.mBitmap != null) {
+                    MainActivity.mBitmap.recycle();
+                    MainActivity.mBitmap = null;
+                }
 
                 //Image modification here
                 GPUImage gpuImage = new GPUImage(fragment.getActivity());
-                gpuImage.setImage(MainActivity.mBitmap);
+                gpuImage.setImage(decodeSampledBitmapFromFile(imageFile, reqWidth, reqHeight));
                 GPUImageFilterGroup groupFilter = new GPUImageFilterGroup();
                 //5.0f from gpu image sample
                 GPUImageSobelEdgeDetection detection = new GPUImageSobelEdgeDetection();
@@ -151,20 +158,19 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                 gpuImage.deleteImage();
             }
 
-            public void decodeSampledBitmapFromFile(File imageFile, int reqWidth, int reqHeight) {
+            public Bitmap decodeSampledBitmapFromFile(File imageFile, int reqWidth, int reqHeight) {
 
                 // First decode with inJustDecodeBounds=true to check dimensions
                 final BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
-                if (MainActivity.mBitmap != null) MainActivity.mBitmap.recycle();
-                MainActivity.mBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
+                BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
 
                 // Calculate inSampleSize
                 options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 
                 // Decode bitmap with inSampleSize set
                 options.inJustDecodeBounds = false;
-                MainActivity.mBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
+                return BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
             }
 
             public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -182,7 +188,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                     // height and width larger than the requested height and width.
                     while ((halfHeight / inSampleSize) > reqHeight
                             && (halfWidth / inSampleSize) > reqWidth) {
-                        inSampleSize *= 2;
+                        inSampleSize = 2;
                     }
                 }
                 return inSampleSize;
