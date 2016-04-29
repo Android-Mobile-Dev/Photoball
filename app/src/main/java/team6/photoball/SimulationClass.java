@@ -53,6 +53,7 @@ public class SimulationClass extends View {
         this.requestFocus();
         // To enable touch mode
         this.setFocusableInTouchMode(true);
+
     }
 
     public void setBitmap(ImageView img){
@@ -67,14 +68,13 @@ public class SimulationClass extends View {
             // Draw the components
             box.draw(canvas);
             ball.draw(canvas);
-
             // Update the position of the ball, including collision detection and reaction.
             ball.moveWithCollisionDetection(box, img, bm);
 
             //Delay
-            try {
+            /*try {
                 Thread.sleep(30);
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {}*/
         }
         invalidate();
     }
@@ -85,5 +85,4 @@ public class SimulationClass extends View {
         // Set the movement bounds for the ball
         box.set(0, 0, w, h);
     }
-    
 }
