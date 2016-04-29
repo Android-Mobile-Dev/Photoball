@@ -39,7 +39,7 @@ public class SimulationClass extends View {
             this.img = MainActivity.mImageView;
         }
         box = new Box();  // ARGB
-        int ball_color = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("ball_preference_key",0);
+        int ball_color = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("ball_preference_key",0xff006600);
         ball = new Ball(ball_color, currentX, currentY);
         ball.setRadius(PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("size_preference_key",20));
         ball.setSpeed((float)PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("speed_preference_key",35));
