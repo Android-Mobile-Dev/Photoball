@@ -143,7 +143,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                 GPUImageFilterGroup groupFilter = new GPUImageFilterGroup();
                 //5.0f from gpu image sample
                 GPUImageSobelEdgeDetection detection = new GPUImageSobelEdgeDetection();
-                detection.setLineSize(10.0f);
+                detection.setLineSize(2.5f);
                 groupFilter.addFilter(detection);
                 groupFilter.addFilter(new GPUImageColorInvertFilter());
                 gpuImage.setFilter(groupFilter);
