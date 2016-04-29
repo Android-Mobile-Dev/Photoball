@@ -185,11 +185,14 @@ public class Ball {
         if (hitForwardSlash(nearbyPixels, xScale, yScale, bm)) {
             speedX = -speedY;
             speedY = 0;
+            direction = BallDirection.E;
         } else if (hitBackSlash(nearbyPixels, xScale, yScale, bm)) {
             speedX = speedY;
             speedY = 0;
+            direction = BallDirection.W;
         } else {
             speedY = -speedY;
+            direction = BallDirection.S;
         }
     }
 
@@ -197,11 +200,14 @@ public class Ball {
         int[] nearbyPixels = new int[2 * radius];
         if (hitVertical(nearbyPixels, xScale, yScale, bm)) {
             speedX = -speedX;
+            direction = BallDirection.NW;
         } else if (hitHorizontal(nearbyPixels, xScale, yScale, bm)) {
             speedY = -speedY;
+            direction = BallDirection.SE;
         } else {
             speedX = -speedX;
             speedY = -speedY;
+            direction = BallDirection.SW;
         }
     }
 
@@ -210,11 +216,14 @@ public class Ball {
         if (hitForwardSlash(nearbyPixels, xScale, yScale, bm)) {
             speedY = -speedX;
             speedX = 0;
+            direction = BallDirection.N;
         } else if (hitBackSlash(nearbyPixels, xScale, yScale, bm)) {
             speedY = speedX;
             speedX = 0;
+            direction = BallDirection.S;
         } else {
             speedX = -speedX;
+            direction = BallDirection.W;
         }
     }
 
@@ -222,11 +231,14 @@ public class Ball {
         int[] nearbyPixels = new int[2 * radius];
         if (hitVertical(nearbyPixels, xScale, yScale, bm)) {
             speedX = -speedX;
+            direction = BallDirection.SW;
         } else if (hitHorizontal(nearbyPixels, xScale, yScale, bm)) {
             speedY = -speedY;
+            direction = BallDirection.NE;
         } else {
             speedX = -speedX;
             speedY = -speedY;
+            direction = BallDirection.NW;
         }
     }
 
@@ -235,11 +247,14 @@ public class Ball {
         if (hitForwardSlash(nearbyPixels, xScale, yScale, bm)) {
             speedX = -speedY;
             speedY = 0;
+            direction = BallDirection.W;
         } else if (hitBackSlash(nearbyPixels, xScale, yScale, bm)) {
             speedX = speedY;
             speedY = 0;
+            direction = BallDirection.E;
         } else {
             speedY = -speedY;
+            direction = BallDirection.N;
         }
     }
 
@@ -247,11 +262,14 @@ public class Ball {
         int[] nearbyPixels = new int[2 * radius];
         if (hitVertical(nearbyPixels, xScale, yScale, bm)) {
             speedX = -speedX;
+            direction = BallDirection.SE;
         } else if (hitHorizontal(nearbyPixels, xScale, yScale, bm)) {
             speedY = -speedY;
+            direction = BallDirection.NW;
         } else {
             speedX = -speedX;
             speedY = -speedY;
+            direction = BallDirection.NE;
         }
     }
 
@@ -260,11 +278,14 @@ public class Ball {
         if (hitForwardSlash(nearbyPixels, xScale, yScale, bm)) {
             speedY = -speedX;
             speedX = 0;
+            direction = BallDirection.S;
         } else if (hitBackSlash(nearbyPixels, xScale, yScale, bm)) {
             speedY = speedX;
             speedX = 0;
+            direction = BallDirection.N;
         } else {
             speedX = -speedX;
+            direction = BallDirection.E;
         }
     }
 
@@ -272,11 +293,14 @@ public class Ball {
         int[] nearbyPixels = new int[2 * radius];
         if (hitVertical(nearbyPixels, xScale, yScale, bm)) {
             speedX = -speedX;
+            direction = BallDirection.NE;
         } else if (hitHorizontal(nearbyPixels, xScale, yScale, bm)) {
             speedY = -speedY;
+            direction = BallDirection.SW;
         } else {
             speedX = -speedX;
             speedY = -speedY;
+            direction = BallDirection.SE;
         }
     }
 
