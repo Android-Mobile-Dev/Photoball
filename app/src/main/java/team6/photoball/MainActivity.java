@@ -1,6 +1,7 @@
 package team6.photoball;
 
 import android.Manifest;
+import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.support.v4.app.Fragment;
 import android.content.SharedPreferences;
@@ -29,6 +30,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 
 import java.util.HashMap;
@@ -53,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements
     public static int mViewCounter = 0;
     public static boolean tutorialChanged = false;
     public static boolean runTutorial;
+    public static Bitmap mBitmap;
+    public static ImageView mImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -201,10 +205,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void moveMyToPicMaps() {
-        if (ProcessTask.mBitmap != null && !ProcessTask.mBitmap.isRecycled()) {
-            ProcessTask.mBitmap.recycle();
-            ProcessTask.mBitmap = null;
-        }
+        bitmapRecycle();
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         MyPicMaps thisMyPicMaps = MyPicMaps.create();
@@ -216,10 +217,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void moveToCamera() {
-        if (ProcessTask.mBitmap != null && !ProcessTask.mBitmap.isRecycled()) {
-            ProcessTask.mBitmap.recycle();
-            ProcessTask.mBitmap = null;
-        }
+        bitmapRecycle();
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         Camera thisCamera = Camera.create();
@@ -231,10 +229,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void moveToGallery() {
-        if (ProcessTask.mBitmap != null && !ProcessTask.mBitmap.isRecycled()) {
-            ProcessTask.mBitmap.recycle();
-            ProcessTask.mBitmap = null;
-        }
+        bitmapRecycle();
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         Gallery thisGallery = Gallery.create();
@@ -262,6 +257,13 @@ public class MainActivity extends AppCompatActivity implements
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.addToBackStack("fragment_my_pic_maps_detail");
         ft.commit();
+    }
+
+    private void bitmapRecycle() {
+        if (mBitmap != null && !mBitmap.isRecycled()) {
+            mBitmap.recycle();
+            mBitmap = null;
+        }
     }
 
     void thisShowDialog(int type) {

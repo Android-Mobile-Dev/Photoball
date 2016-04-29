@@ -23,10 +23,6 @@ public class SimulationClass extends View {
     private Ball ball;
     private Box box;
 
-    // For touch inputs - previous touch (x, y)
-    private float previousX;
-    private float previousY;
-
     //    http://stackoverflow.com/questions/7266836/get-associated-image-drawable-in-imageview-android
 //    http://stackoverflow.com/questions/9632114/how-to-find-pixels-color-in-particular-coordinate-in-images
     private Bitmap bm;
@@ -36,11 +32,11 @@ public class SimulationClass extends View {
     public SimulationClass(Context context, float currentX, float currentY) {
         super(context);
 
-        if(ProcessTask.mBitmap != null) {
-            this.bm = ProcessTask.mBitmap;
+        if(MainActivity.mBitmap != null) {
+            this.bm = MainActivity.mBitmap;
         }
-        if(ProcessTask.mImageView != null){
-            this.img = ProcessTask.mImageView;
+        if(MainActivity.mImageView != null){
+            this.img = MainActivity.mImageView;
         }
         box = new Box();  // ARGB
         int ball_color = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("ball_preference_key",0);
