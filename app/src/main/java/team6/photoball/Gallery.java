@@ -34,9 +34,6 @@ public class Gallery extends Fragment {
     public File mImageFile;
     public boolean b = false;
 
-    private SimulationClass bouncingBallView;
-    LinearLayout container_;
-
     public Gallery() {}
 
     /**
@@ -104,13 +101,14 @@ public class Gallery extends Fragment {
 
         background.setBackgroundColor(prefs.getInt("background_preference_key",0));
 
-        container_ = (LinearLayout) view.findViewById(R.id.ball);
+        final LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
 
         view.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
 
                 if(event.getAction() == MotionEvent.ACTION_MOVE){
-                    startSimClass(event.getX(), event.getY());
+                    SimulationClass bouncingBallView = new SimulationClass(getContext(), event.getX(), event.getY());
+                    container_.addView(bouncingBallView, 0);
                 }
                 return true;
             }
@@ -145,7 +143,7 @@ public class Gallery extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != 0) {
-            new ProcessTask(getContext(), this, requestCode, resultCode, data, R.id.imageViewGallery, bouncingBallView).execute();
+            new ProcessTask(getContext(), this, requestCode, resultCode, data, R.id.imageViewGallery).execute();
         } else {
             this.getFragmentManager().popBackStack();
             ((MainActivity)getActivity()).moveToHome();
@@ -188,11 +186,5 @@ public class Gallery extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         b = true;
-    }
-
-    private void startSimClass (float touchX, float touchY) {
-        //TODO: get rid of null
-        bouncingBallView = new SimulationClass(this.getContext(), touchX, touchY);
-        container_.addView(bouncingBallView, 0);
     }
 }

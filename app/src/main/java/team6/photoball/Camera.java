@@ -39,9 +39,6 @@ public class Camera extends Fragment {
     public File mImageFile;
     public boolean b = false;
 
-    private SimulationClass bouncingBallView;
-    LinearLayout container_;
-
     public Camera() {}
 
 
@@ -110,6 +107,19 @@ public class Camera extends Fragment {
 
         background.setBackgroundColor(prefs.getInt("background_preference_key",0));
 
+        final LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
+
+        view.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if(event.getAction() == MotionEvent.ACTION_MOVE){
+                    SimulationClass bouncingBallView = new SimulationClass(getContext(), event.getX(), event.getY());
+                    container_.addView(bouncingBallView, 0);
+                }
+                return true;
+            }
+        });
+
         return view;
     }
 
@@ -139,7 +149,7 @@ public class Camera extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != 0) {
-            new ProcessTask(this.getContext(), this, requestCode, resultCode, data, R.id.imageViewCamera, bouncingBallView).execute();
+            new ProcessTask(this.getContext(), this, requestCode, resultCode, data, R.id.imageViewCamera).execute();
         } else {
             this.getFragmentManager().popBackStack();
             ((MainActivity)getActivity()).moveToHome();
@@ -190,13 +200,5 @@ public class Camera extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         b = true;
-    }
-
-    private void startSimClass (float touchX, float touchY) {
-        container_ = null;
-        container_ = (LinearLayout) this.getView().findViewById(R.id.ball);
-        //TODO: get rid of null
-        bouncingBallView = new SimulationClass(this.getContext(), touchX, touchY);
-        container_.addView(bouncingBallView);
     }
 }

@@ -42,16 +42,13 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
     public static ImageView mImageView;
     public static File mImageFile;
 
-    private static SimulationClass bouncingBallView;
-
-    public ProcessTask(Context tcontext, Fragment tfragment, int requestCode, int resultCode, Intent data, int tcallerType, SimulationClass simClass){
+    public ProcessTask(Context tcontext, Fragment tfragment, int requestCode, int resultCode, Intent data, int tcallerType){
         this.requestCode = requestCode;
         this.resultCode = resultCode;
         this.data = data;
         context = tcontext;
         callerType = tcallerType;
         fragment = tfragment;
-        bouncingBallView = simClass;
     }
 
     //this is called BEFORE you start doing anything
@@ -208,7 +205,6 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
         }
         ImageView imgView = (ImageView) fragment.getView().findViewById(callerType);
         imgView.setImageBitmap(mBitmap);
-        //bouncingBallView.setBitmap(imgView);
     }
 
     public static  void setRotateImageIfRequired(Configuration newConfig) throws IOException {
@@ -221,8 +217,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                 rotateImage(90);
         }
         ImageView imgView = (ImageView) fragment.getView().findViewById(callerType);
-        //imgView.setImageBitmap(mBitmap);
-        //bouncingBallView.setBitmap(imgView);
+        imgView.setImageBitmap(mBitmap);
     }
 
     private static void rotateImage(int degree) {
