@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements
         Settings.OnFragmentInteractionListener,
         MyPicMapsDetail.OnFragmentInteractionListener {
 
+    private boolean fromSettings = false;
+
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 2;
     public static final int MY_PERMISSIONS_REQUEST_CAMERA = 3;
@@ -192,7 +194,6 @@ public class MainActivity extends AppCompatActivity implements
     public void moveToTutorial() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if (tutorialChanged) {
-            Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("tutorial");
             View v = findViewById(R.id.drawer_layout);
             v.invalidate();
             createView();

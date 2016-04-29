@@ -201,4 +201,5 @@ public class MyPicMapsDetail extends Fragment {
         matrix.postRotate(degree);
         MainActivity.mBitmap = Bitmap.createBitmap(MainActivity.mBitmap, 0, 0, MainActivity.mBitmap.getWidth(), MainActivity.mBitmap.getHeight(), matrix, true);
     }
+
 }

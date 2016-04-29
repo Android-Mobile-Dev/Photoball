@@ -25,19 +25,12 @@ public class SimulationClass extends View {
 
     //    http://stackoverflow.com/questions/7266836/get-associated-image-drawable-in-imageview-android
 //    http://stackoverflow.com/questions/9632114/how-to-find-pixels-color-in-particular-coordinate-in-images
-    private Bitmap bm;
     private ImageView img;
 
     // Constructor
     public SimulationClass(Context context, float currentX, float currentY) {
         super(context);
 
-        if(MainActivity.mBitmap != null) {
-            this.bm = MainActivity.mBitmap;
-        }
-        if(MainActivity.mImageView != null){
-            this.img = MainActivity.mImageView;
-        }
         box = new Box();  // ARGB
         int ball_color = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("ball_preference_key",0xff006600);
         ball = new Ball(ball_color, currentX, currentY);
@@ -52,15 +45,10 @@ public class SimulationClass extends View {
 
     }
 
-    public void setBitmap(ImageView img){
-        this.bm = ((BitmapDrawable) img.getDrawable()).getBitmap();
-        this.img = img;
-    }
-
     // Called back to draw the view. Also called after invalidate().
     @Override
     synchronized protected void onDraw(Canvas canvas) {
-        if(img != null) {
+        if(MainActivity.mImageView != null) {
             // Draw the components
             box.draw(canvas);
             ball.draw(canvas);

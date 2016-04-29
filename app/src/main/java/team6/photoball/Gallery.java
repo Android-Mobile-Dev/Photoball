@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -15,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import java.io.File;
 import java.io.IOException;
@@ -63,6 +63,8 @@ public class Gallery extends Fragment {
 
         ((MainActivity)this.getActivity()).updateMenu();
 
+        MainActivity.mImageView = (ImageView) view.findViewById(R.id.imageViewGallery);
+
         final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
         final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
         final FloatingActionButton playButton = (FloatingActionButton) view.findViewById(R.id.playButton);
@@ -110,6 +112,13 @@ public class Gallery extends Fragment {
                 return true;
             }
         });
+
+        if (MainActivity.mBitmap != null)
+            try {
+                ProcessTask.initRotateImageIfRequired();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         return view;
     }

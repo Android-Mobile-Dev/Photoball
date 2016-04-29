@@ -70,6 +70,8 @@ public class Camera extends Fragment {
 
         ((MainActivity)this.getActivity()).updateMenu();
 
+        MainActivity.mImageView = (ImageView) view.findViewById(R.id.imageViewCamera);
+
         final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
         final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
         final FloatingActionButton playButton = (FloatingActionButton) view.findViewById(R.id.playButton);
