@@ -31,6 +31,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 
 import java.util.HashMap;
@@ -57,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements
     public static boolean runTutorial;
     public static Bitmap mBitmap;
     public static ImageView mImageView;
+    public static LinearLayout mContainer;
+    public static  SimulationClass mBouncingBallView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -39,6 +39,7 @@ public class MyPicMapsDetail extends Fragment {
     // TODO: Rename and change types of parameters
     private String mFilePath = null;
 
+
     public MyPicMapsDetail() {
         // Required empty public constructor
     }
@@ -126,13 +127,13 @@ public class MyPicMapsDetail extends Fragment {
     }
 
     private static void setBallLayoutAnimation (final Context context, View view) {
-
-        final LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
+        MainActivity.mContainer = null;
+        MainActivity.mContainer = (LinearLayout) view.findViewById(R.id.ball);
 
         view.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                SimulationClass bouncingBallView = new SimulationClass(context, event.getX(), event.getY());
-                container_.addView(bouncingBallView, 0);
+                MainActivity.mBouncingBallView = new SimulationClass(context, event.getX(), event.getY());
+                MainActivity.mContainer.addView(MainActivity.mBouncingBallView, 0);
                 return true;
             }
         });
@@ -162,7 +163,10 @@ public class MyPicMapsDetail extends Fragment {
         super.onConfigurationChanged(newConfig);
         if (MainActivity.mBitmap != null) {
             try {
-                setRotateImageIfRequired(newConfig);
+                if (getView() != null) {
+                    setRotateImageIfRequired(newConfig);
+                    MainActivity.mBouncingBallView.setPosition(0, 0);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

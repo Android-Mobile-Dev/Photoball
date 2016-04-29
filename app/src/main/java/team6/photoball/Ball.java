@@ -43,7 +43,7 @@ public class Ball {
         y += currentY;
     }
 
-    public void moveWithCollisionDetection(Box box, ImageView img, Bitmap bm) {
+    public void moveWithCollisionDetection(Box box) {
         // Get new (x,y) position
         x += speedX;
         y += speedY;
@@ -97,14 +97,14 @@ public class Ball {
             return;
         }
 
-        if (bm != null && !bm.isRecycled()) {
+        if (MainActivity.mBitmap != null && !MainActivity.mBitmap.isRecycled()) {
             boolean collision = false;
             int c = radius;
-            double xScale = ((double) bm.getWidth() / img.getWidth());
-            double yScale = ((double) bm.getHeight() / img.getHeight());
+            double xScale = ((double) MainActivity.mBitmap.getWidth() / MainActivity.mImageView.getWidth());
+            double yScale = ((double) MainActivity.mBitmap.getHeight() / MainActivity.mImageView.getHeight());
             xBitmap = (int) (x * xScale);
             yBitmap = (int) (y * yScale);
-            int r = Color.red(bm.getPixel(xBitmap, yBitmap));
+            int r = Color.red(MainActivity.mBitmap.getPixel(xBitmap, yBitmap));
             if (r < 180) {
                 collision = true;
             }
@@ -144,28 +144,28 @@ public class Ball {
 
                 switch (direction) {
                     case N:
-                        checkNorth(xScale, yScale, bm);
+                        checkNorth(xScale, yScale);
                         break;
                     case NE:
-                        checkNortheast(xScale, yScale, bm);
+                        checkNortheast(xScale, yScale);
                         break;
                     case E:
-                        checkEast(xScale, yScale, bm);
+                        checkEast(xScale, yScale);
                         break;
                     case SE:
-                        checkSoutheast(xScale, yScale, bm);
+                        checkSoutheast(xScale, yScale);
                         break;
                     case S:
-                        checkSouth(xScale, yScale, bm);
+                        checkSouth(xScale, yScale);
                         break;
                     case SW:
-                        checkSouthwest(xScale, yScale, bm);
+                        checkSouthwest(xScale, yScale);
                         break;
                     case W:
-                        checkWest(xScale, yScale, bm);
+                        checkWest(xScale, yScale);
                         break;
                     case NW:
-                        checkNorthwest(xScale, yScale, bm);
+                        checkNorthwest(xScale, yScale);
                         break;
                     default:
                         speedX = -speedX;
@@ -179,14 +179,14 @@ public class Ball {
         }
     }
 
-    private void checkNorth(double xScale, double yScale, Bitmap bm) {
+    private void checkNorth(double xScale, double yScale) {
         //case 1 --> /
         int[] nearbyPixels = new int[2 * radius];
-        if (hitForwardSlash(nearbyPixels, xScale, yScale, bm)) {
+        if (hitForwardSlash(nearbyPixels, xScale, yScale)) {
             speedX = -speedY;
             speedY = 0;
             direction = BallDirection.E;
-        } else if (hitBackSlash(nearbyPixels, xScale, yScale, bm)) {
+        } else if (hitBackSlash(nearbyPixels, xScale, yScale)) {
             speedX = speedY;
             speedY = 0;
             direction = BallDirection.W;
@@ -196,12 +196,12 @@ public class Ball {
         }
     }
 
-    private void checkNortheast(double xScale, double yScale, Bitmap bm) {
+    private void checkNortheast(double xScale, double yScale) {
         int[] nearbyPixels = new int[2 * radius];
-        if (hitVertical(nearbyPixels, xScale, yScale, bm)) {
+        if (hitVertical(nearbyPixels, xScale, yScale)) {
             speedX = -speedX;
             direction = BallDirection.NW;
-        } else if (hitHorizontal(nearbyPixels, xScale, yScale, bm)) {
+        } else if (hitHorizontal(nearbyPixels, xScale, yScale)) {
             speedY = -speedY;
             direction = BallDirection.SE;
         } else {
@@ -211,13 +211,13 @@ public class Ball {
         }
     }
 
-    private void checkEast(double xScale, double yScale, Bitmap bm) {
+    private void checkEast(double xScale, double yScale) {
         int[] nearbyPixels = new int[2 * radius];
-        if (hitForwardSlash(nearbyPixels, xScale, yScale, bm)) {
+        if (hitForwardSlash(nearbyPixels, xScale, yScale)) {
             speedY = -speedX;
             speedX = 0;
             direction = BallDirection.N;
-        } else if (hitBackSlash(nearbyPixels, xScale, yScale, bm)) {
+        } else if (hitBackSlash(nearbyPixels, xScale, yScale)) {
             speedY = speedX;
             speedX = 0;
             direction = BallDirection.S;
@@ -227,12 +227,12 @@ public class Ball {
         }
     }
 
-    private void checkSoutheast(double xScale, double yScale, Bitmap bm) {
+    private void checkSoutheast(double xScale, double yScale) {
         int[] nearbyPixels = new int[2 * radius];
-        if (hitVertical(nearbyPixels, xScale, yScale, bm)) {
+        if (hitVertical(nearbyPixels, xScale, yScale)) {
             speedX = -speedX;
             direction = BallDirection.SW;
-        } else if (hitHorizontal(nearbyPixels, xScale, yScale, bm)) {
+        } else if (hitHorizontal(nearbyPixels, xScale, yScale)) {
             speedY = -speedY;
             direction = BallDirection.NE;
         } else {
@@ -242,13 +242,13 @@ public class Ball {
         }
     }
 
-    private void checkSouth(double xScale, double yScale, Bitmap bm) {
+    private void checkSouth(double xScale, double yScale) {
         int[] nearbyPixels = new int[2 * radius];
-        if (hitForwardSlash(nearbyPixels, xScale, yScale, bm)) {
+        if (hitForwardSlash(nearbyPixels, xScale, yScale)) {
             speedX = -speedY;
             speedY = 0;
             direction = BallDirection.W;
-        } else if (hitBackSlash(nearbyPixels, xScale, yScale, bm)) {
+        } else if (hitBackSlash(nearbyPixels, xScale, yScale)) {
             speedX = speedY;
             speedY = 0;
             direction = BallDirection.E;
@@ -258,12 +258,12 @@ public class Ball {
         }
     }
 
-    private void checkSouthwest(double xScale, double yScale, Bitmap bm) {
+    private void checkSouthwest(double xScale, double yScale) {
         int[] nearbyPixels = new int[2 * radius];
-        if (hitVertical(nearbyPixels, xScale, yScale, bm)) {
+        if (hitVertical(nearbyPixels, xScale, yScale)) {
             speedX = -speedX;
             direction = BallDirection.SE;
-        } else if (hitHorizontal(nearbyPixels, xScale, yScale, bm)) {
+        } else if (hitHorizontal(nearbyPixels, xScale, yScale)) {
             speedY = -speedY;
             direction = BallDirection.NW;
         } else {
@@ -273,13 +273,13 @@ public class Ball {
         }
     }
 
-    private void checkWest(double xScale, double yScale, Bitmap bm) {
+    private void checkWest(double xScale, double yScale) {
         int[] nearbyPixels = new int[2 * radius];
-        if (hitForwardSlash(nearbyPixels, xScale, yScale, bm)) {
+        if (hitForwardSlash(nearbyPixels, xScale, yScale)) {
             speedY = -speedX;
             speedX = 0;
             direction = BallDirection.S;
-        } else if (hitBackSlash(nearbyPixels, xScale, yScale, bm)) {
+        } else if (hitBackSlash(nearbyPixels, xScale, yScale)) {
             speedY = speedX;
             speedX = 0;
             direction = BallDirection.N;
@@ -289,12 +289,12 @@ public class Ball {
         }
     }
 
-    private void checkNorthwest(double xScale, double yScale, Bitmap bm) {
+    private void checkNorthwest(double xScale, double yScale) {
         int[] nearbyPixels = new int[2 * radius];
-        if (hitVertical(nearbyPixels, xScale, yScale, bm)) {
+        if (hitVertical(nearbyPixels, xScale, yScale)) {
             speedX = -speedX;
             direction = BallDirection.NE;
-        } else if (hitHorizontal(nearbyPixels, xScale, yScale, bm)) {
+        } else if (hitHorizontal(nearbyPixels, xScale, yScale)) {
             speedY = -speedY;
             direction = BallDirection.SW;
         } else {
@@ -304,7 +304,7 @@ public class Ball {
         }
     }
 
-    private boolean hitForwardSlash(int[] pixels, double xScale, double yScale, Bitmap bm) {
+    private boolean hitForwardSlash(int[] pixels, double xScale, double yScale) {
         int c = radius;
         int numTrue = 0;
         int ind = 0;
@@ -313,7 +313,7 @@ public class Ball {
                 continue;
             }
             try {
-                pixels[ind] = Color.red(bm.getPixel( xBitmap + c, yBitmap - c));
+                pixels[ind] = Color.red(MainActivity.mBitmap.getPixel( xBitmap + c, yBitmap - c));
                 numTrue += pixels[ind] < 180 ? 1 : 0;
             } catch (IllegalArgumentException e) {//from going out of bounds
 
@@ -324,7 +324,7 @@ public class Ball {
         return numTrue > (radius / 2);
     }
 
-    private boolean hitBackSlash(int[] pixels, double xScale, double yScale, Bitmap bm) {
+    private boolean hitBackSlash(int[] pixels, double xScale, double yScale) {
         int c = radius;
         int numTrue = 0;
         int ind = 0;
@@ -333,7 +333,7 @@ public class Ball {
                 continue;
             }
             try {
-                pixels[ind] = Color.red(bm.getPixel( xBitmap + c,  yBitmap + c));
+                pixels[ind] = Color.red(MainActivity.mBitmap.getPixel( xBitmap + c,  yBitmap + c));
                 numTrue += pixels[ind] < 180 ? 1 : 0;
             } catch (IllegalArgumentException e) {//from going out of bounds
 
@@ -344,7 +344,7 @@ public class Ball {
         return numTrue > (radius / 2);
     }
 
-    private boolean hitVertical(int[] pixels, double xScale, double yScale, Bitmap bm) {
+    private boolean hitVertical(int[] pixels, double xScale, double yScale) {
         int c = radius;
         int numTrue = 0;
         int ind = 0;
@@ -353,7 +353,7 @@ public class Ball {
                 continue;
             }
             try {
-                pixels[ind] = Color.red(bm.getPixel( xBitmap, yBitmap + c));
+                pixels[ind] = Color.red(MainActivity.mBitmap.getPixel( xBitmap, yBitmap + c));
                 numTrue += pixels[ind] < 180 ? 1 : 0;
             } catch (IllegalArgumentException e) {//from going out of bounds
 
@@ -364,7 +364,7 @@ public class Ball {
         return numTrue > (radius / 2);
     }
 
-    private boolean hitHorizontal(int[] pixels, double xScale, double yScale, Bitmap bm) {
+    private boolean hitHorizontal(int[] pixels, double xScale, double yScale) {
         int c = radius;
         int numTrue = 0;
         int ind = 0;
@@ -373,7 +373,7 @@ public class Ball {
                 continue;
             }
             try {
-                pixels[ind] = Color.red(bm.getPixel( xBitmap + c, yBitmap));
+                pixels[ind] = Color.red(MainActivity.mBitmap.getPixel( xBitmap + c, yBitmap));
                 numTrue += pixels[ind] < 180 ? 1 : 0;
             } catch (IllegalArgumentException e) {//from going out of bounds
 
@@ -398,11 +398,18 @@ public class Ball {
         radius = value;      // Ball's radius
         x = radius;  // Ball's center (x,y)
         y = radius;
-        x += currentX;
-        y += currentY;
+        x += this.currentX;
+        y += this.currentY;
     }
     public void setSpeed(float value) {
         speedX = value / ((float) 2.5);       // Ball's speed (x,y)
         speedY = value / ((float) 2.5);
+    }
+
+    public void setPosition (float currentX, float currentY) {
+        this.currentX = currentX;
+        this.currentY = currentY;
+        x += this.currentX;
+        y += this.currentY;
     }
 }

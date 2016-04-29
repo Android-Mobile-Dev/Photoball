@@ -65,7 +65,7 @@ public class SimulationClass extends View {
             box.draw(canvas);
             ball.draw(canvas);
             // Update the position of the ball, including collision detection and reaction.
-            ball.moveWithCollisionDetection(box, img, bm);
+            ball.moveWithCollisionDetection(box);
 
             //Delay
             /*try {
@@ -80,5 +80,9 @@ public class SimulationClass extends View {
     public void onSizeChanged(int w, int h, int oldW, int oldH) {
         // Set the movement bounds for the ball
         box.set(0, 0, w, h);
+    }
+
+    public void setPosition (float currentX, float currentY) {
+        ball.setPosition(currentX, currentY);
     }
 }
