@@ -17,8 +17,10 @@ import android.widget.ImageView;
  */
 public class Ball {
     int radius = 20;   // Ball's radius
-    int x = radius + 20;  // Ball's center (x,y)
-    int y = radius + 40;
+    int x = radius;  // Ball's center (x,y)
+    int y = radius;
+    float currentX = 0;
+    float currentY = 0;
     int xBitmap;
     int yBitmap;
     float speedX = 35 / ((float) 2.5);       // Ball's speed (x,y)
@@ -31,10 +33,14 @@ public class Ball {
     private BallDirection direction = BallDirection.SE;
 
     // Constructor
-    public Ball(int color) {
+    public Ball(int color, float currentX, float currentY) {
         bounds = new RectF();
         paint = new Paint();
         paint.setColor(color);
+        this.currentX = currentX;
+        this.currentY = currentY;
+        x += currentX;
+        y += currentY;
     }
 
     public void moveWithCollisionDetection(Box box, ImageView img, Bitmap bm) {
@@ -366,8 +372,10 @@ public class Ball {
 
     public void setRadius(int value) {
         radius = value;      // Ball's radius
-        x = radius + 20;  // Ball's center (x,y)
-        y = radius + 40;
+        x = radius;  // Ball's center (x,y)
+        y = radius;
+        x += currentX;
+        y += currentY;
     }
     public void setSpeed(float value) {
         speedX = value / ((float) 2.5);       // Ball's speed (x,y)

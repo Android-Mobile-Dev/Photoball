@@ -14,6 +14,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Base64;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -39,6 +40,7 @@ public class Camera extends Fragment {
     public boolean b = false;
 
     private SimulationClass bouncingBallView;
+    LinearLayout container_;
 
     public Camera() {}
 
@@ -107,13 +109,6 @@ public class Camera extends Fragment {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
 
         background.setBackgroundColor(prefs.getInt("background_preference_key",0));
-
-        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
-
-        //TODO: get rid of null
-        bouncingBallView = new SimulationClass(this.getContext());
-
-        container_.addView(bouncingBallView);
 
         return view;
     }
@@ -195,6 +190,13 @@ public class Camera extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         b = true;
-        //if (ProcessTask.mBitmap != null) ProcessTask.mBitmap.recycle();
+    }
+
+    private void startSimClass (float touchX, float touchY) {
+        container_ = null;
+        container_ = (LinearLayout) this.getView().findViewById(R.id.ball);
+        //TODO: get rid of null
+        bouncingBallView = new SimulationClass(this.getContext(), touchX, touchY);
+        container_.addView(bouncingBallView);
     }
 }

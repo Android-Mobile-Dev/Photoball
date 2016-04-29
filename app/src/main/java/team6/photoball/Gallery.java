@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -34,6 +35,7 @@ public class Gallery extends Fragment {
     public boolean b = false;
 
     private SimulationClass bouncingBallView;
+    LinearLayout container_;
 
     public Gallery() {}
 
@@ -102,10 +104,17 @@ public class Gallery extends Fragment {
 
         background.setBackgroundColor(prefs.getInt("background_preference_key",0));
 
-        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
+        container_ = (LinearLayout) view.findViewById(R.id.ball);
 
-        bouncingBallView = new SimulationClass(this.getContext());
-        container_.addView(bouncingBallView);
+        view.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if(event.getAction() == MotionEvent.ACTION_MOVE){
+                    startSimClass(event.getX(), event.getY());
+                }
+                return true;
+            }
+        });
 
         return view;
     }
@@ -179,6 +188,11 @@ public class Gallery extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         b = true;
-        //if (ProcessTask.mBitmap != null) ProcessTask.mBitmap.recycle();
+    }
+
+    private void startSimClass (float touchX, float touchY) {
+        //TODO: get rid of null
+        bouncingBallView = new SimulationClass(this.getContext(), touchX, touchY);
+        container_.addView(bouncingBallView, 0);
     }
 }

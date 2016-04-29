@@ -208,7 +208,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
         }
         ImageView imgView = (ImageView) fragment.getView().findViewById(callerType);
         imgView.setImageBitmap(mBitmap);
-        bouncingBallView.setBitmap(imgView);
+        //bouncingBallView.setBitmap(imgView);
     }
 
     public static  void setRotateImageIfRequired(Configuration newConfig) throws IOException {
@@ -221,8 +221,8 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                 rotateImage(90);
         }
         ImageView imgView = (ImageView) fragment.getView().findViewById(callerType);
-        imgView.setImageBitmap(mBitmap);
-        bouncingBallView.setBitmap(imgView);
+        //imgView.setImageBitmap(mBitmap);
+        //bouncingBallView.setBitmap(imgView);
     }
 
     private static void rotateImage(int degree) {

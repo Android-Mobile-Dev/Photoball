@@ -27,13 +27,13 @@ public class SimulationClass extends View {
     private float previousX;
     private float previousY;
 
-//    http://stackoverflow.com/questions/7266836/get-associated-image-drawable-in-imageview-android
+    //    http://stackoverflow.com/questions/7266836/get-associated-image-drawable-in-imageview-android
 //    http://stackoverflow.com/questions/9632114/how-to-find-pixels-color-in-particular-coordinate-in-images
     private Bitmap bm;
     private ImageView img;
 
     // Constructor
-    public SimulationClass(Context context) {
+    public SimulationClass(Context context, float currentX, float currentY) {
         super(context);
 
         if(ProcessTask.mBitmap != null) {
@@ -44,7 +44,7 @@ public class SimulationClass extends View {
         }
         box = new Box();  // ARGB
         int ball_color = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("ball_preference_key",0);
-        ball = new Ball(ball_color);
+        ball = new Ball(ball_color, currentX, currentY);
         ball.setRadius(PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("size_preference_key",20));
         ball.setSpeed((float)PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("speed_preference_key",35));
 
@@ -85,26 +85,5 @@ public class SimulationClass extends View {
         // Set the movement bounds for the ball
         box.set(0, 0, w, h);
     }
-
-    // Touch-input handler
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        float currentX = event.getX();
-        float currentY = event.getY();
-        float deltaX, deltaY;
-        float scalingFactor = 5.0f / ((box.xMax > box.yMax) ? box.yMax : box.xMax);
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_MOVE:
-                // Modify rotational angles according to movement
-                deltaX = currentX - previousX;
-                deltaY = currentY - previousY;
-                ball.speedX += deltaX * scalingFactor;
-                ball.speedY += deltaY * scalingFactor;
-        }
-        // Save current x, y
-        previousX = currentX;
-        previousY = currentY;
-        return true;  // Event handled
-    }
+    
 }
-

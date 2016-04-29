@@ -39,6 +39,7 @@ public class MyPicMapsDetail extends Fragment {
     private String mFilePath = null;
     private ImageView mImageView = null;
     private Bitmap mBitmap = null;
+    LinearLayout container_;
 
     public MyPicMapsDetail() {
         // Required empty public constructor
@@ -130,7 +131,7 @@ public class MyPicMapsDetail extends Fragment {
 
         LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
 
-        View bouncingBallView = new SimulationClass(context);
+        View bouncingBallView = new SimulationClass(context, 0, 0);
 
         bouncingBallView.setId(view.generateViewId());
 
