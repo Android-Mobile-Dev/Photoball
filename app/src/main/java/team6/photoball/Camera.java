@@ -107,12 +107,13 @@ public class Camera extends Fragment {
 
         background.setBackgroundColor(prefs.getInt("background_preference_key",0));
 
-        final LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
+        MainActivity.mContainer = null;
+        MainActivity.mContainer = (LinearLayout) view.findViewById(R.id.ball);
 
         view.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                SimulationClass bouncingBallView = new SimulationClass(getContext(), event.getX(), event.getY());
-                container_.addView(bouncingBallView, 0);
+                MainActivity.mBouncingBallView = new SimulationClass(getContext(), event.getX(), event.getY());
+                MainActivity.mContainer.addView(MainActivity.mBouncingBallView, 0);
                 return true;
             }
         });
@@ -166,7 +167,10 @@ public class Camera extends Fragment {
         super.onConfigurationChanged(newConfig);
         if (mImageFile != null)
             try {
-                ProcessTask.setRotateImageIfRequired(newConfig);
+                if (getView() != null) {
+                    ProcessTask.setRotateImageIfRequired(newConfig);
+                    MainActivity.mBouncingBallView.setPosition(0, 0);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
