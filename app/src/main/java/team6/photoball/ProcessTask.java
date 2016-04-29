@@ -38,8 +38,6 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
     private Intent data;
     private static int callerType;
     private static Fragment fragment;
-    public static Bitmap mBitmap;
-    public static ImageView mImageView;
     public static File mImageFile;
 
     public ProcessTask(Context tcontext, Fragment tfragment, int requestCode, int resultCode, Intent data, int tcallerType){
@@ -54,7 +52,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
     //this is called BEFORE you start doing anything
     @Override
     protected void onPreExecute(){
-        mImageView = (ImageView) fragment.getView().findViewById(callerType);
+        MainActivity.mImageView = (ImageView) fragment.getView().findViewById(callerType);
         progressDialog = new ProgressDialog(context);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Please wait, processing image");
@@ -71,7 +69,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
     protected void onPostExecute(Void unused){
         progressDialog.dismiss();
         try {
-            if (mBitmap != null) initRotateImageIfRequired();
+            if (MainActivity.mBitmap != null) initRotateImageIfRequired();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -116,7 +114,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
 
                 try {
                     FileOutputStream out = new FileOutputStream(file);
-                    mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                    MainActivity.mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
                     out.flush();
                     out.close();
                 } catch (Exception e) {
@@ -134,14 +132,14 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
             }
 
             private void modifyImage(File imageFile) {
-                int reqWidth = mImageView.getWidth();
-                int reqHeight = mImageView.getHeight();
+                int reqWidth = MainActivity.mImageView.getWidth();
+                int reqHeight = MainActivity.mImageView.getHeight();
 
                 decodeSampledBitmapFromFile(imageFile, reqWidth, reqHeight);
 
                 //Image modification here
                 GPUImage gpuImage = new GPUImage(fragment.getActivity());
-                gpuImage.setImage(mBitmap);
+                gpuImage.setImage(MainActivity.mBitmap);
                 GPUImageFilterGroup groupFilter = new GPUImageFilterGroup();
                 //5.0f from gpu image sample
                 GPUImageSobelEdgeDetection detection = new GPUImageSobelEdgeDetection();
@@ -149,7 +147,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                 groupFilter.addFilter(detection);
                 groupFilter.addFilter(new GPUImageColorInvertFilter());
                 gpuImage.setFilter(groupFilter);
-                mBitmap = gpuImage.getBitmapWithFilterApplied();
+                MainActivity.mBitmap = gpuImage.getBitmapWithFilterApplied();
                 gpuImage.deleteImage();
             }
 
@@ -158,15 +156,15 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                 // First decode with inJustDecodeBounds=true to check dimensions
                 final BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
-                if (mBitmap != null) mBitmap.recycle();
-                mBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
+                if (MainActivity.mBitmap != null) MainActivity.mBitmap.recycle();
+                MainActivity.mBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
 
                 // Calculate inSampleSize
                 options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 
                 // Decode bitmap with inSampleSize set
                 options.inJustDecodeBounds = false;
-                mBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
+                MainActivity.mBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
             }
 
             public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -197,32 +195,32 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
     public static void initRotateImageIfRequired() throws IOException {
         int orientation = context.getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (mBitmap.getWidth() < mBitmap.getHeight())
+            if (MainActivity.mBitmap.getWidth() < MainActivity.mBitmap.getHeight())
                 rotateImage(90);
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT){
-            if (mBitmap.getWidth() > mBitmap.getHeight())
+            if (MainActivity.mBitmap.getWidth() > MainActivity.mBitmap.getHeight())
                 rotateImage(90);
         }
         ImageView imgView = (ImageView) fragment.getView().findViewById(callerType);
-        imgView.setImageBitmap(mBitmap);
+        imgView.setImageBitmap(MainActivity.mBitmap);
     }
 
     public static  void setRotateImageIfRequired(Configuration newConfig) throws IOException {
         // Checks the orientation of the screen
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (mBitmap.getWidth() < mBitmap.getHeight())
+            if (MainActivity.mBitmap.getWidth() < MainActivity.mBitmap.getHeight())
                 rotateImage(270);
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            if (mBitmap.getWidth() > mBitmap.getHeight())
+            if (MainActivity.mBitmap.getWidth() > MainActivity.mBitmap.getHeight())
                 rotateImage(90);
         }
         ImageView imgView = (ImageView) fragment.getView().findViewById(callerType);
-        imgView.setImageBitmap(mBitmap);
+        imgView.setImageBitmap(MainActivity.mBitmap);
     }
 
     private static void rotateImage(int degree) {
         Matrix matrix = new Matrix();
         matrix.postRotate(degree);
-        mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
+        MainActivity.mBitmap = Bitmap.createBitmap(MainActivity.mBitmap, 0, 0, MainActivity.mBitmap.getWidth(), MainActivity.mBitmap.getHeight(), matrix, true);
     }
 }

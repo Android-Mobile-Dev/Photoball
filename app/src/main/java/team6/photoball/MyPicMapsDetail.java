@@ -38,8 +38,6 @@ public class MyPicMapsDetail extends Fragment {
 
     // TODO: Rename and change types of parameters
     private String mFilePath = null;
-    private ImageView mImageView = null;
-    private Bitmap mBitmap = null;
 
     public MyPicMapsDetail() {
         // Required empty public constructor
@@ -71,9 +69,9 @@ public class MyPicMapsDetail extends Fragment {
 
         File iFile = new File(mFilePath);
 
-        mImageView = (ImageView) view.findViewById(R.id.imageViewMyPicMapsDetail);
+        MainActivity.mImageView = (ImageView) view.findViewById(R.id.imageViewMyPicMapsDetail);
 
-        mBitmap = BitmapFactory.decodeFile(iFile.getAbsolutePath());
+        MainActivity.mBitmap = BitmapFactory.decodeFile(iFile.getAbsolutePath());
 
         ((MainActivity)this.getActivity()).updateMenu();
 
@@ -116,7 +114,7 @@ public class MyPicMapsDetail extends Fragment {
         playButton.setScaleY((float) 1.3);
         playButton.setY(-100);
 
-        if (mBitmap != null)
+        if (MainActivity.mBitmap != null)
             try {
                 initRotateImageIfRequired();
                 setBallLayoutAnimation (this.getContext(), view);
@@ -141,13 +139,6 @@ public class MyPicMapsDetail extends Fragment {
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mBitmap.recycle();
-        mBitmap = null;
-    }
-
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (!(context instanceof OnFragmentInteractionListener))
@@ -169,7 +160,7 @@ public class MyPicMapsDetail extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (mBitmap != null) {
+        if (MainActivity.mBitmap != null) {
             try {
                 setRotateImageIfRequired(newConfig);
             } catch (IOException e) {
@@ -181,32 +172,31 @@ public class MyPicMapsDetail extends Fragment {
     private void setRotateImageIfRequired(Configuration newConfig) throws IOException {
         // Checks the orientation of the screen
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (mBitmap.getWidth() < mBitmap.getHeight())
+            if (MainActivity.mBitmap.getWidth() < MainActivity.mBitmap.getHeight())
                 rotateImage(270);
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            if (mBitmap.getWidth() > mBitmap.getHeight())
+            if (MainActivity.mBitmap.getWidth() > MainActivity.mBitmap.getHeight())
                 rotateImage(90);
         }
-        mImageView.setImageBitmap(mBitmap);
+        MainActivity.mImageView.setImageBitmap(MainActivity.mBitmap);
     }
 
     private void initRotateImageIfRequired() throws IOException {
         int orientation = this.getContext().getResources().getConfiguration().orientation;
 
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (mBitmap.getWidth() < mBitmap.getHeight())
+            if (MainActivity.mBitmap.getWidth() < MainActivity.mBitmap.getHeight())
                 rotateImage(90);
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT){
-            if (mBitmap.getWidth() > mBitmap.getHeight())
+            if (MainActivity.mBitmap.getWidth() > MainActivity.mBitmap.getHeight())
                 rotateImage(90);
         }
-        mImageView.setImageBitmap(mBitmap);
+        MainActivity.mImageView.setImageBitmap(MainActivity.mBitmap);
     }
 
     private void rotateImage(int degree) {
         Matrix matrix = new Matrix();
         matrix.postRotate(degree);
-        mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
+        MainActivity.mBitmap = Bitmap.createBitmap(MainActivity.mBitmap, 0, 0, MainActivity.mBitmap.getWidth(), MainActivity.mBitmap.getHeight(), matrix, true);
     }
-
 }

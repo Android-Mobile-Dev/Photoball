@@ -170,7 +170,7 @@ public class Gallery extends Fragment {
         super.onResume();
         if (b) {
             try {
-                ProcessTask.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
+                MainActivity.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
                 ProcessTask.initRotateImageIfRequired();
             } catch (IOException e) {
                 e.printStackTrace();
