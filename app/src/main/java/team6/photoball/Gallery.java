@@ -105,11 +105,8 @@ public class Gallery extends Fragment {
 
         view.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-
-                if(event.getAction() == MotionEvent.ACTION_MOVE){
-                    SimulationClass bouncingBallView = new SimulationClass(getContext(), event.getX(), event.getY());
-                    container_.addView(bouncingBallView, 0);
-                }
+                SimulationClass bouncingBallView = new SimulationClass(getContext(), event.getX(), event.getY());
+                container_.addView(bouncingBallView, 0);
                 return true;
             }
         });
