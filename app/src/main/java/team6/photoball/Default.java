@@ -66,7 +66,7 @@ public class Default extends DialogFragment {
         ed.putInt("ball_preference_key", 0xff006600);
         ed.putBoolean("instruction_preference_key", true);
         ed.putInt("speed_preference_key", 35);
-        ed.putInt("size_preference_key", 20);
+        ed.putInt("size_preference_key", 60);
         ed.apply();
 
         ((MainActivity)getActivity()).playMusic();
