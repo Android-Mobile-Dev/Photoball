@@ -3,6 +3,7 @@ package team6.photoball;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,7 +12,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,6 +26,7 @@ import android.widget.LinearLayout;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.jar.Manifest;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
 
@@ -41,6 +45,8 @@ public class Camera extends Fragment {
 
     public Camera() {}
 
+    public static final int CAMERA_CODE = 1;
+
 
     /**
      * Use this factory method to create a new instance of
@@ -57,7 +63,23 @@ public class Camera extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EasyImage.openCamera(this, 0);
+        int check = ContextCompat.checkSelfPermission(this.getActivity(), android.Manifest.permission.CAMERA);
+        if (check != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.CAMERA},
+                    CAMERA_CODE);
+        } else {
+            EasyImage.openCamera(this, 0);
+        }
+
+    }
+    @Override
+    public void onRequestPermissionsResult(int code,
+                                           String permissions[],
+                                           int[] grantResults){
+        if(grantResults.length == 0){ return;}
+        if(code == CAMERA_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            EasyImage.openCamera(this, 0);
+        }
     }
 
     @Override
@@ -99,7 +121,13 @@ public class Camera extends Fragment {
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EasyImage.openCamera(fragment, 0);
+                int check = ContextCompat.checkSelfPermission(fragment.getActivity(), android.Manifest.permission.CAMERA);
+                if (check != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{android.Manifest.permission.CAMERA},
+                            CAMERA_CODE);
+                } else {
+                    EasyImage.openCamera(fragment, 0);
+                }
             }
         });
 
