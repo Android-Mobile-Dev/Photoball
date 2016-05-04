@@ -200,7 +200,7 @@ public class Camera extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (mImageFile != null && getView() != null && !MainActivity.mBitmap.isRecycled() && MainActivity.mBitmap != null)
+        if (mImageFile != null && getView() != null&& MainActivity.mBitmap != null && !MainActivity.mBitmap.isRecycled() )
             try {
                 ProcessTask.setRotateImageIfRequired(newConfig);
             } catch (IOException e) {

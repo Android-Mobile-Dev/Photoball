@@ -1,0 +1,122 @@
+1. Team Members:
+	Nelma PereraRodriguez
+	Will Ripley
+	Rosary Wang
+
+2. Brief Instructions:
+	When the app is first launch, there are three buttons on the home screen that visualized the three ways of starting animation in PhotoBall.
+
+	1. + button: leads the user to the phone's Gallery, where the user can pick an image of its choice to render as the map. After selecting a photo, the app renders and displays the edge detected map of the photo. 
+	2. camera button: leads the user to the phone's Camera, where the user can take a photo and render it as the map. After confirming the photo taken, the app renders and displays the edge detected map of the photo. 
+	3. play button: leads the user to the user's My Picture Maps, where the user can pick a previously rendered map. After selected a map, the app will display it. 
+
+	After a edge detected map has been rendered, the user can click anywhere on the map to bounce a ball around. 
+
+
+	On the left slider, there are three quick menu options for the user. 
+	- My Picture Maps: takes the user to its My Picture Maps storage area
+	- Updates: display current app version and if update is available
+	- About: brief description of PhotoBall
+
+	In setting, there are couple features for the app and for the simulation.
+	* Show Instruction: if user wants tutorial at every start of the app
+	* Sound: if user wants background music to play
+	* Reset to Default: if user want to delete all possible maps in My Picture Maps, and reset all setting to default value
+
+	> Color: change the color of simulation background and ball
+	> Animation Details: change the ball size and ball speed
+	
+
+3. List of Features Completed:
+	. Main "Play" screen button layout
+	. Camera support and confirmation window
+	. Select photos from camera roll
+	. Generate map from a photo
+		- We used a gpu library for edge detection
+	. Settings Menu Items
+	. Burger Menu Items
+	. Main screen with logo
+		- Our main screen has the photoball logo, not a splash screen like we said in the paper prototype
+	. My Picture Maps
+	. Ball customization color picker
+	. Ball placer and simulator
+	. Velocity slider and pause button functional
+
+4. List of Features Not Completed:
+	. Pause Button
+	. Updates Burger Button (did not seem important)
+	. 2D/3D Ball Customization
+
+5. Features Added that were not Part of Paper Prototype:
+	. Ball size customization
+
+6. Lists of Classes and Major Chunks of Code Written by Team:
+	About
+	BallAnimation
+	Camera
+	Default
+	Gallery
+	Home
+	MainActivity
+	MyPicMaps
+	MyPicMapsPageAdapter
+	MyPicMapsDetail
+	Process Task
+	Settings
+	Tutorial
+	Settings
+	ShapeHolder
+	SimulationClass
+	Ball
+	Box
+	ImageModel
+	MenuDialog
+
+		Note: ModifyImage method is based on sample in library and StackOverflow help with the library and things such as bitmap compression and file manipulation.
+		Also, the link below helped us to find out how to do proper collision in terms of
+		adjusting the bitmap's getPixel method relative to a ratio with ImageView:
+
+		http://android-er.blogspot.com/2013/08/get-bitmap-color-on-touched-position-in.html
+
+7. List of Classes and Chunks of Code Used but not Written by Team: 
+	Libraries:
+		junit
+		Android Support AppCompat v7
+		Android Support Design
+		Android Support Support v4
+		Android Support v4 Preference Fragment
+		AmbilWarna
+		Animated Vector Drawable
+		EasyImage
+		GPU Image Library
+		Recycler View
+		Support Annotations
+		Support v4 (19.0.1)
+		Support v4 (23.2.1)
+		Android Provider MediaStore
+		Android Preference Manager
+		Library by com.github.amlcurran.showcaseview
+		Glide
+		Hamcrest Core
+		Material Seekbar Preference
+		Support Vector Drawable
+
+	Classes:
+		AlertDialog, ActionBarDrawerToggle (Part of Android Support)
+		AnimatorSet, ValueAnimator, ObjectAnimator (Android Animation)
+		ShapeDrawable, Radial Gradient, Paint, Bitmap, BitmapFactory, OvalShape (Android Graphics)
+		Bundle, IBinder (Android OS)
+		LinearLayout, ImageView, Toolbar, Toast, GridView (Android Widget)
+		MediaStore (Android Provider)
+		SharedPreferences, ContentValues, Context (Android Content)
+		View (Android View)
+		Easy Image (Easy Photo Picker)
+		FloatingActionButton, DrawerLayout, NavigationView, FragmentTransaction, 
+			DialogFragment, ContextCompat (Android Support)
+		GPUImage, GPUImageFilterGroup (Android GPU Image)
+		Manifest (Android)
+		MediaPlayer, SoundPool (Android Media)
+		ListPreference, CheckBoxPreference, Preference (Android Preference)
+		DisplayMetrics (Android Util)
+
+		Note: As of beta turn in, most classes should fall under anything importing from the libraries above.
