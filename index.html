@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>PhotoBall</title>
+
+    <!-- Bootstrap Core CSS -->
+	<link href="css/bootstrap.css" rel="stylesheet" type="text/css">
+
+    <!-- Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<link href="css/animate.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet">
+	<link href="color/default.css" rel="stylesheet">
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.gallery.js"></script>
+	<script type="text/javascript">
+		$('#myCarousel').carousel({
+   			interval: 4000
+		});
+
+		// handles the carousel thumbnails
+		$('[id^=carousel-selector-]').click( function(){
+		var id_selector = $(this).attr("id");
+		var id = id_selector.substr(id_selector.length -1);
+		id = parseInt(id);
+		$('#myCarousel').carousel(id);
+		$('[id^=carousel-selector-]').removeClass('selected');
+		$(this).addClass('selected');
+		});
+
+		// when the carousel slides, auto update
+		$('#myCarousel').on('slid', function (e) {
+		var id = $('.item.active').data('slide-number');
+		id = parseInt(id);
+		$('[id^=carousel-selector-]').removeClass('selected');
+		$('[id=carousel-selector-'+id+']').addClass('selected');
+		});
+	</script/>
+
+</head>
+
+<body id="page-top" data-spy="scroll" data-target=".navbar-custom">
+	<!-- Preloader -->
+	<div id="preloader">
+	  <div id="load"></div>
+	</div>
+
+    <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand" href="index.html">
+                    <img src="img/logo.png" alt="" />
+                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#intro">Home</a></li>
+		<li><a href="#description">Description</a></li>
+		<li><a href="#features">Features</a></li>
+		<li><a href="#screenshots">Screenshots</a></li>
+        <li><a href="#about">Developers</a></li>
+      </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+	<!-- Section: intro -->
+    <section id="intro" class="intro">
+	
+		<div class="slogan">
+			<h2>PhotoBall <span class="text_color"></span> </h2>
+      		<a href="https://github.com/Android-Mobile-Dev/Photoball" class="btn">View on GitHub</a>
+      		<a href="https://github.com/Android-Mobile-Dev/Photoball/zipball/master" class="btn">Download .zip</a>
+      		<a href="https://github.com/Android-Mobile-Dev/Photoball/tarball/master" class="btn">Download .tar.gz</a>
+		</div>
+		<div class="page-scroll">
+			<a href="#description" class="btn btn-circle">
+				<i class="fa fa-angle-double-down animated"></i>
+			</a>
+		</div>
+    </section>
+	<!-- /Section: intro -->
+	
+	<!-- Section: description -->
+    <section id="description" class="home-section text-center">
+		<div class="heading-about">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-8 col-lg-offset-2">
+						<div class="wow bounceInDown" data-wow-delay="0.4s">
+							<div class="section-heading">
+								<h2>Description</h2>
+								<i class="fa fa-2x fa-angle-down"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-2 col-lg-offset-5">
+					<hr class="marginbot-50">
+				</div>
+			</div>
+			<div class="row">
+            	<div class="col-lg-8 col-lg-offset-2">
+					<p>This app will take images of line drawings from the device’s camera and generate a map based on that picture. Afterwards, a simulator of a ball bouncing through the environment will run which shows that the ball interacts with the generated environment. There will be a selection of base images to choose from. The purpose of the app is to utilize user creativity for unlimited content. The premise of map generation can be later used in future apps. The chance of success is medium to high because it is a simple enough concept for easy entertainment without being too complicated for users.</p>
+            	</div>
+			</div>
+		</div>
+	</section>
+	<!-- /Section: description -->
+	
+	<!-- Section: features -->
+    <section id="features" class="home-section text-center bg-gray">
+		
+		<div class="heading-about">
+			<div class="container">
+			<div class="row">
+				<div class="col-lg-8 col-lg-offset-2">
+					<div class="wow bounceInDown" data-wow-delay="0.4s">
+					<div class="section-heading">
+					<h2>Features</h2>
+					<i class="fa fa-2x fa-angle-down"></i>
+
+					</div>
+					</div>
+				</div>
+			</div>
+			</div>
+		</div>
+		<div class="container">
+		<div class="row">
+			<div class="col-lg-2 col-lg-offset-5">
+				<hr class="marginbot-50">
+			</div>
+		</div>
+        <div class="row">
+            <div class="col-sm-3 col-md-3">
+				<div class="wow fadeInLeft" data-wow-delay="0.2s">
+                <div class="service-box">
+					<div class="service-icon">
+						<img src="img/icons/service-icon-1.png" alt="" />
+					</div>
+					<div class="fitem">
+						<h5>Home</h5>
+						<p>• Main screen with the photoball logo</p>
+						<p>• Material Design</p>
+						<p>• Settings Menu Items</p>
+						<p>• Burger Menu Items</p>
+						<p>• Floating Buttons</p>
+						<p>• MyPicMaps on menu with access to saved maps</p>
+					</div>
+                </div>
+				</div>
+            </div>
+			<div class="col-sm-3 col-md-3">
+				<div class="wow fadeInUp" data-wow-delay="0.2s">
+                <div class="service-box">
+					<div class="service-icon">
+						<img src="img/icons/service-icon-2.png" alt="" />
+					</div>
+					<div class="fitem">
+						<h5>Gallery</h5>
+						<p>• Gallery support and confirmation window</p>
+						<p>• Select photos from device gallery</p>
+						<p>• Generate map from a photo (We used a gpu library for edge detection)</p>
+					</div>
+                </div>
+				</div>
+            </div>
+			<div class="col-sm-3 col-md-3">
+				<div class="wow fadeInUp" data-wow-delay="0.2s">
+                <div>
+					<div class="service-icon">
+						<img src="img/icons/service-icon-3.png" alt="" />
+					</div>
+					<div class="fitem">
+						<h5>Camera</h5>
+						<p>• Camera support and confirmation window</p>
+						<p>• Select photos from camera roll</p>
+						<p>• Generate map from a photo (We used a gpu library for edge detection)</p>
+					</div>
+                </div>
+				</div>
+            </div>
+			<div class="col-sm-3 col-md-3">
+				<div class="wow fadeInRight" data-wow-delay="0.2s">
+                <div class="service-box">
+					<div class="service-icon">
+						<img src="img/icons/service-icon-4.png" alt="" />
+					</div>
+					<div class="fitem">
+						<h5>Settings</h5>
+						<p>• Sound on/off</p>
+						<p>• Ball customization color picker</p>
+						<p>• Ball placer and simulator</p>
+						<p>• Velocity slider and pause button functional</p>
+						<p>• Ball size customization</p>
+					</div>
+                </div>
+				</div>
+            </div>
+        </div>		
+		</div>
+	</section>
+	<!-- /Section: features -->
+	
+	<!-- Section: screenshots -->
+    <section id="screenshots" class="home-section text-center">
+		<div class="heading-about">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-8 col-lg-offset-2">
+						<div class="wow bounceInDown" data-wow-delay="0.4s">
+							<div class="section-heading">
+								<h2>Screenshots</h2>
+								<i class="fa fa-2x fa-angle-down"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-2 col-lg-offset-5">
+					<hr class="marginbot-50">
+				</div>
+			</div>
+			<div class="row">
+				<!-- thumb navigation carousel -->
+				<div class="col-md-12 hidden-sm hidden-xs" id="slider-thumbs">
+					
+						<!-- thumb navigation carousel items -->
+					<ul class="list-inline">
+					<li> <a id="carousel-selector-0" class="selected">
+						<img src="img/screenshots/1.png" width="80" height="60" class="img-responsive">
+					</a></li>
+					<li> <a id="carousel-selector-1">
+						<img src="img/screenshots/2.png" width="80" height="60" class="img-responsive">
+					</a></li>
+					<li> <a id="carousel-selector-2">
+						<img src="img/screenshots/3.png" width="80" height="60" class="img-responsive">
+					</a></li>
+					<li> <a id="carousel-selector-3">
+						<img src="img/screenshots/4.png" width="80" height="60" class="img-responsive">
+					</a></li>
+							<li> <a id="carousel-selector-4">
+						<img src="img/screenshots/5.png" width="80" height="60" class="img-responsive">
+					</a></li>
+					<li> <a id="carousel-selector-5">
+						<img src="img/screenshots/6.png" width="80" height="60" class="img-responsive">
+					</a></li>
+					<li> <a id="carousel-selector-6">
+						<img src="img/screenshots/7.png" width="80" height="60" class="img-responsive">
+					</a></li>
+					<li> <a id="carousel-selector-7">
+						<img src="img/screenshots/8.png" width="80" height="60" class="img-responsive">
+					</a></li>
+						</ul>
+					
+				</div>
+			
+				<!-- main slider carousel -->
+					<div class="col-md-12" id="slider">
+							<div class="col-md-12" id="carousel-bounding-box">
+								<div id="myCarousel" class="carousel slide">
+									<!-- main slider carousel items -->
+									<div class="carousel-inner">
+										<div class="active item" data-slide-number="0">
+											<img src="img/screenshots/1.png" width="140" height="140" class="img-responsive">
+										</div>
+										<div class="item" data-slide-number="1">
+											<img src="img/screenshots/2.png" width="140" height="140" class="img-responsive">
+										</div>
+										<div class="item" data-slide-number="2">
+											<img src="img/screenshots/3.png" width="140" height="140" class="img-responsive">
+										</div>
+										<div class="item" data-slide-number="3">
+											<img src="img/screenshots/4.png" width="140" height="140" class="img-responsive">
+										</div>
+										<div class="item" data-slide-number="4">
+											<img src="img/screenshots/1.png" width="140" height="140" class="img-responsive">
+										</div>
+										<div class="item" data-slide-number="5">
+											<img src="img/screenshots/1.png" width="140" height="140" class="img-responsive">
+										</div>
+										<div class="item" data-slide-number="6">
+											<img src="img/screenshots/1.png" width="140" height="140" class="img-responsive">
+										</div>
+										<div class="item" data-slide-number="7">
+											<img src="img/screenshots/1.png" width="140" height="140" class="img-responsive">
+										</div>
+									</div>
+									<!-- main slider carousel nav controls --> <a class="carousel-control left" href="#myCarousel" data-slide="prev">‹</a>
+
+									<a class="carousel-control right" href="#myCarousel" data-slide="next">›</a>
+								</div>
+							</div>
+
+					</div>
+				</div>
+				<!--/main slider carousel-->
+		</div>
+	</section>
+	<!-- /Section: screenshots -->
+	
+	<!-- Section: about -->
+    <section id="about" class="home-section text-center bg-gray">
+		<div class="heading-about">
+			<div class="container">
+			<div class="row">
+				<div class="col-lg-8 col-lg-offset-2">
+					<div class="wow bounceInDown" data-wow-delay="0.4s">
+					<div class="section-heading">
+						<h2>Developers</h2>
+						<i class="fa fa-2x fa-angle-down"></i>
+					</div>
+					</div>
+				</div>
+			</div>
+			</div>
+		</div>
+		<div class="container">
+
+		<div class="row">
+			<div class="col-lg-2 col-lg-offset-5">
+				<hr class="marginbot-50">
+			</div>
+		</div>
+        <div class="row">
+            <div class="col-lg-4">
+				<div class="wow bounceInUp" data-wow-delay="0.2s">
+                    <div class="inner">
+						<h5>Nelma Perera</h5>
+                        <p class="subtitle"></p>
+                        <div class="avatar"><img src="img/team/1.jpg" alt="" class="img-circle" width="140" height="140"/></div>
+                    	<p>View on Github <a href="https://github.com/nelmiux" class="user-mention">@nelmiux</a></p>
+					</div>
+				</div>
+            </div>
+			<div class="col-lg-4">
+				<div class="wow bounceInUp" data-wow-delay="0.5s">
+                    <div class="inner">
+						<h5>Rosary Wang</h5>
+                        <p class="subtitle"></p>
+                        <div class="avatar"><img src="img/team/2.jpg" alt="" class="img-circle" width="140" height="140"/></div>
+						<p>View on Github <a href="https://github.com/rosarywang" class="user-mention">@rosarywang</a></p>
+                    </div>
+				</div>
+            </div>
+			<div class="col-lg-4">
+				<div class="wow bounceInUp" data-wow-delay="0.8s">
+                    <div class="inner">
+						<h5>Will Ripley</h5>
+                        <p class="subtitle"></p>
+                        <div class="avatar"><img src="img/team/3.jpg" alt="" class="img-circle" width="140" height="140"/></div>
+						<p>View on Github <a href="https://github.com/wripley" class="user-mention">@wripley</a></p>
+                    </div>
+				</div>
+            </div>
+        </div>		
+		</div>
+	</section>
+	<!-- /Section: about -->
+
+	<footer>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12 col-lg-12">
+					<div class="wow shake" data-wow-delay="0.4s">
+					<div class="page-scroll marginbot-30">
+						<a href="#intro" id="totop" class="btn btn-circle">
+							<i class="fa fa-angle-double-up animated"></i>
+						</a>
+					</div>
+					</div>
+					<p>&copy;Copyright 2016 - PhotoBall. All rights reserved. <a href="https://github.com/Android-Mobile-Dev/Photoball"></a> by PhotoBall Team</p>
+					<p><a style="color:#80dfff" href="https://github.com/Android-Mobile-Dev/Photoball">PhotoBall</a> is maintained by <a style="color:#80dfff" href="https://github.com/Android-Mobile-Dev">PhotoBall Team</a></p>
+				</div>
+			</div>	
+		</div>
+	</footer>
+
+    <!-- Core JavaScript Files -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.min.js"></script>	
+	<script src="js/jquery.scrollTo.js"></script>
+	<script src="js/wow.min.js"></script>
+	
+    <!-- Custom Theme JavaScript -->
+    <script src="js/custom.js"></script>
+
+</body>
+
+</html>
