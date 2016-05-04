@@ -5418,6 +5418,12 @@ button.close {
   border-right-width: 0;
   border-left-color: #fff;
 }
+
+div#myCarousel {
+    width: 70%;
+    margin-left: 15%;
+}
+
 .carousel {
   position: relative;
 }
@@ -5438,7 +5444,9 @@ button.close {
   max-width: 100%;
   height: auto;
   line-height: 1;
+  margin-left: 40%;
 }
+
 .carousel-inner > .active,
 .carousel-inner > .next,
 .carousel-inner > .prev {
