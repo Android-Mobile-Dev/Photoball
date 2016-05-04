@@ -216,7 +216,7 @@ public class Camera extends Fragment {
         super.onResume();
         if (b) {
             try {
-                if (mImageFile != null && getView() != null && MainActivity.mBitmap != null && !MainActivity.mBitmap.isRecycled() ) {
+                if (mImageFile != null && getView() != null) {
                     MainActivity.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
                     ProcessTask.initRotateImageIfRequired();
                 }
