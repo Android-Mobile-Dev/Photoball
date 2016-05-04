@@ -1,11 +1,31 @@
 1. Team Members:
 	Nelma PereraRodriguez
-	Rosary Wang
 	Will Ripley
+	Rosary Wang
 
 2. Brief Instructions:
-	When the app is first launch, there is three buttons on the home screen that visualized the three ways of starting animation in PhotoBall.
-	Once the app is launched, press the camera button to take a picture in the app. Once you are on the camera screen, you can rotate the picture with the left button. Pressing the center button will take the picture, and you can either press the back button on the left to go back or the check button to confirm the photo. If you want to take a picture from your library, press the + button on the main screen in order to select a photo from your library. The play button chooses allows the user to choose an image from the Photoball image library without having to detect the edges again. After an image is selected, the user will be able to place the ball and press "Start".
+	When the app is first launch, there are three buttons on the home screen that visualized the three ways of starting animation in PhotoBall.
+
+	1. + button: leads the user to the phone's Gallery, where the user can pick an image of its choice to render as the map. After selecting a photo, the app renders and displays the edge detected map of the photo. 
+	2. camera button: leads the user to the phone's Camera, where the user can take a photo and render it as the map. After confirming the photo taken, the app renders and displays the edge detected map of the photo. 
+	3. play button: leads the user to the user's My Picture Maps, where the user can pick a previously rendered map. After selected a map, the app will display it. 
+
+	After a edge detected map has been rendered, the user can click anywhere on the map to bounce a ball around. 
+
+
+	On the left slider, there are three quick menu options for the user. 
+	- My Picture Maps: takes the user to its My Picture Maps storage area
+	- Updates: display current app version and if update is available
+	- About: brief description of PhotoBall
+
+	In setting, there are couple features for the app and for the simulation.
+	* Show Instruction: if user wants tutorial at every start of the app
+	* Sound: if user wants background music to play
+	* Reset to Default: if user want to delete all possible maps in My Picture Maps, and reset all setting to default value
+
+	> Color: change the color of simulation background and ball
+	> Animation Details: change the ball size and ball speed
+	
 
 3. List of Features Completed:
 	. Main "Play" screen button layout
