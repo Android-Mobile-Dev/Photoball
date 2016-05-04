@@ -307,10 +307,9 @@ hr {
 ============================ */
 
 .home-section {
-    padding-top: 110px;
-    padding-bottom: 110px;
+    padding-top: 70px;
     width: 100%;
-    height: 100%;
+    padding-bottom: 110px;
 	display:block;
     position:relative;
     z-index:120;
@@ -883,4 +882,15 @@ Parallax
     @media screen and (max-width: 42em) {
         .site-footer {
             font-size: 0.9rem; } }
+<<<<<<< HEAD
+<<<<<<< HEAD
+            
+    .selected img {
+	opacity:0.5;}
 }
+=======
+}
+>>>>>>> origin/gh-pages
+=======
+}
+>>>>>>> origin/gh-pages
