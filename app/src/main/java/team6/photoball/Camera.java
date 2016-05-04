@@ -131,6 +131,11 @@ public class Camera extends Fragment {
             }
         });
 
+        if( savedInstanceState != null ) {
+            MainActivity.mBitmap = BitmapFactory.decodeFile(savedInstanceState.getString("camera_image"));
+            savedInstanceState = null;
+        }
+
         LinearLayout background = (LinearLayout) view.findViewById(R.id.linearLayoutCamera);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
@@ -206,9 +211,9 @@ public class Camera extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         mImageFile = ProcessTask.mImageFile;
         if (mImageFile != null) outState.putString("camera_image", mImageFile.getAbsolutePath());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -216,7 +221,7 @@ public class Camera extends Fragment {
         super.onResume();
         if (b) {
             try {
-                if (mImageFile != null && getView() != null) {
+                if (mImageFile != null && getView() != null && !MainActivity.mBitmap.isRecycled() && MainActivity.mBitmap != null) {
                     MainActivity.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
                     ProcessTask.initRotateImageIfRequired();
                 }
