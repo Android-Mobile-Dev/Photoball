@@ -159,7 +159,7 @@ public class Gallery extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (mImageFile != null && getView() != null && !MainActivity.mBitmap.isRecycled() && MainActivity.mBitmap != null)
+        if (mImageFile != null && getView() != null && MainActivity.mBitmap != null && !MainActivity.mBitmap.isRecycled())
             try {
                 ProcessTask.setRotateImageIfRequired(newConfig);
             } catch (IOException e) {
@@ -172,7 +172,7 @@ public class Gallery extends Fragment {
         super.onResume();
         if (b) {
             try {
-                if (mImageFile != null && getView() != null && !MainActivity.mBitmap.isRecycled() && MainActivity.mBitmap != null) {
+                if (mImageFile != null && getView() != null && MainActivity.mBitmap != null && !MainActivity.mBitmap.isRecycled()) {
                     MainActivity.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
                     ProcessTask.initRotateImageIfRequired();
                 }
