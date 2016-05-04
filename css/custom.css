@@ -8,3 +8,10 @@
 a.loading {
 	background: #fff url(../images/ajax_small.gif) no-repeat center;
 }
+div#myCarousel {
+    width: 70%;
+    margin-left: 15%;
+}
+.carousel-inner > .item > img { 
+	margin-left: 40%;
+}
