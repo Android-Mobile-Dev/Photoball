@@ -194,6 +194,7 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
     }
 
     public static void initRotateImageIfRequired() throws IOException {
+        if(context == null){ return;}
         int orientation = context.getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (MainActivity.mBitmap.getWidth() < MainActivity.mBitmap.getHeight())
