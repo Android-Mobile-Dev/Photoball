@@ -1,9 +1,6 @@
 /* ==== Google font ==== */
 @import url('http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic|Montserrat:700|Merriweather:400italic');
 
-.cell{
-	display: table-cell;
-}
 
 body {
     width: 100%;
@@ -882,15 +879,7 @@ Parallax
     @media screen and (max-width: 42em) {
         .site-footer {
             font-size: 0.9rem; } }
-<<<<<<< HEAD
-<<<<<<< HEAD
             
     .selected img {
 	opacity:0.5;}
 }
-=======
-}
->>>>>>> origin/gh-pages
-=======
-}
->>>>>>> origin/gh-pages
