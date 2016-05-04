@@ -23,29 +23,18 @@ public class SimulationClass extends View {
     private Ball ball;
     private Box box;
 
-    // For touch inputs - previous touch (x, y)
-    private float previousX;
-    private float previousY;
-
-//    http://stackoverflow.com/questions/7266836/get-associated-image-drawable-in-imageview-android
+    //    http://stackoverflow.com/questions/7266836/get-associated-image-drawable-in-imageview-android
 //    http://stackoverflow.com/questions/9632114/how-to-find-pixels-color-in-particular-coordinate-in-images
-    private Bitmap bm;
     private ImageView img;
 
     // Constructor
-    public SimulationClass(Context context) {
+    public SimulationClass(Context context, float currentX, float currentY) {
         super(context);
 
-        if(ProcessTask.mBitmap != null) {
-            this.bm = ProcessTask.mBitmap;
-        }
-        if(ProcessTask.mImageView != null){
-            this.img = ProcessTask.mImageView;
-        }
         box = new Box();  // ARGB
-        int ball_color = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("ball_preference_key",0);
-        ball = new Ball(ball_color);
-        ball.setRadius(PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("size_preference_key",20));
+        int ball_color = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("ball_preference_key",0xff006600);
+        ball = new Ball(ball_color, currentX, currentY);
+        ball.setRadius(PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("size_preference_key", 60));
         ball.setSpeed((float)PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("speed_preference_key",35));
 
         // To enable keypad
@@ -53,28 +42,23 @@ public class SimulationClass extends View {
         this.requestFocus();
         // To enable touch mode
         this.setFocusableInTouchMode(true);
-    }
 
-    public void setBitmap(ImageView img){
-        this.bm = ((BitmapDrawable) img.getDrawable()).getBitmap();
-        this.img = img;
     }
 
     // Called back to draw the view. Also called after invalidate().
     @Override
     synchronized protected void onDraw(Canvas canvas) {
-        if(img != null) {
+        if(MainActivity.mImageView != null && MainActivity.mBitmap != null && !MainActivity.mBitmap.isRecycled()) {
             // Draw the components
             box.draw(canvas);
             ball.draw(canvas);
-
             // Update the position of the ball, including collision detection and reaction.
-            ball.moveWithCollisionDetection(box, img, bm);
+            ball.moveWithCollisionDetection(box);
 
             //Delay
-            try {
+            /*try {
                 Thread.sleep(30);
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {}*/
         }
         invalidate();
     }
@@ -86,25 +70,7 @@ public class SimulationClass extends View {
         box.set(0, 0, w, h);
     }
 
-    // Touch-input handler
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        float currentX = event.getX();
-        float currentY = event.getY();
-        float deltaX, deltaY;
-        float scalingFactor = 5.0f / ((box.xMax > box.yMax) ? box.yMax : box.xMax);
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_MOVE:
-                // Modify rotational angles according to movement
-                deltaX = currentX - previousX;
-                deltaY = currentY - previousY;
-                ball.speedX += deltaX * scalingFactor;
-                ball.speedY += deltaY * scalingFactor;
-        }
-        // Save current x, y
-        previousX = currentX;
-        previousY = currentY;
-        return true;  // Event handled
+    public void setPosition (float currentX, float currentY) {
+        ball.setPosition(currentX, currentY);
     }
 }
-

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -57,6 +58,7 @@ public class Default extends DialogFragment {
 
     public void doPositiveClick() {
         //reset to default value and clear stored images
+
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
         SharedPreferences.Editor ed = prefs.edit();
         ed.putBoolean("sound_preference_key", true);
@@ -64,34 +66,29 @@ public class Default extends DialogFragment {
         ed.putInt("ball_preference_key", 0xff006600);
         ed.putBoolean("instruction_preference_key", true);
         ed.putInt("speed_preference_key", 35);
-        ed.putInt("size_preference_key", 20);
+        ed.putInt("size_preference_key", 60);
         ed.apply();
 
         ((MainActivity)getActivity()).playMusic();
 
-        String appDirectoryName = "Photoball";
-        File imageRoot = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES) + "/" + appDirectoryName);
+        String mAppDirectoryName = "Photoball";
+
+        File mImageRoot = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES) + "/" + mAppDirectoryName + "/");
         ContentResolver contentResolver = this.getActivity().getContentResolver();
 
-        if (imageRoot.isDirectory())
+        if (mImageRoot.isDirectory())
         {
-            String[] children = imageRoot.list();
+            String[] children = mImageRoot.list();
             for (int i = 0; i < children.length; i++)
             {
-                deleteFileFromMediaStore(contentResolver, new File(imageRoot, children[i]));
+                File f = new File(mImageRoot, children[i]);
+                if(MainActivity.mBitmap == null || !f.getAbsolutePath().equals(ProcessTask.mImageFile.getAbsolutePath()))
+                    deleteFileFromMediaStore(contentResolver, f);
             }
         }
 
         getFragmentManager().popBackStack();
-
-        android.support.v4.app.FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.the_screens, new Settings());
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        ft.addToBackStack("fragment_settings");
-        ft.commit();
-
     }
 
     public void doNegativeClick() {

@@ -65,6 +65,13 @@ public class MyPicMaps extends Fragment implements MyPicMapsPageAdapter.OnItemCl
 
         View view = inflater.inflate(R.layout.fragment_my_pic_maps, container, false);
 
+        if (MainActivity.mBitmap != null && !MainActivity.mBitmap.isRecycled()) {
+
+            MainActivity.mBitmap.recycle();
+
+            MainActivity.mBitmap = null;
+        }
+
         items.clear();
 
         try {

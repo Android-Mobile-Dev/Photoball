@@ -3,6 +3,7 @@ package team6.photoball;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,9 +12,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -22,6 +26,7 @@ import android.widget.LinearLayout;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.jar.Manifest;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
 
@@ -38,9 +43,9 @@ public class Camera extends Fragment {
     public File mImageFile;
     public boolean b = false;
 
-    private SimulationClass bouncingBallView;
-
     public Camera() {}
+
+    public static final int CAMERA_CODE = 1;
 
 
     /**
@@ -58,7 +63,23 @@ public class Camera extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EasyImage.openCamera(this, 0);
+        int check = ContextCompat.checkSelfPermission(this.getActivity(), android.Manifest.permission.CAMERA);
+        if (check != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.CAMERA},
+                    CAMERA_CODE);
+        } else {
+            EasyImage.openCamera(this, 0);
+        }
+
+    }
+    @Override
+    public void onRequestPermissionsResult(int code,
+                                           String permissions[],
+                                           int[] grantResults){
+        if(grantResults.length == 0){ return;}
+        if(code == CAMERA_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            EasyImage.openCamera(this, 0);
+        }
     }
 
     @Override
@@ -70,6 +91,8 @@ public class Camera extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_camera, container, false);
 
         ((MainActivity)this.getActivity()).updateMenu();
+
+        MainActivity.mImageView = (ImageView) view.findViewById(R.id.imageViewCamera);
 
         final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
         final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
@@ -98,9 +121,20 @@ public class Camera extends Fragment {
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EasyImage.openCamera(fragment, 0);
+                int check = ContextCompat.checkSelfPermission(fragment.getActivity(), android.Manifest.permission.CAMERA);
+                if (check != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{android.Manifest.permission.CAMERA},
+                            CAMERA_CODE);
+                } else {
+                    EasyImage.openCamera(fragment, 0);
+                }
             }
         });
+
+        if( savedInstanceState != null ) {
+            MainActivity.mBitmap = BitmapFactory.decodeFile(savedInstanceState.getString("camera_image"));
+            savedInstanceState = null;
+        }
 
         LinearLayout background = (LinearLayout) view.findViewById(R.id.linearLayoutCamera);
 
@@ -108,12 +142,16 @@ public class Camera extends Fragment {
 
         background.setBackgroundColor(prefs.getInt("background_preference_key",0));
 
-        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
+        MainActivity.mContainer = null;
+        MainActivity.mContainer = (LinearLayout) view.findViewById(R.id.ball);
 
-        //TODO: get rid of null
-        bouncingBallView = new SimulationClass(this.getContext());
-
-        container_.addView(bouncingBallView);
+        view.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                MainActivity.mBouncingBallView = new SimulationClass(getContext(), event.getX(), event.getY());
+                MainActivity.mContainer.addView(MainActivity.mBouncingBallView, 0);
+                return true;
+            }
+        });
 
         return view;
     }
@@ -144,7 +182,7 @@ public class Camera extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != 0) {
-            new ProcessTask(this.getContext(), this, requestCode, resultCode, data, R.id.imageViewCamera, bouncingBallView).execute();
+            new ProcessTask(this.getContext(), this, requestCode, resultCode, data, R.id.imageViewCamera).execute();
         } else {
             this.getFragmentManager().popBackStack();
             ((MainActivity)getActivity()).moveToHome();
@@ -162,7 +200,7 @@ public class Camera extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (mImageFile != null)
+        if (mImageFile != null && getView() != null && !MainActivity.mBitmap.isRecycled() && MainActivity.mBitmap != null)
             try {
                 ProcessTask.setRotateImageIfRequired(newConfig);
             } catch (IOException e) {
@@ -170,11 +208,12 @@ public class Camera extends Fragment {
             }
     }
 
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         mImageFile = ProcessTask.mImageFile;
         if (mImageFile != null) outState.putString("camera_image", mImageFile.getAbsolutePath());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -182,8 +221,10 @@ public class Camera extends Fragment {
         super.onResume();
         if (b) {
             try {
-                ProcessTask.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
-                ProcessTask.initRotateImageIfRequired();
+                if (mImageFile != null && getView() != null && !MainActivity.mBitmap.isRecycled() && MainActivity.mBitmap != null) {
+                    MainActivity.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
+                    ProcessTask.initRotateImageIfRequired();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -195,6 +236,5 @@ public class Camera extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         b = true;
-        //if (ProcessTask.mBitmap != null) ProcessTask.mBitmap.recycle();
     }
 }

@@ -67,6 +67,17 @@ public class Home extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        /*if (MainActivity.mBitmap != null && !MainActivity.mBitmap.isRecycled()) {
+
+            MainActivity.mBitmap.recycle();
+
+            MainActivity.mBitmap = null;
+        }*/
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {

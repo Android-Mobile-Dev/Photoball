@@ -14,6 +14,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -37,8 +38,7 @@ public class MyPicMapsDetail extends Fragment {
 
     // TODO: Rename and change types of parameters
     private String mFilePath = null;
-    private ImageView mImageView = null;
-    private Bitmap mBitmap = null;
+
 
     public MyPicMapsDetail() {
         // Required empty public constructor
@@ -70,9 +70,9 @@ public class MyPicMapsDetail extends Fragment {
 
         File iFile = new File(mFilePath);
 
-        mImageView = (ImageView) view.findViewById(R.id.imageViewMyPicMapsDetail);
+        MainActivity.mImageView = (ImageView) view.findViewById(R.id.imageViewMyPicMapsDetail);
 
-        mBitmap = BitmapFactory.decodeFile(iFile.getAbsolutePath());
+        MainActivity.mBitmap = BitmapFactory.decodeFile(iFile.getAbsolutePath());
 
         ((MainActivity)this.getActivity()).updateMenu();
 
@@ -115,10 +115,10 @@ public class MyPicMapsDetail extends Fragment {
         playButton.setScaleY((float) 1.3);
         playButton.setY(-100);
 
-        if (mBitmap != null)
+        if (MainActivity.mBitmap != null)
             try {
                 initRotateImageIfRequired();
-                setBallLayoutAnimation (this.getContext(), view, mImageView);
+                setBallLayoutAnimation (this.getContext(), view);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -126,22 +126,17 @@ public class MyPicMapsDetail extends Fragment {
         return view;
     }
 
-    private static void setBallLayoutAnimation (Context context, View view, ImageView img) {
+    private static void setBallLayoutAnimation (final Context context, View view) {
+        MainActivity.mContainer = null;
+        MainActivity.mContainer = (LinearLayout) view.findViewById(R.id.ball);
 
-        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
-
-        View bouncingBallView = new SimulationClass(context);
-
-        bouncingBallView.setId(view.generateViewId());
-
-        container_.addView(bouncingBallView);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mBitmap.recycle();
-        mBitmap = null;
+        view.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                MainActivity.mBouncingBallView = new SimulationClass(context, event.getX(), event.getY());
+                MainActivity.mContainer.addView(MainActivity.mBouncingBallView, 0);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -166,7 +161,7 @@ public class MyPicMapsDetail extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (mBitmap != null) {
+        if (getView() != null && MainActivity.mBitmap != null) {
             try {
                 setRotateImageIfRequired(newConfig);
             } catch (IOException e) {
@@ -178,32 +173,32 @@ public class MyPicMapsDetail extends Fragment {
     private void setRotateImageIfRequired(Configuration newConfig) throws IOException {
         // Checks the orientation of the screen
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (mBitmap.getWidth() < mBitmap.getHeight())
+            if (MainActivity.mBitmap.getWidth() < MainActivity.mBitmap.getHeight())
                 rotateImage(270);
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            if (mBitmap.getWidth() > mBitmap.getHeight())
+            if (MainActivity.mBitmap.getWidth() > MainActivity.mBitmap.getHeight())
                 rotateImage(90);
         }
-        mImageView.setImageBitmap(mBitmap);
+        MainActivity.mImageView.setImageBitmap(MainActivity.mBitmap);
     }
 
     private void initRotateImageIfRequired() throws IOException {
         int orientation = this.getContext().getResources().getConfiguration().orientation;
 
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (mBitmap.getWidth() < mBitmap.getHeight())
+            if (MainActivity.mBitmap.getWidth() < MainActivity.mBitmap.getHeight())
                 rotateImage(90);
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT){
-            if (mBitmap.getWidth() > mBitmap.getHeight())
+            if (MainActivity.mBitmap.getWidth() > MainActivity.mBitmap.getHeight())
                 rotateImage(90);
         }
-        mImageView.setImageBitmap(mBitmap);
+        MainActivity.mImageView.setImageBitmap(MainActivity.mBitmap);
     }
 
     private void rotateImage(int degree) {
         Matrix matrix = new Matrix();
         matrix.postRotate(degree);
-        mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
+        MainActivity.mBitmap = Bitmap.createBitmap(MainActivity.mBitmap, 0, 0, MainActivity.mBitmap.getWidth(), MainActivity.mBitmap.getHeight(), matrix, true);
     }
 
 }

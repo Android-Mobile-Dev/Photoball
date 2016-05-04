@@ -5,13 +5,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -32,8 +32,6 @@ public class Gallery extends Fragment {
     private OnFragmentInteractionListener mListener;
     public File mImageFile;
     public boolean b = false;
-
-    private SimulationClass bouncingBallView;
 
     public Gallery() {}
 
@@ -64,6 +62,8 @@ public class Gallery extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_gallery, container, false);
 
         ((MainActivity)this.getActivity()).updateMenu();
+
+        MainActivity.mImageView = (ImageView) view.findViewById(R.id.imageViewGallery);
 
         final FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
         final FloatingActionButton cameraButton = (FloatingActionButton) view.findViewById(R.id.cameraButton);
@@ -102,10 +102,23 @@ public class Gallery extends Fragment {
 
         background.setBackgroundColor(prefs.getInt("background_preference_key",0));
 
-        LinearLayout container_ = (LinearLayout) view.findViewById(R.id.ball);
+        MainActivity.mContainer = null;
+        MainActivity.mContainer = (LinearLayout) view.findViewById(R.id.ball);
 
-        bouncingBallView = new SimulationClass(this.getContext());
-        container_.addView(bouncingBallView);
+        view.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                MainActivity.mBouncingBallView = new SimulationClass(getContext(), event.getX(), event.getY());
+                MainActivity.mContainer.addView(MainActivity.mBouncingBallView, 0);
+                return true;
+            }
+        });
+
+        if (MainActivity.mBitmap != null && !MainActivity.mBitmap.isRecycled())
+            try {
+                ProcessTask.initRotateImageIfRequired();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         return view;
     }
@@ -136,7 +149,7 @@ public class Gallery extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != 0) {
-            new ProcessTask(getContext(), this, requestCode, resultCode, data, R.id.imageViewGallery, bouncingBallView).execute();
+            new ProcessTask(getContext(), this, requestCode, resultCode, data, R.id.imageViewGallery).execute();
         } else {
             this.getFragmentManager().popBackStack();
             ((MainActivity)getActivity()).moveToHome();
@@ -146,7 +159,7 @@ public class Gallery extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (mImageFile != null)
+        if (mImageFile != null && getView() != null && !MainActivity.mBitmap.isRecycled() && MainActivity.mBitmap != null)
             try {
                 ProcessTask.setRotateImageIfRequired(newConfig);
             } catch (IOException e) {
@@ -155,19 +168,14 @@ public class Gallery extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mImageFile = ProcessTask.mImageFile;
-        if (mImageFile != null) outState.putString("gallery_image", mImageFile.getAbsolutePath());
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         if (b) {
             try {
-                ProcessTask.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
-                ProcessTask.initRotateImageIfRequired();
+                if (mImageFile != null && getView() != null && !MainActivity.mBitmap.isRecycled() && MainActivity.mBitmap != null) {
+                    MainActivity.mBitmap = BitmapFactory.decodeFile(this.mImageFile.getAbsolutePath());
+                    ProcessTask.initRotateImageIfRequired();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -179,6 +187,5 @@ public class Gallery extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         b = true;
-        //if (ProcessTask.mBitmap != null) ProcessTask.mBitmap.recycle();
     }
 }
