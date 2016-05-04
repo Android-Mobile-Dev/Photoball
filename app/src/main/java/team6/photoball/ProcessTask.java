@@ -139,11 +139,6 @@ public class ProcessTask extends AsyncTask<Void, Integer, Void> {
                     reqHeight = 480;
                 }
 
-                if (MainActivity.mBitmap != null) {
-                    MainActivity.mBitmap.recycle();
-                    MainActivity.mBitmap = null;
-                }
-
                 //Image modification here
                 GPUImage gpuImage = new GPUImage(fragment.getActivity());
                 gpuImage.setImage(decodeSampledBitmapFromFile(imageFile, reqWidth, reqHeight));
