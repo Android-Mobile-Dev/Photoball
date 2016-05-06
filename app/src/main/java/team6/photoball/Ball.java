@@ -104,6 +104,16 @@ public class Ball {
             double yScale = ((double) MainActivity.mBitmap.getHeight() / MainActivity.mImageView.getHeight());
             xBitmap = (int) (x * xScale);
             yBitmap = (int) (y * yScale);
+            if(xBitmap > MainActivity.mBitmap.getWidth()){
+                xBitmap = MainActivity.mBitmap.getWidth();
+            } else if(xBitmap < 0){
+                xBitmap = 0;
+            }
+            if(yBitmap > MainActivity.mBitmap.getHeight()){
+                yBitmap = MainActivity.mBitmap.getHeight();
+            } else if(yBitmap < 0){
+                yBitmap = 0;
+            }
             int r = Color.red(MainActivity.mBitmap.getPixel(xBitmap, yBitmap));
             if (r < 180) {
                 collision = true;
